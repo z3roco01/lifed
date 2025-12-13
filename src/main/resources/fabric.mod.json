@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "lifed",
+	"version": "${version}",
+	"name": "Lifed",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/lifed/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"z3roco01.lifed.Lifed"
+		],
+		"client": [
+			"z3roco01.lifed.LifedClient"
+		]
+	},
+	"mixins": [
+		"lifed.mixins.json",
+		{
+			"config": "lifed.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.18.2",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
