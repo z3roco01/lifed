@@ -1,0 +1,63 @@
+package z3roco01.lifed.commands;
+
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import z3roco01.lifed.lifes.LifeManager;
+
+public class LifeManagerCommands implements CommandRegisterer {
+    @Override
+    public void register(
+            CommandDispatcher<ServerCommandSource> dispatcher,
+            CommandRegistryAccess registryAccess,
+            CommandManager.RegistrationEnvironment environment
+    ) {
+        // all the admin commands
+        dispatcher.register(CommandManager.literal("watcher")
+                .requires(CommandManager.requirePermissionLevel(CommandManager.OWNERS_CHECK))
+                // command that randomizes every player targeted's lives between 2 and 6 ( inclusive )
+                .then(CommandManager.literal("randomizeLives")
+                    .then(CommandManager.argument("targets", EntityArgumentType.players())
+                        .executes(ctx -> {
+                            LifeManager.randomizePlayers(EntityArgumentType.getPlayers(ctx, "targets"));
+                        return 1;
+                })))
+
+                // lets admins set the life count of a player
+                .then(CommandManager.literal("setLives")
+                        .then(CommandManager.argument("target", EntityArgumentType.player())
+                                .then(CommandManager.argument("lives", IntegerArgumentType.integer(1))
+                                .executes(ctx -> {
+                                    int newLives = IntegerArgumentType.getInteger(ctx, "lives");
+                                    ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "target");
+
+                                    LifeManager.setLives(player, newLives);
+
+                                    return 1;
+                                }))))
+        );
+
+        // lets a player gift one of their lives
+        dispatcher.register(CommandManager.literal("gift")
+                .then(CommandManager.argument("target", EntityArgumentType.player())
+                        .executes(ctx -> {
+                            ServerPlayerEntity gifter = ctx.getSource().getPlayer();
+                            ServerPlayerEntity recipient = EntityArgumentType.getPlayer(ctx, "target");
+
+                            // if the gift was unsuccessful, give feedback
+                            if(!LifeManager.giftLife(gifter, recipient)) {
+                                ctx.getSource().sendFeedback(() -> Text.of("Could not gift a life to " + recipient.getStringifiedName())
+                                        .copy().formatted(Formatting.RED), false);
+                                return 0;
+                            }
+
+                            return 1;
+                        })));
+    }
+}

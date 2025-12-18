@@ -1,14 +1,25 @@
 package z3roco01.lifed.event;
 
+import com.mojang.brigadier.CommandDispatcher;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import z3roco01.lifed.Lifed;
-import z3roco01.lifed.lifes.LifeHandler;
+import z3roco01.lifed.commands.CommandRegisterer;
+import z3roco01.lifed.commands.LifeManagerCommands;
+import z3roco01.lifed.lifes.LifeManager;
 
 public class LifedEvents {
+    private static CommandRegisterer[] COMMANDS = {
+            new LifeManagerCommands()
+    };
+
     /**
      * Registers all events, like tick and serer events
      */
@@ -16,6 +27,7 @@ public class LifedEvents {
         ServerLifecycleEvents.SERVER_STARTED.register(LifedEvents::onServerStarted);
         ServerLifecycleEvents.SERVER_STOPPED.register(LifedEvents::onServerStopped);
         ServerPlayConnectionEvents.JOIN.register(LifedEvents::onPlayerJoin);
+        CommandRegistrationCallback.EVENT.register(LifedEvents::onCommandsRegister);
     }
 
     /**
@@ -24,7 +36,7 @@ public class LifedEvents {
      */
     private static void onServerStarted(MinecraftServer server) {
         Lifed.server = server;
-        LifeHandler.init();
+        LifeManager.init();
     }
 
     /**
@@ -35,6 +47,18 @@ public class LifedEvents {
      */
     private static void onPlayerJoin(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server) {
 
+    }
+
+    /**
+     * Calls all command registers to register their commands
+     */
+    private static void onCommandsRegister(
+            CommandDispatcher<ServerCommandSource> dispatcher,
+            CommandRegistryAccess registryAccess,
+            CommandManager.RegistrationEnvironment environment
+    ) {
+        for(CommandRegisterer registerer : COMMANDS)
+            registerer.register(dispatcher, registryAccess, environment);
     }
 
     /**
