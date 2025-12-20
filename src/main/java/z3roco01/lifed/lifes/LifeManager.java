@@ -1,15 +1,15 @@
 package z3roco01.lifed.lifes;
 
+import net.minecraft.entity.EntityStatuses;
 import net.minecraft.scoreboard.ScoreboardObjective;
+import net.minecraft.scoreboard.Team;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.GameMode;
 import org.jspecify.annotations.Nullable;
 import z3roco01.lifed.Lifed;
-import z3roco01.lifed.util.LoggingUtil;
-import z3roco01.lifed.util.ScoreboardUtil;
-import z3roco01.lifed.util.TitleUtil;
+import z3roco01.lifed.util.*;
 
 import java.util.Collection;
 import java.util.Random;
@@ -19,10 +19,16 @@ import java.util.Random;
  */
 public class LifeManager {
     @Nullable
-    public static ScoreboardObjective livesObjective = null;
+    public static ScoreboardObjective LIVES_OBJECTIVE = null;
+    public static Team FOUR_PLUS_TEAM = null;
+    public static Team THREE_TEAM = null;
+    public static Team TWO_TEAM = null;
+    public static Team ONE_TEAM = null;
+    public static Team ZERO_TEAM = null;
 
     public static void init() {
         initializeScoreboard();
+        initializeTeams();
     }
 
     /**
@@ -30,11 +36,36 @@ public class LifeManager {
      */
     private static void initializeScoreboard() {
         // if there is no server we cant do anything
-        if(Lifed.server == null) return;
+        if(Lifed.SERVER == null) return;
 
         // create an objective to keep track of lives
-        livesObjective = ScoreboardUtil.createObjective("lives");
-        Lifed.LOGGER.info("asd " + (livesObjective == null));
+        LIVES_OBJECTIVE = ScoreboardUtil.createObjective("lives");
+    }
+
+    /**
+     * Create the teams for each life group
+     */
+    private static void initializeTeams() {
+        FOUR_PLUS_TEAM = TeamUtil.createTeam("four_lives", Formatting.DARK_GREEN);
+        THREE_TEAM = TeamUtil.createTeam("three_lives", Formatting.GREEN);
+        TWO_TEAM = TeamUtil.createTeam("two_lives", Formatting.YELLOW);
+        ONE_TEAM = TeamUtil.createTeam("one_life", Formatting.RED);
+        ZERO_TEAM = TeamUtil.createTeam("zero_lives", Formatting.GRAY);
+    }
+
+    /**
+     * Handles the de-initialization of things like teams
+     */
+    public static void fini() {
+        finiTeams();
+    }
+
+    private static void finiTeams() {
+        TeamUtil.removeTeam(FOUR_PLUS_TEAM);
+        TeamUtil.removeTeam(THREE_TEAM);
+        TeamUtil.removeTeam(TWO_TEAM);
+        TeamUtil.removeTeam(ONE_TEAM);
+        TeamUtil.removeTeam(ZERO_TEAM);
     }
 
     /**
@@ -72,7 +103,7 @@ public class LifeManager {
      * @return the amount of lives
      */
     public static int getLives(ServerPlayerEntity player) {
-        return ScoreboardUtil.getScore(livesObjective, player);
+        return ScoreboardUtil.getScore(LIVES_OBJECTIVE, player);
     }
 
     /**
@@ -82,7 +113,8 @@ public class LifeManager {
      */
     public static void setLives(ServerPlayerEntity player, int lives) {
         LoggingUtil.log(player.getStringifiedName() + " is now at " + lives + " lives !");
-        ScoreboardUtil.setScore(livesObjective, player, lives);
+        ScoreboardUtil.setScore(LIVES_OBJECTIVE, player, lives);
+        updateTeam(player);
     }
 
     /**
@@ -104,6 +136,25 @@ public class LifeManager {
         }
 
         return colour;
+    }
+
+    /**
+     * Gets the correct team for the player based on their lives
+     * @param player the player
+     * @return the Team object for the players current lives
+     */
+    public static Team getTeam(ServerPlayerEntity player) {
+        int lives = LifeManager.getLives(player);
+
+        // if it is < 0 return zero lives team, so that the default case of lives will trigger >= 4
+        if(lives <= 0)
+            return ZERO_TEAM;
+        switch(lives) {
+            case 1: return ONE_TEAM;
+            case 2: return TWO_TEAM;
+            case 3: return THREE_TEAM;
+            default: return FOUR_PLUS_TEAM;
+        }
     }
 
     /**
@@ -142,6 +193,9 @@ public class LifeManager {
         TitleUtil.sendTitle(recipient, gifter.getStringifiedName() + " gifted you a life !",
                 LifeManager.getLifeColour(recipient));
 
+        PlayerUtil.playTotemAnimation(gifter);
+        PlayerUtil.playTotemAnimation(recipient);
+
         return true;
     }
 
@@ -151,7 +205,7 @@ public class LifeManager {
      */
     public static void randomizePlayers(Collection<ServerPlayerEntity> players) {
         // cant execute without a server
-        if(Lifed.server == null) return;
+        if(Lifed.SERVER == null) return;
 
         // create a random object, to get random life values, should maybe use world random but wtv
         Random random = new Random();
@@ -166,5 +220,13 @@ public class LifeManager {
             TitleUtil.sendTitle(player, "You get " + lives + " lives !", LifeManager.getLifeColour(lives));
         }
 
+    }
+
+    /**
+     * Puts the passed player in the correct team for their life count
+     * @param player the player to update
+     */
+    public static void updateTeam(ServerPlayerEntity player) {
+        TeamUtil.addPlayerToTeam(player, getTeam(player));
     }
 }

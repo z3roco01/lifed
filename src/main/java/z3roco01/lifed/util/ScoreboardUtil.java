@@ -16,6 +16,14 @@ public class ScoreboardUtil {
     }
 
     /**
+     * Retrieves the Scoreboard from the server
+     * @return the Scoreboard of the server
+     */
+    public static Scoreboard getScoreboard() {
+        return Lifed.SERVER.getScoreboard();
+    }
+
+    /**
      * Creates a scoreboard with the specified parameters
      * @param name the name and display name of the scoreboard
      * @param criterion the criterion of the scoreboard, also used for the render type
@@ -23,10 +31,10 @@ public class ScoreboardUtil {
      */
     public static ScoreboardObjective createObjective(String name, ScoreboardCriterion criterion) {
         // if there is no server we cant do anything
-        if(Lifed.server == null) return null;
+        if(Lifed.SERVER == null) return null;
 
         // get a reference to the scoreboard
-        Scoreboard scoreboard = Lifed.server.getScoreboard();
+        Scoreboard scoreboard = getScoreboard();
 
         // get the objective if it already exists
         ScoreboardObjective existing = scoreboard.getNullableObjective(name);
@@ -39,6 +47,15 @@ public class ScoreboardUtil {
     }
 
     /**
+     * Retrieves the ScoreHolder for a player
+     * @param player the player
+     * @return the ScoreHolder for the passed player
+     */
+    public static ScoreHolder getScoreHolder(ServerPlayerEntity player) {
+        return ScoreHolder.fromProfile(player.getGameProfile());
+    }
+
+    /**
      * Set the score to a new score
      * @param objective the objective
      * @param player the player whos score will be changed
@@ -46,12 +63,11 @@ public class ScoreboardUtil {
      */
     public static void setScore(ScoreboardObjective objective, ServerPlayerEntity player, int score) {
         // if there is no server we cant do anything
-        if(Lifed.server == null) return;
+        if(Lifed.SERVER == null) return;
 
-        // get the scoreboard
-        Scoreboard scoreboard = Lifed.server.getScoreboard();
+        Scoreboard scoreboard = getScoreboard();
         // get the score object, then set the score
-        scoreboard.getOrCreateScore(ScoreHolder.fromProfile(player.getGameProfile()), objective).setScore(score);
+        scoreboard.getOrCreateScore(getScoreHolder(player), objective).setScore(score);
     }
 
     /**
@@ -62,13 +78,11 @@ public class ScoreboardUtil {
      */
     public static int getScore(ScoreboardObjective objective, ServerPlayerEntity player) {
         // if there is no server we cant do anything
-        if(Lifed.server == null) return -1;
+        if(Lifed.SERVER == null) return -1;
 
-        // get the scoreboard
-        Scoreboard scoreboard = Lifed.server.getScoreboard();
+        Scoreboard scoreboard = getScoreboard();
         // get a readable score object
-        ReadableScoreboardScore score = scoreboard.getScore(ScoreHolder.fromProfile(player.getGameProfile()),
-                objective);
+        ReadableScoreboardScore score = scoreboard.getScore(getScoreHolder(player), objective);
 
         if(score == null) return -1;
         return score.getScore();

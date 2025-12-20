@@ -35,7 +35,7 @@ public class LifedEvents {
      * @param server a reference to the server object
      */
     private static void onServerStarted(MinecraftServer server) {
-        Lifed.server = server;
+        Lifed.SERVER = server;
         LifeManager.init();
     }
 
@@ -66,6 +66,7 @@ public class LifedEvents {
      * @param server the server that has just closed
      */
     private static void onServerStopped(MinecraftServer server) {
-        Lifed.server = null;
+        LifeManager.fini();
+        Lifed.SERVER = null;
     }
 }

@@ -13,7 +13,7 @@ public class Lifed implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     @Nullable
-    public static MinecraftServer server = null;
+    public static MinecraftServer SERVER = null;
 
     @Override
 	public void onInitialize() {

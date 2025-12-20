@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.entity.EntityStatuses;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -41,10 +42,30 @@ public class LifeManagerCommands implements CommandRegisterer {
 
                                     return 1;
                                 }))))
+
+                // easy increment and decrement commands
+                .then(CommandManager.literal("inc")
+                        .then(CommandManager.argument("target", EntityArgumentType.player())
+                                .executes(ctx -> {
+                                    ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "target");
+
+                                    LifeManager.addLife(player);
+
+                                    return 1;
+                                })))
+                .then(CommandManager.literal("dec")
+                        .then(CommandManager.argument("target", EntityArgumentType.player())
+                                .executes(ctx -> {
+                                    ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "target");
+
+                                    LifeManager.removeLife(player);
+
+                                    return 1;
+                                })))
         );
 
         // lets a player gift one of their lives
-        dispatcher.register(CommandManager.literal("gift")
+        dispatcher.register(CommandManager.literal("giftLife")
                 .then(CommandManager.argument("target", EntityArgumentType.player())
                         .executes(ctx -> {
                             ServerPlayerEntity gifter = ctx.getSource().getPlayer();
