@@ -4,13 +4,21 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.entity.EntityStatuses;
+import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
+import net.minecraft.particle.ParticleType;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.particle.ParticleUtil;
+import net.minecraft.particle.SimpleParticleType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import z3roco01.lifed.lifes.LifeManager;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.intprovider.ConstantIntProvider;
+import z3roco01.lifed.Lifed;
+import z3roco01.lifed.features.BoogeymanManager;
+import z3roco01.lifed.features.LifeManager;
 
 public class LifeManagerCommands implements CommandRegisterer {
     @Override
@@ -62,6 +70,32 @@ public class LifeManagerCommands implements CommandRegisterer {
 
                                     return 1;
                                 })))
+                .then(CommandManager.literal("boogeyman")
+                        .then(CommandManager.literal("roll")
+                                .executes(ctx -> {
+                                    BoogeymanManager.rollBoogeys(10);
+                                    return 1;
+                                })
+                                .then(CommandManager.argument("max", IntegerArgumentType.integer(1))
+                                        .executes(ctx -> {
+                                            BoogeymanManager.rollBoogeys(IntegerArgumentType.getInteger(ctx, "max"));
+                                            return 1;
+                                        })
+                                )
+                        )
+                        .then(CommandManager.literal("cure")
+                                .then(CommandManager.argument("target", EntityArgumentType.player())
+                                        .executes(ctx -> {
+                                            BoogeymanManager.cure(EntityArgumentType.getPlayer(ctx, "target"));
+                                            return 1;
+                                        })
+                                ))
+                        .then(CommandManager.literal("reset")
+                                .executes(ctx -> {
+                                    BoogeymanManager.clearBoogeymen();
+                                    return 1;
+                                }))
+                )
         );
 
         // lets a player gift one of their lives

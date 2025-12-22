@@ -13,7 +13,8 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 import z3roco01.lifed.Lifed;
 import z3roco01.lifed.commands.CommandRegisterer;
 import z3roco01.lifed.commands.LifeManagerCommands;
-import z3roco01.lifed.lifes.LifeManager;
+import z3roco01.lifed.features.BoogeymanManager;
+import z3roco01.lifed.features.LifeManager;
 
 public class LifedEvents {
     private static CommandRegisterer[] COMMANDS = {
@@ -66,6 +67,7 @@ public class LifedEvents {
      * @param server the server that has just closed
      */
     private static void onServerStopped(MinecraftServer server) {
+        BoogeymanManager.failAll();
         LifeManager.fini();
         Lifed.SERVER = null;
     }

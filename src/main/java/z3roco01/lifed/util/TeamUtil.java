@@ -4,7 +4,6 @@ import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Formatting;
-import z3roco01.lifed.lifes.LifeManager;
 
 public class TeamUtil {
     /**

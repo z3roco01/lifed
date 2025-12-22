@@ -1,6 +1,7 @@
 package z3roco01.lifed.mixin;
 
 import com.mojang.authlib.GameProfile;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -9,7 +10,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import z3roco01.lifed.lifes.LifeManager;
+import z3roco01.lifed.features.BoogeymanManager;
+import z3roco01.lifed.features.LifeManager;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity {
@@ -25,5 +27,12 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 
         // remove one life
         LifeManager.removeLife(player);
+
+        // if the killer was a boogey, cure them
+        Entity maybeKiller = damageSource.getAttacker();
+        if(!(maybeKiller instanceof ServerPlayerEntity)) return;
+
+        ServerPlayerEntity killer = (ServerPlayerEntity)maybeKiller;
+        BoogeymanManager.cure(killer);
     }
 }

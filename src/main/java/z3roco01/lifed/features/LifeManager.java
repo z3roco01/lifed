@@ -1,11 +1,13 @@
-package z3roco01.lifed.lifes;
+package z3roco01.lifed.features;
 
-import net.minecraft.entity.EntityStatuses;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.particle.ParticleUtil;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.math.intprovider.ConstantIntProvider;
 import net.minecraft.world.GameMode;
 import org.jspecify.annotations.Nullable;
 import z3roco01.lifed.Lifed;
@@ -194,7 +196,6 @@ public class LifeManager {
                 LifeManager.getLifeColour(recipient));
 
         PlayerUtil.playTotemAnimation(gifter);
-        PlayerUtil.playTotemAnimation(recipient);
 
         return true;
     }
