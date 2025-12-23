@@ -199,14 +199,12 @@ public class BoogeymanManager {
      * @return the chosen player
      */
     private static ServerPlayerEntity getBoogeyCandidate(Random random, List<ServerPlayerEntity> players) {
-        Lifed.LOGGER.info("peeeeeeeeee");
         int boogeyIdx = 0;
 
         // an error happens....
         if(players.size() > 1)
             boogeyIdx = random.nextInt(players.size()-1);
 
-        Lifed.LOGGER.info("poooooo");
         return players.get(boogeyIdx);
     }
 }
