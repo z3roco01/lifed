@@ -124,11 +124,11 @@ public class BoogeymanManager {
                 ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen in 5 minutes...", Formatting.RED);
                 try {
                     // do the waiting...
-                    TimeUnit.SECONDS.sleep(5);
+                    TimeUnit.MINUTES.sleep(5);
                     ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen in 1 minute...", Formatting.RED);
-                    TimeUnit.MILLISECONDS.sleep(950);
+                    TimeUnit.SECONDS.sleep(55);
                     ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen soon.....", Formatting.RED);
-                    TimeUnit.MILLISECONDS.sleep(50);
+                    TimeUnit.SECONDS.sleep(5);
 
                     // clear them just before selecting
                     clearBoogeymen();
@@ -167,7 +167,7 @@ public class BoogeymanManager {
         for(ServerPlayerEntity player : players) {
             if(boogeymen.contains(player)) {
                 TitleUtil.sendTitle(player, "You ARE the boogeyman !!!", Formatting.RED);
-                player.sendMessage(Text.of("You are a boogeyman ! you must kill a §agreen§r or §eyellow§r to cure yourself. if you do not then you will go to your §clast life§r at the end of this session."));
+                player.sendMessage(Text.of("§7You are a boogeyman ! you must kill a §agreen§7 or §eyellow§7 to cure yourself. if you do not then you will go to your §clast life§7 at the end of this session.§r"));
             }else {
                 TitleUtil.sendTitle(player, "You are NOT the boogeyman !", Formatting.GREEN);
             }
