@@ -134,16 +134,16 @@ public class BoogeymanManager {
 
                     // if there is somehow not enough players, just pull everyone
                     int realCount = count;
-                    if(players.size() > count)
+                    if(players.size() < count)
                         realCount = players.size();
 
                     // do count number of selections
                     for(int i = 0; i < realCount; ++i) {
-                        selectOneBoogey(players);
-
                         // if the boogey list size ever equals the player list size, finish
                         if(boogeymen.size() == players.size())
                             break;
+
+                        selectOneBoogey(players);
                     }
 
                     showBoogeyStatus(players);
@@ -164,7 +164,7 @@ public class BoogeymanManager {
         for(ServerPlayerEntity player : players) {
             if(boogeymen.contains(player)) {
                 TitleUtil.sendTitle(player, "You ARE the boogeyman !!!", Formatting.RED);
-                player.sendMessage(Text.of("§7You are a boogeyman ! you must kill a §agreen§7 or §eyellow§7 to cure yourself. if you do not then you will go to your §clast life§7 at the end of this session.§r"));
+                player.sendMessage(Text.of("§7You are a boogeyman ! you must kill a §agreen§7 or §eyellow§7 to cure yourself. you lose EVERY alliance as a boogeyman until you are cured. if you do not then you will go to your §clast life§7 at the end of this session.§r"));
             }else {
                 TitleUtil.sendTitle(player, "You are NOT the boogeyman !", Formatting.GREEN);
             }
@@ -179,6 +179,9 @@ public class BoogeymanManager {
         Random random = new Random();
 
         ServerPlayerEntity boogey = getBoogeyCandidate(random, players);
+
+        if(boogeymen.size() >= players.size())
+            return;
 
         // if the pulled player is already a boogey, re pull
         while(boogeymen.contains(boogey)) {
@@ -198,9 +201,10 @@ public class BoogeymanManager {
     private static ServerPlayerEntity getBoogeyCandidate(Random random, List<ServerPlayerEntity> players) {
         int boogeyIdx = 0;
 
-        // an error happens....
-        if(players.size() > 1)
-            boogeyIdx = random.nextInt(players.size()-1);
+        // error happened without this i dont remember
+        if(players.size() > 1) {
+            boogeyIdx = random.nextInt(players.size());
+        }
 
         return players.get(boogeyIdx);
     }

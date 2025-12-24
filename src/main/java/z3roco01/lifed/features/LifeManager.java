@@ -205,6 +205,16 @@ public class LifeManager {
      * @param players collection of players being randomized
      */
     public static void randomizePlayers(Collection<ServerPlayerEntity> players) {
+        randomizePlayers(players, 2, 6);
+    }
+
+    /**
+     * Randomize the lives of passed players between min and max ( inclusive
+     * @param players the players to randomize
+     * @param min the minimum amount of lives
+     * @param max the maximum amount of lives
+     */
+    public static void randomizePlayers(Collection<ServerPlayerEntity> players, int min, int max) {
         // cant execute without a server
         if(Lifed.SERVER == null) return;
 
@@ -214,13 +224,12 @@ public class LifeManager {
         // for each player, give them a random amount of lives
         for (ServerPlayerEntity player : players) {
             // +2 since the nextInt function is 0 to arg inclusive
-            int lives = random.nextInt(4)+2;
+            int lives = random.nextInt(min, max+1);
             LifeManager.setLives(player, lives);
 
             // show them how many they got
             TitleUtil.sendTitle(player, "You get " + lives + " lives !", LifeManager.getLifeColour(lives));
         }
-
     }
 
     /**
