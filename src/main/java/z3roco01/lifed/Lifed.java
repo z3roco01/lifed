@@ -6,7 +6,6 @@ import net.minecraft.server.MinecraftServer;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import z3roco01.lifed.config.ConfigFiles;
 import z3roco01.lifed.event.LifedEvents;
 
 public class Lifed implements ModInitializer {

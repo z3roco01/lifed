@@ -13,7 +13,7 @@ import java.util.Properties;
 /**
  * Holds methods which handle reading and writing of ConfigProperties
  */
-public class ConfigFiles {
+public class ConfigFile {
     /**
      * Saves an object's marked config properties to a passed path
      * @param path the path of the file to save to, creates file if needed
