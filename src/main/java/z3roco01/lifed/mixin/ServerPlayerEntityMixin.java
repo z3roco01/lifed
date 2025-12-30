@@ -2,19 +2,29 @@ package z3roco01.lifed.mixin;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LightningEntity;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.command.SummonCommand;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import z3roco01.lifed.Lifed;
 import z3roco01.lifed.features.BoogeymanManager;
 import z3roco01.lifed.features.LifeManager;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity {
+    @Shadow
+    public abstract ServerWorld getEntityWorld();
+
     // needed constructor
     public ServerPlayerEntityMixin(World world, GameProfile profile) {
         super(world, profile);
@@ -24,6 +34,12 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     private void onDeath(DamageSource damageSource, CallbackInfo ci) {
         // needed to get the actual object, since its in a mixin, not technically the player object
         ServerPlayerEntity player = (ServerPlayerEntity)(Object)this;
+
+        // if they just lost their life, summon a lightening
+        if(LifeManager.getLives(player) == 1) {
+            for(int i = 0; i < 4; i++)
+                EntityType.LIGHTNING_BOLT.spawn(getEntityWorld(), null, getBlockPos(), SpawnReason.EVENT, false, false);
+        }
 
         // remove one life
         LifeManager.removeLife(player);
