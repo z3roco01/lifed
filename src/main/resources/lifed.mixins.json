@@ -3,7 +3,9 @@
   "package": "z3roco01.lifed.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "ServerPlayerEntityMixin"
+    "ServerPlayerEntityMixin",
+    "ShapedRecipeMixin",
+    "ShapelessRecipeMixin"
   ],
   "injectors": {
     "defaultRequire": 1

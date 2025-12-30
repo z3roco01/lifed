@@ -38,4 +38,16 @@ public class LifedConfig {
      */
     @ConfigProperty
     public Integer lightningOnRedDeath = 5;
+
+    /**
+     * Are bookshelves allowed
+     */
+    @ConfigProperty
+    public Boolean bookshelfAllowed = false;
+
+    /**
+     * are enchanters allowed to be crafted
+     */
+    @ConfigProperty
+    public Boolean canCraftEnchanter = false;
 }
