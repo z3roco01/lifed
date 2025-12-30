@@ -3,6 +3,7 @@
   "package": "z3roco01.lifed.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "PlayerInventoryMixin",
     "ServerPlayerEntityMixin",
     "ShapedRecipeMixin",
     "ShapelessRecipeMixin"
