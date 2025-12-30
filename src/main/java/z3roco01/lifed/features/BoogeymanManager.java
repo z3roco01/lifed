@@ -62,7 +62,7 @@ public class BoogeymanManager {
      * fails one player, setting them to red life
      * @param player the player to fail
      */
-    private static void fail(ServerPlayerEntity player) {
+    public static void fail(ServerPlayerEntity player) {
         // dont fail a non boogey
         if(!boogeymen.contains(player)) return;
 
@@ -121,11 +121,11 @@ public class BoogeymanManager {
                 ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen in 5 minutes...", Formatting.RED);
                 try {
                     // do the waiting...
-                    TimeUnit.MINUTES.sleep(5);
+                    TimeUnit.MILLISECONDS.sleep(5);
                     ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen in 1 minute...", Formatting.RED);
-                    TimeUnit.SECONDS.sleep(55);
+                    TimeUnit.MILLISECONDS.sleep(55);
                     ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen soon.....", Formatting.RED);
-                    TimeUnit.SECONDS.sleep(5);
+                    TimeUnit.MILLISECONDS.sleep(5);
 
                     // clear them just before selecting
                     clearBoogeymen();

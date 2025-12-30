@@ -12,13 +12,15 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import z3roco01.lifed.Lifed;
 import z3roco01.lifed.commands.CommandRegisterer;
+import z3roco01.lifed.commands.PlayerCommands;
 import z3roco01.lifed.commands.WatcherCommands;
 import z3roco01.lifed.features.BoogeymanManager;
 import z3roco01.lifed.features.LifeManager;
 
 public class LifedEvents {
-    private static CommandRegisterer[] COMMANDS = {
-            new WatcherCommands()
+    private static final CommandRegisterer[] COMMANDS = {
+            new WatcherCommands(),
+            new PlayerCommands()
     };
 
     /**

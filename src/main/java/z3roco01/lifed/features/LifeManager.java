@@ -151,12 +151,12 @@ public class LifeManager {
         // if it is < 0 return zero lives team, so that the default case of lives will trigger >= 4
         if(lives <= 0)
             return ZERO_TEAM;
-        switch(lives) {
-            case 1: return ONE_TEAM;
-            case 2: return TWO_TEAM;
-            case 3: return THREE_TEAM;
-            default: return FOUR_PLUS_TEAM;
-        }
+        return switch (lives) {
+            case 1 -> ONE_TEAM;
+            case 2 -> TWO_TEAM;
+            case 3 -> THREE_TEAM;
+            default -> FOUR_PLUS_TEAM;
+        };
     }
 
     /**

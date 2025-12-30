@@ -7,8 +7,6 @@ import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import z3roco01.lifed.features.BoogeymanManager;
 import z3roco01.lifed.features.LifeManager;
 
@@ -30,13 +28,6 @@ public class WatcherCommands implements CommandRegisterer {
                                                 LifeManager.randomizePlayers(EntityArgumentType.getPlayers(ctx, "targets"));
                                                 return 1;
                                             })
-                                            .then(CommandManager.argument("min", IntegerArgumentType.integer())
-                                                    .then(CommandManager.argument("max", IntegerArgumentType.integer())
-                                                        .executes(ctx -> {
-                                                            LifeManager.randomizePlayers(EntityArgumentType.getPlayers(ctx, "targets"),
-                                                                    IntegerArgumentType.getInteger(ctx, "min"), IntegerArgumentType.getInteger(ctx, "max"));
-                                                            return 1;
-                                                        })))
                                         ))
 
                                     // lets admins set the life count of a player
@@ -92,29 +83,17 @@ public class WatcherCommands implements CommandRegisterer {
                                             return 1;
                                         })
                                 ))
+                        .then(CommandManager.literal("fail")
+                                .then(CommandManager.argument("target", EntityArgumentType.player())
+                                        .executes(ctx -> {
+                                            BoogeymanManager.fail(EntityArgumentType.getPlayer(ctx, "target"));
+                                            return 1;
+                                        })
+                                ))
                         .then(CommandManager.literal("reset")
                                 .executes(ctx -> {
                                     BoogeymanManager.clearBoogeymen();
                                     return 1;
-                                }))
-                )
-        );
-
-        // lets a player gift one of their lives
-        dispatcher.register(CommandManager.literal("giftLife")
-                .then(CommandManager.argument("target", EntityArgumentType.player())
-                        .executes(ctx -> {
-                            ServerPlayerEntity gifter = ctx.getSource().getPlayer();
-                            ServerPlayerEntity recipient = EntityArgumentType.getPlayer(ctx, "target");
-
-                            // if the gift was unsuccessful, give feedback
-                            if(!LifeManager.giftLife(gifter, recipient)) {
-                                ctx.getSource().sendFeedback(() -> Text.of("Could not gift a life to " + recipient.getStringifiedName())
-                                        .copy().formatted(Formatting.RED), false);
-                                return 0;
-                            }
-
-                            return 1;
-                        })));
+                                }))));
     }
 }
