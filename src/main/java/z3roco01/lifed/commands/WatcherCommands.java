@@ -84,9 +84,10 @@ public class WatcherCommands implements CommandRegisterer {
                                         })
                                 ))
                         .then(CommandManager.literal("fail")
-                                .then(CommandManager.argument("target", EntityArgumentType.player())
+                                .then(CommandManager.argument("targets", EntityArgumentType.players())
                                         .executes(ctx -> {
-                                            BoogeymanManager.fail(EntityArgumentType.getPlayer(ctx, "target"));
+                                            for(ServerPlayerEntity player : EntityArgumentType.getPlayers(ctx, "targets"))
+                                                BoogeymanManager.fail(player);
                                             return 1;
                                         })
                                 ))

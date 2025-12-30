@@ -28,7 +28,7 @@ public class LifedEvents {
      */
     public static void register() {
         ServerLifecycleEvents.SERVER_STARTED.register(LifedEvents::onServerStarted);
-        ServerLifecycleEvents.SERVER_STOPPED.register(LifedEvents::onServerStopped);
+        ServerLifecycleEvents.SERVER_STOPPING.register(LifedEvents::onServerStopping);
         ServerPlayConnectionEvents.JOIN.register(LifedEvents::onPlayerJoin);
         CommandRegistrationCallback.EVENT.register(LifedEvents::onCommandsRegister);
     }
@@ -65,11 +65,13 @@ public class LifedEvents {
     }
 
     /**
-     * Called once the server has been closed, sets the server object to null
+     * Called once the server is closing, cleans up stuff
      * @param server the server that has just closed
      */
-    private static void onServerStopped(MinecraftServer server) {
-        BoogeymanManager.failAll();
+    private static void onServerStopping(MinecraftServer server) {
+        if(BoogeymanManager.boogeySelectThread != null)
+            BoogeymanManager.boogeySelectThread.interrupt();
+        //BoogeymanManager.failAll();
         LifeManager.fini();
         Lifed.SERVER = null;
     }

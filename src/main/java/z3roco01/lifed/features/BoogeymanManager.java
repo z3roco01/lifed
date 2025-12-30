@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 public class BoogeymanManager {
     private static final ArrayList<ServerPlayerEntity> boogeymen = new ArrayList<>();
+    public static Thread boogeySelectThread = null;
 
     public static List<ServerPlayerEntity> getBoogeymen() {
         // creates an immutable list of the boogeymen
@@ -107,68 +108,82 @@ public class BoogeymanManager {
 
     /**
      * Chooses a specified amount of boogeymen, starts the 5 minute timer
-     * @param count the amount
+     * @param max the amount
      */
-    public static void startBoogeymanChosing(int count) {
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                String boogeyText = switch(count) {
-                    case 1 -> "boogeyman";
-                    default -> "boogeymen";
-                };
+    public static void startBoogeymanChosing(int max) {
+        boogeySelectThread = new Thread(() -> {
+            String boogeyText = switch(max) {
+                case 1 -> "boogeyman";
+                default -> "boogeymen";
+            };
 
-                ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen in 5 minutes...", Formatting.RED);
-                try {
-                    // do the waiting...
-                    TimeUnit.MILLISECONDS.sleep(5);
-                    ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen in 1 minute...", Formatting.RED);
-                    TimeUnit.MILLISECONDS.sleep(55);
-                    ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen soon.....", Formatting.RED);
-                    TimeUnit.MILLISECONDS.sleep(5);
+            ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen in 5 minutes...", Formatting.RED);
+            try {
+                // do the waiting...
+                TimeUnit.MINUTES.sleep(5);
+                ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen in 1 minute...", Formatting.RED);
+                TimeUnit.SECONDS.sleep(55);
+                ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen soon.....", Formatting.RED);
+                TimeUnit.SECONDS.sleep(5);
 
-                    // clear them just before selecting
-                    clearBoogeymen();
+                // clear them just before selecting
+                clearBoogeymen();
 
-                    List<ServerPlayerEntity> players = Lifed.SERVER.getPlayerManager().getPlayerList();
+                selectBoogeys(max);
 
-                    // if there is somehow not enough players, just pull everyone
-                    int realCount = count;
-                    if(players.size() < count)
-                        realCount = players.size();
-
-                    // do count number of selections
-                    for(int i = 0; i < realCount; ++i) {
-                        // if the boogey list size ever equals the player list size, finish
-                        if(boogeymen.size() == players.size())
-                            break;
-
-                        selectOneBoogey(players);
-                    }
-
-                    showBoogeyStatus(players);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+                List<ServerPlayerEntity> players = Lifed.SERVER.getPlayerManager().getPlayerList();
+                showBoogeyStatus(players);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
-        };
+        });
 
-        thread.run();
+        boogeySelectThread.run();
     }
 
     /**
      * Shows players their boogey status as a title
+     * ONLY TO BE CALLED IN A SEPERATE THREAD
      */
-    private static void showBoogeyStatus(List<ServerPlayerEntity> players) {
+    private static void showBoogeyStatus(List<ServerPlayerEntity> players) throws InterruptedException {
+        // show anticipation title
+        for(ServerPlayerEntity player : players)
+            TitleUtil.sendTitle(player, "You are...", Formatting.YELLOW);
+
+        TimeUnit.SECONDS.sleep(3);
+
         // loop over every player
         for(ServerPlayerEntity player : players) {
             if(boogeymen.contains(player)) {
-                TitleUtil.sendTitle(player, "You ARE the boogeyman !!!", Formatting.RED);
-                player.sendMessage(Text.of("§7You are a boogeyman ! you must kill a §agreen§7 or §eyellow§7 to cure yourself. you lose EVERY alliance as a boogeyman until you are cured. if you do not then you will go to your §clast life§7 at the end of this session.§r"));
+                TitleUtil.sendTitle(player, "...THE boogeyman !!!", Formatting.RED);
+                player.sendMessage(Text.of("§7You are a boogeyman ! you must kill a §2dark green§7, §agreen§7 or §eyellow§7 to cure yourself. you lose EVERY alliance as a boogeyman until you are cured. if you do not then you will go to your §clast life§7 at the end of this session.§r"));
             }else {
-                TitleUtil.sendTitle(player, "You are NOT the boogeyman !", Formatting.GREEN);
+                TitleUtil.sendTitle(player, "...NOT the boogeyman !", Formatting.GREEN);
             }
         }
+    }
+
+    /**
+     * selects up to max boogeys
+     * @param max max amount of boogeys, each one is half as likely as the last ( 1st 100% )
+     */
+    private static void selectBoogeys(int max) {
+        List<ServerPlayerEntity> players = Lifed.SERVER.getPlayerManager().getPlayerList();
+
+        // if there is somehow not enough players, just pull everyone
+        int realMax = max;
+        if(players.size() < max)
+            realMax = players.size();
+
+        // do count number of selections
+        for(int i = 0; i < realMax; ++i) {
+            // if the boogey list size ever equals the player list size, finish
+            if(boogeymen.size() == players.size())
+                break;
+
+            selectOneBoogey(players);
+        }
+        
     }
 
     /**
