@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:bone_meal",
+    "minecraft:wheat_seeds"
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:moss_block"
+  }
+}
