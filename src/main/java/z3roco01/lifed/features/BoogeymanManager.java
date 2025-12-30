@@ -148,17 +148,17 @@ public class BoogeymanManager {
     private static void showBoogeyStatus(List<ServerPlayerEntity> players) throws InterruptedException {
         // show anticipation title
         for(ServerPlayerEntity player : players)
-            TitleUtil.sendTitle(player, "You are...", Formatting.YELLOW);
+            TitleUtil.sendTitle(player, Lifed.config.youAre(), Formatting.YELLOW);
 
         TimeUnit.SECONDS.sleep(3);
 
         // loop over every player
         for(ServerPlayerEntity player : players) {
             if(boogeymen.contains(player)) {
-                TitleUtil.sendTitle(player, "...THE boogeyman !!!", Formatting.RED);
-                player.sendMessage(Text.of("§7You are a boogeyman ! you must kill a §2dark green§7, §agreen§7 or §eyellow§7 to cure yourself. you lose EVERY alliance as a boogeyman until you are cured. if you do not then you will go to your §clast life§7 at the end of this session.§r"));
+                TitleUtil.sendTitle(player, Lifed.config.aBoogeyman(), Formatting.RED);
+                player.sendMessage(Text.of(Lifed.config.boogeyChatMsg()));
             }else {
-                TitleUtil.sendTitle(player, "...NOT the boogeyman !", Formatting.GREEN);
+                TitleUtil.sendTitle(player, Lifed.config.notABoogeyman(), Formatting.GREEN);
             }
         }
     }

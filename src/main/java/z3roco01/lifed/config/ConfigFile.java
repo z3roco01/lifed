@@ -40,7 +40,7 @@ public class ConfigFile {
 
         // first loop over all properties and filter for ones annotated as config
         for(Field field : object.getClass().getDeclaredFields()) {
-            if(!field.isAnnotationPresent(ConfigProperty.class))
+            if(!shouldSerialise(field))
                 continue;
 
             String key = getKey(field);
@@ -86,7 +86,8 @@ public class ConfigFile {
             boolean propertiesUpdated = false;
 
             for(Field field : object.getClass().getDeclaredFields()) {
-                if(!field.isAnnotationPresent(ConfigProperty.class))
+                // if it is a record then every field will be serialised
+                if(!shouldSerialise(field))
                     continue;
 
                 String key = getKey(field);
@@ -144,11 +145,34 @@ public class ConfigFile {
      * @return the key if specified, or the field's name
      */
     private static String getKey(Field field) {
-        String key = field.getAnnotation(ConfigProperty.class).key();
-        // if no key was specified ( or it is intentionally blank ) then set it to the fields name
-        if(key.isBlank())
-            key = field.getName();
+        if(isConfigProperty(field)) {
+            String key = field.getAnnotation(ConfigProperty.class).key();
+            // if no key was specified ( or it is intentionally blank ) then set it to the fields name
+            if(key.isBlank())
+                key = field.getName();
 
-        return key;
+            return key;
+        }else {
+            // its apart of a record and does not have an annotation, so return its name
+            return field.getName();
+        }
+    }
+
+    /**
+     * Returns if a field should be serialised, based on if it is annotated, or in a record
+     * @param field the field to check
+     * @return true if it should be, false otherwise
+     */
+    private static boolean shouldSerialise(Field field) {
+        return isConfigProperty(field) || field.getDeclaringClass().isRecord();
+    }
+
+    /**
+     * Returns if the field has the ConfigProperty annotation
+     * @param field the field to check
+     * @return true when it is present
+     */
+    private static boolean isConfigProperty(Field field) {
+        return field.isAnnotationPresent(ConfigProperty.class);
     }
 }

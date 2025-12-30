@@ -7,6 +7,7 @@ import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import z3roco01.lifed.Lifed;
 import z3roco01.lifed.features.BoogeymanManager;
 import z3roco01.lifed.features.LifeManager;
 
@@ -66,7 +67,7 @@ public class WatcherCommands implements CommandRegisterer {
                 .then(CommandManager.literal("boogeyman")
                         .then(CommandManager.literal("roll")
                                 .executes(ctx -> {
-                                    BoogeymanManager.rollBoogeys(10);
+                                    BoogeymanManager.rollBoogeys(Lifed.config.maxBoogeymen());
                                     return 1;
                                 })
                                 .then(CommandManager.argument("max", IntegerArgumentType.integer(1))
