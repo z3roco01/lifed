@@ -67,7 +67,7 @@ public class WatcherCommands implements CommandRegisterer {
                 .then(CommandManager.literal("boogeyman")
                         .then(CommandManager.literal("roll")
                                 .executes(ctx -> {
-                                    BoogeymanManager.rollBoogeys(Lifed.config.maxBoogeymen());
+                                    BoogeymanManager.rollBoogeys(Lifed.config.maxBoogeymen);
                                     return 1;
                                 })
                                 .then(CommandManager.argument("max", IntegerArgumentType.integer(1))

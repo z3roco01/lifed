@@ -1,6 +1,5 @@
 package z3roco01.lifed.config;
 
-import z3roco01.lifed.Lifed;
 import z3roco01.lifed.config.annotation.ConfigProperty;
 
 import java.io.File;
@@ -92,6 +91,7 @@ public class ConfigFile {
 
                 String key = getKey(field);
 
+
                 if(properties.containsKey(key)) {
                     // get the string value, handle conversion
                     String strValue = properties.getProperty(key);
@@ -100,6 +100,7 @@ public class ConfigFile {
                     // quick hacky way of doing it
                     Class<?> fieldClass = field.get(object).getClass();
 
+                    field.setAccessible(true);
                     if(fieldClass == Integer.class)
                         field.set(object, Integer.valueOf(strValue));
                     else if(fieldClass == Float.class)
@@ -108,8 +109,6 @@ public class ConfigFile {
                         field.set(object, strValue);
                     else if(fieldClass == Boolean.class)
                         field.set(object, Boolean.valueOf(strValue));
-
-                    Lifed.LOGGER.info(field.get(object).toString());
                 }else {
                     // the property needs to be added to the list
                     propertiesUpdated = true;
@@ -164,7 +163,7 @@ public class ConfigFile {
      * @return true if it should be, false otherwise
      */
     private static boolean shouldSerialise(Field field) {
-        return isConfigProperty(field) || field.getDeclaringClass().isRecord();
+        return isConfigProperty(field)/* || field.getDeclaringClass().isRecord()*/;
     }
 
     /**

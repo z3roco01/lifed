@@ -148,17 +148,17 @@ public class BoogeymanManager {
     private static void showBoogeyStatus(List<ServerPlayerEntity> players) throws InterruptedException {
         // show anticipation title
         for(ServerPlayerEntity player : players)
-            TitleUtil.sendTitle(player, Lifed.config.youAre(), Formatting.YELLOW);
+            TitleUtil.sendTitle(player, Lifed.config.youAre, Formatting.YELLOW);
 
         TimeUnit.SECONDS.sleep(3);
 
         // loop over every player
         for(ServerPlayerEntity player : players) {
             if(boogeymen.contains(player)) {
-                TitleUtil.sendTitle(player, Lifed.config.aBoogeyman(), Formatting.RED);
-                player.sendMessage(Text.of(Lifed.config.boogeyChatMsg()));
+                TitleUtil.sendTitle(player, Lifed.config.aBoogeyman, Formatting.RED);
+                player.sendMessage(Text.of(Lifed.config.boogeyChatMsg));
             }else {
-                TitleUtil.sendTitle(player, Lifed.config.notABoogeyman(), Formatting.GREEN);
+                TitleUtil.sendTitle(player, Lifed.config.notABoogeyman, Formatting.GREEN);
             }
         }
     }
