@@ -13,6 +13,7 @@ import z3roco01.lifed.features.LifeManager;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 public class WatcherCommands implements CommandRegisterer {
     @Override
@@ -87,8 +88,27 @@ public class WatcherCommands implements CommandRegisterer {
                                     BoogeymanManager.clearBoogeymen();
 
                                     List<ServerPlayerEntity> players = Lifed.SERVER.getPlayerManager().getPlayerList();
-                                    BoogeymanManager.selectBoogeys(players.size());
 
+                                    // will be at least one
+                                    int boogeys = 0;
+
+                                    Random random = new Random();
+                                    // did the last roll succeed
+                                    boolean succeeded = true;
+                                    // decimal percent chance that the next boogey will be chosen
+                                    double chance = 1;
+
+                                    while(succeeded && boogeys < players.size()) {
+                                        // add a new boogey
+                                        boogeys++;
+                                        // half the chance
+                                        chance /= 2;
+
+                                        // if it is successful, then the next will be chosen
+                                        succeeded = (random.nextDouble() > chance);
+                                    }
+
+                                    BoogeymanManager.selectBoogeys(boogeys);
                                     BoogeymanManager.showBoogeyStatus(players);
                                     return 1;
                                 })
