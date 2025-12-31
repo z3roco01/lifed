@@ -16,6 +16,7 @@ import z3roco01.lifed.commands.PlayerCommands;
 import z3roco01.lifed.commands.WatcherCommands;
 import z3roco01.lifed.features.BoogeymanManager;
 import z3roco01.lifed.features.LifeManager;
+import z3roco01.lifed.util.TeamUtil;
 
 public class LifedEvents {
     private static final CommandRegisterer[] COMMANDS = {
@@ -49,7 +50,8 @@ public class LifedEvents {
      * @param server minecraft server reference
      */
     private static void onPlayerJoin(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server) {
-
+        // update everytime they join, since teams are volatile
+        LifeManager.updateTeam(handler.getPlayer());
     }
 
     /**
