@@ -11,6 +11,8 @@ import z3roco01.lifed.Lifed;
 import z3roco01.lifed.features.BoogeymanManager;
 import z3roco01.lifed.features.LifeManager;
 
+import java.util.Collection;
+
 public class WatcherCommands implements CommandRegisterer {
     @Override
     public void register(
@@ -33,13 +35,15 @@ public class WatcherCommands implements CommandRegisterer {
 
                                     // lets admins set the life count of a player
                                     .then(CommandManager.literal("set")
-                                            .then(CommandManager.argument("target", EntityArgumentType.player())
+                                            .then(CommandManager.argument("targets", EntityArgumentType.players())
                                                     .then(CommandManager.argument("lives", IntegerArgumentType.integer())
                                                             .executes(ctx -> {
                                                                 int newLives = IntegerArgumentType.getInteger(ctx, "lives");
-                                                                ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "target");
+                                                                Collection<ServerPlayerEntity> players =
+                                                                        EntityArgumentType.getPlayers(ctx, "targets");
 
-                                                                LifeManager.setLives(player, newLives);
+                                                                for(ServerPlayerEntity player : players)
+                                                                    LifeManager.setLives(player, newLives);
 
                                                                 return 1;
                                                             }))))
