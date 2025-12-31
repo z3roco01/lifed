@@ -39,7 +39,8 @@ public class PlayerCommands implements CommandRegisterer {
                     ServerPlayerEntity executor = ctx.getSource().getPlayer();
 
                     int lives = LifeManager.getLives(executor);
-                    ctx.getSource().sendFeedback(() -> Text.of("You have " + lives + " lives !"), false);
+                    ctx.getSource().sendFeedback(() -> Text.of("§7You have " + LifeManager.getLifeFormatString(executor) +
+                            lives + "§7 lives !§r"), false);
 
                     return 1;
                 }));

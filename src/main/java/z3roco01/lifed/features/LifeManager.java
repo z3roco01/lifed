@@ -205,6 +205,24 @@ public class LifeManager {
     }
 
     /**
+     * Returns the format string for the players life colour ( §7 )
+     * @param player
+     */
+    public static String getLifeFormatString(ServerPlayerEntity player) {
+        int lives = LifeManager.getLives(player);
+
+        if(lives < 1)
+            return "§7";
+
+        return switch(lives) {
+            default -> "§2"; // >= 4
+            case 3  -> "§a";
+            case 2  -> "§e";
+            case 1  -> "§c";
+        };
+    }
+
+    /**
      * Randomizes the lives of the players in the list from 2 to 6 lives
      * @param players collection of players being randomized
      */
