@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+
+  },
+  "pattern": [
+    "",
+    "",
+    ""
+  ],
+  "result": {
+    "count": 0,
+    "id": "minecraft:air"
+  }
+}

@@ -6,8 +6,6 @@
     "EnchantmentHelperMixin",
     "PlayerInventoryMixin",
     "ServerPlayerEntityMixin",
-    "ShapedRecipeMixin",
-    "ShapelessRecipeMixin"
   ],
   "injectors": {
     "defaultRequire": 1
