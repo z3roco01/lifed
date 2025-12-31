@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import z3roco01.lifed.Lifed;
 import z3roco01.lifed.features.BannedItems;
 import z3roco01.lifed.features.BoogeymanManager;
 import z3roco01.lifed.features.LifeManager;
@@ -36,7 +37,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 
         // if they just lost their life, summon a lightening
         if(LifeManager.getLives(player) == 1) {
-            for(int i = 0; i < 4; i++)
+            for(int i = 0; i < Lifed.config.lightningsOnRedDeath; i++)
                 EntityType.LIGHTNING_BOLT.spawn(getEntityWorld(), null, getBlockPos(), SpawnReason.EVENT, false, false);
         }
 

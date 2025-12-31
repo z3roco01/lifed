@@ -37,7 +37,7 @@ public class LifedConfig {
      * How many lightning bolts should be summoned on red life death
      */
     @ConfigProperty
-    public Integer lightningOnRedDeath = 5;
+    public Integer lightningsOnRedDeath = 5;
 
     /**
      * Are bookshelves allowed
