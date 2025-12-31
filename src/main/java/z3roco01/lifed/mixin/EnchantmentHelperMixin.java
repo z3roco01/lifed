@@ -1,5 +1,6 @@
 package z3roco01.lifed.mixin;
 
+import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentLevelEntry;
@@ -13,6 +14,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import z3roco01.lifed.Lifed;
 
@@ -43,7 +46,6 @@ public abstract class EnchantmentHelperMixin {
             Enchantments.QUICK_CHARGE,
             Enchantments.RIPTIDE,
             Enchantments.SHARPNESS,
-            Enchantments.SMITE,
             Enchantments.SWEEPING_EDGE,
             Enchantments.THORNS,
             Enchantments.WIND_BURST,
@@ -71,6 +73,7 @@ public abstract class EnchantmentHelperMixin {
             Enchantments.PROTECTION,
             Enchantments.RESPIRATION,
             Enchantments.SILK_TOUCH,
+            Enchantments.SMITE,
             Enchantments.SOUL_SPEED,
             Enchantments.SWIFT_SNEAK,
             Enchantments.UNBREAKING,
@@ -80,10 +83,12 @@ public abstract class EnchantmentHelperMixin {
     /**
      * Returns if the entry's key is in the pvp enchants list
      * @param entry the entry to check
-     * @return true if it is in the array
+     * @return true if it is in the array, also always returns false when pvp enchants are allowed
      */
     @Unique
     private static boolean isPvpEnchant(RegistryEntry<Enchantment> entry) {
+        if(Lifed.config.highLevelPvpEnchAllowed) return false;
+
         for(RegistryKey<Enchantment> key : PVP_ENCHANTS)
             if(entry.matchesKey(key)) return true;
 
@@ -93,10 +98,12 @@ public abstract class EnchantmentHelperMixin {
     /**
      * Returns if the entry's key is in the non pvp enchants list
      * @param entry the entry to check
-     * @return true if it is in the array
+     * @return true if it is in the array, also returns false always when non pvp enchantsa re allowed
      */
     @Unique
     private static boolean isNonPvpEnchant(RegistryEntry<Enchantment> entry) {
+        if(Lifed.config.highLevelOtherEnchAllowed) return false;
+
         for(RegistryKey<Enchantment> key : NON_PVP_ENCHANTS)
             if(entry.matchesKey(key)) return true;
 
@@ -129,8 +136,7 @@ public abstract class EnchantmentHelperMixin {
             RegistryEntry<Enchantment> enchant = entry.enchantment();
 
             // if it is disallowed, do not add it to the lsit
-            if(isEnchantHighLevel(entry) && ((!Lifed.config.highLevelPvpEnchAllowed && isPvpEnchant(enchant)) ||
-                    (!Lifed.config.highLevelOtherEnchAllowed && isNonPvpEnchant(enchant))))
+            if(isEnchantHighLevel(entry) && (isPvpEnchant(enchant) || isNonPvpEnchant(enchant)))
                 continue;
 
             newList.add(entry);
@@ -143,5 +149,18 @@ public abstract class EnchantmentHelperMixin {
         Lifed.LOGGER.info("---------");
 
         cir.setReturnValue(newList);
+    }
+
+    @Inject(method = "set", at = @At("HEAD"), cancellable = true)
+    private static void set(ItemStack stack, ItemEnchantmentsComponent enchantments, CallbackInfo ci) {
+        for(RegistryEntry<Enchantment> enchant : enchantments.getEnchantments()) {
+            int level = enchantments.getLevel(enchant);
+
+            // ignore level one enchants since theyre always allowed
+            if(level == 1) return;
+
+            if(isPvpEnchant(enchant) || isNonPvpEnchant(enchant))
+                ci.cancel();
+        }
     }
 }
