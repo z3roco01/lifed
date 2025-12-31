@@ -198,6 +198,7 @@ public class LifeManager {
         TitleUtil.sendTitle(recipient, gifter.getStringifiedName() + " gifted you a life !",
                 LifeManager.getLifeColour(recipient));
 
+        recipient.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP);
         PlayerUtil.playTotemAnimation(gifter);
 
         return true;

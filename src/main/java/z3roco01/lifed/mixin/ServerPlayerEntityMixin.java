@@ -39,7 +39,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
         // if they just lost their life, summon a lightening
         if(livesBeforeDeath == 1) {
             for(int i = 0; i < Lifed.config.lightningsOnRedDeath; i++)
-                EntityType.LIGHTNING_BOLT.spawn(getEntityWorld(), null, getBlockPos(), SpawnReason.EVENT, false, false);
+                EntityType.LIGHTNING_BOLT.spawn(getEntityWorld(), bolt -> {bolt.setCosmetic(true);}, getBlockPos(), SpawnReason.EVENT, false, false);
         }
 
         // remove one life
