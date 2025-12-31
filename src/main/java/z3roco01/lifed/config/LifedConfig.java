@@ -56,4 +56,16 @@ public class LifedConfig {
      */
     @ConfigProperty
     public Boolean strengthAllowed = false;
+
+    /**
+     * Are > 1 pvp enchants allowed
+     */
+    @ConfigProperty
+    public Boolean highLevelPvpEnchAllowed = false;
+
+    /**
+     * Are > 1 non pvp enchants allowed
+     */
+    @ConfigProperty
+    public Boolean highLevelOtherEnchAllowed = true;
 }
