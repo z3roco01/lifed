@@ -8,12 +8,13 @@ import java.util.ArrayList;
  * Allows to schedule tasks that will run in a certain amount of ticks
  */
 public class TaskScheduling {
+    private static final ArrayList<Task> newTasks = new ArrayList<>();
     private static final ArrayList<Task> tasks = new ArrayList<>();
     private static boolean shouldCancel = false;
 
     public static void scheduleTask(int ticks, Runnable runnable) {
         Task task = new Task(ticks, runnable);
-        tasks.add(task);
+        newTasks.add(task);
     }
 
     public static void cancelTasks() {
@@ -34,6 +35,9 @@ public class TaskScheduling {
                 if(task.ticksRemaining == 0)
                     task.task.run();
             }
+
+            tasks.addAll(newTasks);
+            newTasks.clear();
         });
     }
 
