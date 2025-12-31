@@ -1,6 +1,7 @@
 package z3roco01.lifed.util;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import z3roco01.lifed.Lifed;
 
 import java.util.ArrayList;
 
