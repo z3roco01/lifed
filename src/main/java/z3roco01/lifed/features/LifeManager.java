@@ -185,6 +185,9 @@ public class LifeManager {
         // if the gifter has 1 or less lives, dont let them gift
         if(curLives <= 1)
             return false;
+        // cannot resurect
+        if(LifeManager.getLives(recipient) < 1)
+            return false;
 
         LifeManager.removeLife(gifter);
         LifeManager.addLife(recipient);
