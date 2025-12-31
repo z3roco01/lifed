@@ -8,6 +8,7 @@ import net.minecraft.util.Formatting;
 import z3roco01.lifed.Lifed;
 import z3roco01.lifed.util.ChatUtil;
 import z3roco01.lifed.util.PlayerUtil;
+import z3roco01.lifed.util.TaskScheduling;
 import z3roco01.lifed.util.TitleUtil;
 
 import java.util.ArrayList;
@@ -17,7 +18,6 @@ import java.util.concurrent.TimeUnit;
 
 public class BoogeymanManager {
     private static final ArrayList<ServerPlayerEntity> boogeymen = new ArrayList<>();
-    public static Thread boogeySelectThread = null;
 
     public static List<ServerPlayerEntity> getBoogeymen() {
         // creates an immutable list of the boogeymen
@@ -111,56 +111,49 @@ public class BoogeymanManager {
      * @param max the amount
      */
     public static void startBoogeymanChosing(int max) {
-        boogeySelectThread = new Thread(() -> {
-            String boogeyText = switch(max) {
-                case 1 -> "boogeyman";
-                default -> "boogeymen";
-            };
+        String boogeyText = switch(max) {
+            case 1 -> "boogeyman";
+            default -> "boogeymen";
+        };
 
-            ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen in 5 minutes...", Formatting.RED);
-            try {
-                // do the waiting...
-                TimeUnit.MINUTES.sleep(5);
-                ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen in 1 minute...", Formatting.RED);
-                TimeUnit.SECONDS.sleep(55);
+        ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen in 5 minutes...", Formatting.RED);
+        TaskScheduling.scheduleTask(4800, () -> {
+            ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen in 1 minute...", Formatting.RED);
+            TaskScheduling.scheduleTask(1100, () -> {
                 ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen soon.....", Formatting.RED);
-                TimeUnit.SECONDS.sleep(5);
+                TaskScheduling.scheduleTask(100, () -> {
+                    // clear them just before selecting
+                    clearBoogeymen();
 
-                // clear them just before selecting
-                clearBoogeymen();
+                    selectBoogeys(max);
 
-                selectBoogeys(max);
-
-                List<ServerPlayerEntity> players = Lifed.SERVER.getPlayerManager().getPlayerList();
-                showBoogeyStatus(players);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+                    List<ServerPlayerEntity> players = Lifed.SERVER.getPlayerManager().getPlayerList();
+                    showBoogeyStatus(players);
+                });
+            });
         });
-
-        boogeySelectThread.run();
     }
 
     /**
      * Shows players their boogey status as a title
      * ONLY TO BE CALLED IN A SEPERATE THREAD
      */
-    private static void showBoogeyStatus(List<ServerPlayerEntity> players) throws InterruptedException {
+    private static void showBoogeyStatus(List<ServerPlayerEntity> players) {
         // show anticipation title
         for(ServerPlayerEntity player : players)
             TitleUtil.sendTitle(player, Lifed.config.youAre, Formatting.YELLOW);
 
-        TimeUnit.SECONDS.sleep(3);
-
-        // loop over every player
-        for(ServerPlayerEntity player : players) {
-            if(boogeymen.contains(player)) {
-                TitleUtil.sendTitle(player, Lifed.config.aBoogeyman, Formatting.RED);
-                player.sendMessage(Text.of(Lifed.config.boogeyChatMsg));
-            }else {
-                TitleUtil.sendTitle(player, Lifed.config.notABoogeyman, Formatting.GREEN);
+        TaskScheduling.scheduleTask(60, () -> {
+            // loop over every player
+            for(ServerPlayerEntity player : players) {
+                if(boogeymen.contains(player)) {
+                    TitleUtil.sendTitle(player, Lifed.config.aBoogeyman, Formatting.RED);
+                    player.sendMessage(Text.of(Lifed.config.boogeyChatMsg));
+                }else {
+                    TitleUtil.sendTitle(player, Lifed.config.notABoogeyman, Formatting.GREEN);
+                }
             }
-        }
+        });
     }
 
     /**

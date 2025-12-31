@@ -16,6 +16,7 @@ import z3roco01.lifed.commands.PlayerCommands;
 import z3roco01.lifed.commands.WatcherCommands;
 import z3roco01.lifed.features.BoogeymanManager;
 import z3roco01.lifed.features.LifeManager;
+import z3roco01.lifed.util.TaskScheduling;
 import z3roco01.lifed.util.TeamUtil;
 
 public class LifedEvents {
@@ -71,8 +72,7 @@ public class LifedEvents {
      * @param server the server that has just closed
      */
     private static void onServerStopping(MinecraftServer server) {
-        if(BoogeymanManager.boogeySelectThread != null)
-            BoogeymanManager.boogeySelectThread.interrupt();
+        TaskScheduling.cancelTasks();
         //BoogeymanManager.failAll();
         LifeManager.fini();
         Lifed.SERVER = null;
