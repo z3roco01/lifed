@@ -1,8 +1,11 @@
 package z3roco01.lifed.features;
 
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.entry.RegistryEntry;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import z3roco01.lifed.Lifed;
 
@@ -21,6 +24,11 @@ public class BannedItems {
      * Items which cannot be crafted but can be possessed
      */
     public static final ArrayList<Item> UNCRAFTABLE = new ArrayList<>();
+
+    /**
+     * Effects that are banned on players, if it is applied to a player it will be immediately removed
+     */
+    public static final ArrayList<RegistryEntry<StatusEffect>> BANNED_EFFECTS = new ArrayList<>();
 
     /**
      * Returns if the passed item is allowed to be crafted
@@ -50,5 +58,8 @@ public class BannedItems {
 
         if(!Lifed.config.canCraftEnchanter)
             UNCRAFTABLE.add(Items.ENCHANTING_TABLE);
+
+        if(!Lifed.config.strengthAllowed)
+            BANNED_EFFECTS.add(StatusEffects.STRENGTH);
     }
 }

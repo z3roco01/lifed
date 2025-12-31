@@ -50,4 +50,10 @@ public class LifedConfig {
      */
     @ConfigProperty
     public Boolean canCraftEnchanter = false;
+
+    /**
+     * is strength allowed
+     */
+    @ConfigProperty
+    public Boolean strengthAllowed = false;
 }

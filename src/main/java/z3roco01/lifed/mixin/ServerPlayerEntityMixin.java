@@ -3,11 +3,10 @@ package z3roco01.lifed.mixin;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LightningEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.command.SummonCommand;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
@@ -16,7 +15,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import z3roco01.lifed.Lifed;
+import z3roco01.lifed.features.BannedItems;
 import z3roco01.lifed.features.BoogeymanManager;
 import z3roco01.lifed.features.LifeManager;
 
@@ -50,5 +49,13 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 
         ServerPlayerEntity killer = (ServerPlayerEntity)maybeKiller;
         BoogeymanManager.cure(killer);
+    }
+
+    @Inject(method = "onStatusEffectApplied", at = @At("HEAD"), cancellable = true)
+    private void onStatusEffectApllied(StatusEffectInstance effect, Entity source, CallbackInfo ci) {
+        if(BannedItems.BANNED_EFFECTS.contains(effect.getEffectType())) {
+            ((ServerPlayerEntity)(Object)this).removeStatusEffect(effect.getEffectType());
+            ci.cancel();
+        }
     }
 }
