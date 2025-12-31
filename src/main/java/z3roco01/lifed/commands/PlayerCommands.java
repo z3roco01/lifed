@@ -18,7 +18,7 @@ public class PlayerCommands implements CommandRegisterer {
     @Override
     public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
         // lets a player gift one of their lives
-        dispatcher.register(CommandManager.literal("giveLife")
+        dispatcher.register(CommandManager.literal("givelife")
                 .then(CommandManager.argument("target", EntityArgumentType.player())
                         .executes(ctx -> {
                             ServerPlayerEntity gifter = ctx.getSource().getPlayer();

@@ -35,8 +35,9 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
         // needed to get the actual object, since its in a mixin, not technically the player object
         ServerPlayerEntity player = (ServerPlayerEntity)(Object)this;
 
+        int livesBeforeDeath = LifeManager.getLives(player);
         // if they just lost their life, summon a lightening
-        if(LifeManager.getLives(player) == 1) {
+        if(livesBeforeDeath == 1) {
             for(int i = 0; i < Lifed.config.lightningsOnRedDeath; i++)
                 EntityType.LIGHTNING_BOLT.spawn(getEntityWorld(), null, getBlockPos(), SpawnReason.EVENT, false, false);
         }
@@ -48,8 +49,10 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
         Entity maybeKiller = damageSource.getAttacker();
         if(!(maybeKiller instanceof ServerPlayerEntity)) return;
 
-        ServerPlayerEntity killer = (ServerPlayerEntity)maybeKiller;
-        BoogeymanManager.cure(killer);
+        if(livesBeforeDeath > 1) {
+            ServerPlayerEntity killer = (ServerPlayerEntity)maybeKiller;
+            BoogeymanManager.cure(killer);
+        }
     }
 
     @Inject(method = "onStatusEffectApplied", at = @At("HEAD"), cancellable = true)

@@ -138,7 +138,7 @@ public class BoogeymanManager {
      * Shows players their boogey status as a title
      * ONLY TO BE CALLED IN A SEPERATE THREAD
      */
-    private static void showBoogeyStatus(List<ServerPlayerEntity> players) {
+    public static void showBoogeyStatus(List<ServerPlayerEntity> players) {
         // show anticipation title
         for(ServerPlayerEntity player : players)
             TitleUtil.sendTitle(player, Lifed.config.youAre, Formatting.YELLOW);
@@ -160,7 +160,7 @@ public class BoogeymanManager {
      * selects up to max boogeys
      * @param max max amount of boogeys, each one is half as likely as the last ( 1st 100% )
      */
-    private static void selectBoogeys(int max) {
+    public static void selectBoogeys(int max) {
         List<ServerPlayerEntity> players = Lifed.SERVER.getPlayerManager().getPlayerList();
 
         // if there is somehow not enough players, just pull everyone

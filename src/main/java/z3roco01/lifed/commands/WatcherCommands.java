@@ -12,6 +12,7 @@ import z3roco01.lifed.features.BoogeymanManager;
 import z3roco01.lifed.features.LifeManager;
 
 import java.util.Collection;
+import java.util.List;
 
 public class WatcherCommands implements CommandRegisterer {
     @Override
@@ -80,6 +81,17 @@ public class WatcherCommands implements CommandRegisterer {
                                             return 1;
                                         })
                                 )
+                        )
+                        .then(CommandManager.literal("instantroll")
+                                .executes(ctx -> {
+                                    BoogeymanManager.clearBoogeymen();
+
+                                    List<ServerPlayerEntity> players = Lifed.SERVER.getPlayerManager().getPlayerList();
+                                    BoogeymanManager.selectBoogeys(players.size());
+
+                                    BoogeymanManager.showBoogeyStatus(players);
+                                    return 1;
+                                })
                         )
                         .then(CommandManager.literal("cure")
                                 .then(CommandManager.argument("target", EntityArgumentType.player())
