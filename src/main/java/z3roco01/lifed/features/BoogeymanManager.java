@@ -19,6 +19,11 @@ import java.util.Random;
 public class BoogeymanManager {
     private static final ArrayList<ServerPlayerEntity> boogeymen = new ArrayList<>();
 
+    /**
+     * Keeps track if boogeys have been rolled to lock people out
+     */
+    private static boolean boogeysRolled = false;
+
     public static List<ServerPlayerEntity> getBoogeymen() {
         // creates an immutable list of the boogeymen
         return List.of(boogeymen.toArray(new ServerPlayerEntity[] {}));
@@ -57,6 +62,7 @@ public class BoogeymanManager {
     public static void failAll() {
         for(ServerPlayerEntity boogey : boogeymen)
             fail(boogey);
+        boogeysRolled = false;
     }
 
     /**
@@ -176,7 +182,8 @@ public class BoogeymanManager {
 
             selectOneBoogey(players);
         }
-        
+
+        boogeysRolled = true;
     }
 
     /**
@@ -215,5 +222,9 @@ public class BoogeymanManager {
         }
 
         return players.get(boogeyIdx);
+    }
+
+    public static boolean areBoogeysRolled() {
+        return boogeysRolled;
     }
 }

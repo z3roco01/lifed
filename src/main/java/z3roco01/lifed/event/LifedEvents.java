@@ -12,10 +12,12 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import z3roco01.lifed.Lifed;
 import z3roco01.lifed.commands.CommandRegisterer;
 import z3roco01.lifed.commands.PlayerCommands;
 import z3roco01.lifed.commands.WatcherCommands;
+import z3roco01.lifed.features.BoogeymanManager;
 import z3roco01.lifed.features.LifeManager;
 import z3roco01.lifed.features.SessionManagement;
 import z3roco01.lifed.util.TaskScheduling;
@@ -53,6 +55,9 @@ public class LifedEvents {
      * @param server minecraft server reference
      */
     private static void onPlayerJoin(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server) {
+        if(BoogeymanManager.areBoogeysRolled())
+            handler.disconnect(Text.of("The boogeymen have already been rolled, try next time or ask the owner"));
+
         ServerPlayerEntity player = handler.getPlayer();
         // update everytime they join, since teams are volatile
         LifeManager.updateTeam(player);

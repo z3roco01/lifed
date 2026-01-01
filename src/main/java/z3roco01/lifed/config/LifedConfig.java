@@ -92,4 +92,10 @@ public class LifedConfig {
      */
     @ConfigProperty
     public Boolean startSessionTimer = false;
+
+    /**
+     * Should players be locked out after boogey has been rolled
+     */
+    @ConfigProperty
+    public Boolean lockoutPlayers = true;
 }
