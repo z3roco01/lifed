@@ -68,4 +68,10 @@ public class LifedConfig {
      */
     @ConfigProperty
     public Boolean highLevelOtherEnchAllowed = true;
+
+    /**
+     * Allows spawning wolves in more biomes
+     */
+    @ConfigProperty
+    public Boolean expandedWolfSpawning = true;
 }

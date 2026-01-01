@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import z3roco01.lifed.config.ConfigFile;
 import z3roco01.lifed.config.LifedConfig;
 import z3roco01.lifed.event.LifedEvents;
+import z3roco01.lifed.features.WolfSpawnExpansion;
 import z3roco01.lifed.util.TaskScheduling;
 
 import java.io.IOException;
@@ -32,6 +33,7 @@ public class Lifed implements ModInitializer {
             throw new RuntimeException(e);
         }
 
+        WolfSpawnExpansion.registerSpawning();
         TaskScheduling.registerTickEnd();
         LifedEvents.register();
 	}
