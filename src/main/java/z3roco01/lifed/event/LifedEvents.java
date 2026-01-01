@@ -6,15 +6,18 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 import z3roco01.lifed.Lifed;
 import z3roco01.lifed.commands.CommandRegisterer;
 import z3roco01.lifed.commands.PlayerCommands;
 import z3roco01.lifed.commands.WatcherCommands;
 import z3roco01.lifed.features.LifeManager;
+import z3roco01.lifed.features.SessionManagement;
 import z3roco01.lifed.util.TaskScheduling;
 
 public class LifedEvents {
@@ -40,6 +43,7 @@ public class LifedEvents {
     private static void onServerStarted(MinecraftServer server) {
         Lifed.SERVER = server;
         LifeManager.init();
+        SessionManagement.initialize();
     }
 
     /**
@@ -49,8 +53,14 @@ public class LifedEvents {
      * @param server minecraft server reference
      */
     private static void onPlayerJoin(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server) {
+        ServerPlayerEntity player = handler.getPlayer();
         // update everytime they join, since teams are volatile
-        LifeManager.updateTeam(handler.getPlayer());
+        LifeManager.updateTeam(player);
+
+        if(SessionManagement.isPaused())
+            SessionManagement.applyPlayerFreeze(player);
+        else
+            SessionManagement.removePlayerFreeze(player); // just incase theyre still frozen, like the left mid pause
     }
 
     /**
@@ -71,8 +81,12 @@ public class LifedEvents {
      */
     private static void onServerStopping(MinecraftServer server) {
         TaskScheduling.cancelTasks();
-        //BoogeymanManager.failAll();
         LifeManager.fini();
+
+        // clear all freeze effects so an error doesnt happen upon rejoining
+        for(ServerPlayerEntity player : server.getPlayerManager().getPlayerList())
+            SessionManagement.removePlayerFreeze(player);
+
         Lifed.SERVER = null;
     }
 }

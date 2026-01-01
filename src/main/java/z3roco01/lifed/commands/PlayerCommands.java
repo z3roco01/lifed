@@ -9,7 +9,12 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import z3roco01.lifed.Lifed;
 import z3roco01.lifed.features.LifeManager;
+import z3roco01.lifed.features.SessionManagement;
+import z3roco01.lifed.util.Time;
+
+import java.time.Duration;
 
 /**
  * Commands that normal players can interact with
@@ -42,6 +47,28 @@ public class PlayerCommands implements CommandRegisterer {
                     ctx.getSource().sendFeedback(() -> Text.of("§7You have " + LifeManager.getLifeFormatString(executor) +
                             lives + "§7 lives !§r"), false);
 
+                    return 1;
+                }));
+
+        dispatcher.register(CommandManager.literal("time")
+                .executes(ctx -> {
+                    int ticksRemaining = SessionManagement.ticksRemaining();
+
+                    double timePercent = ticksRemaining/(double)Time.MINUTES.ticks(Lifed.config.sessionLength);
+                    Lifed.LOGGER.info(String.valueOf(timePercent));
+
+                    String timeColour = "§";
+                    // based off colours in limited life
+                    if(timePercent >= 0.67)
+                        timeColour += "a";
+                    else if(timePercent >= 0.34)
+                        timeColour += "e";
+                    else
+                        timeColour += "c";
+
+                    String finalTimeColour = timeColour;
+                    ctx.getSource().sendFeedback(() -> Text.of(finalTimeColour + Time.prettyTicks(ticksRemaining)
+                            + " §7remaining..."), false);
                     return 1;
                 }));
     }

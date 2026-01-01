@@ -74,4 +74,22 @@ public class LifedConfig {
      */
     @ConfigProperty
     public Boolean expandedWolfSpawning = true;
+
+    /**
+     * The default length of a session, in minutes
+     */
+    @ConfigProperty
+    public Integer sessionLength = 180;
+
+    /**
+     * The default lenght of a break, in minutes
+     */
+    @ConfigProperty
+    public Integer breakLength = 10;
+
+    /**
+     * Should the session timer start on server start
+     */
+    @ConfigProperty
+    public Boolean startSessionTimer = false;
 }

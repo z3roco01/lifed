@@ -10,6 +10,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import z3roco01.lifed.Lifed;
 import z3roco01.lifed.features.BoogeymanManager;
 import z3roco01.lifed.features.LifeManager;
+import z3roco01.lifed.features.SessionManagement;
 
 import java.util.Collection;
 import java.util.List;
@@ -28,110 +29,116 @@ public class WatcherCommands implements CommandRegisterer {
                                 .then(CommandManager.literal("lives")
                                     // command that randomizes every player targeted's lives between 2 and 6 ( inclusive )
                                     .then(CommandManager.literal("roll")
-                                        .then(CommandManager.argument("targets", EntityArgumentType.players())
-                                            .executes(ctx -> {
-                                                LifeManager.randomizePlayers(EntityArgumentType.getPlayers(ctx, "targets"));
-                                                return 1;
-                                            })
-                                        ))
+                                        .then(CommandManager.argument("targets", EntityArgumentType.players()).executes(ctx -> {
+                                            LifeManager.randomizePlayers(EntityArgumentType.getPlayers(ctx, "targets"));
+                                            return 1;
+                                        })))
 
                                     // lets admins set the life count of a player
                                     .then(CommandManager.literal("set")
                                             .then(CommandManager.argument("targets", EntityArgumentType.players())
-                                                    .then(CommandManager.argument("lives", IntegerArgumentType.integer())
-                                                            .executes(ctx -> {
-                                                                int newLives = IntegerArgumentType.getInteger(ctx, "lives");
-                                                                Collection<ServerPlayerEntity> players =
-                                                                        EntityArgumentType.getPlayers(ctx, "targets");
+                                                    .then(CommandManager.argument("lives", IntegerArgumentType.integer()).executes(ctx -> {
+                                                        int newLives = IntegerArgumentType.getInteger(ctx, "lives");
+                                                        Collection<ServerPlayerEntity> players =
+                                                                EntityArgumentType.getPlayers(ctx, "targets");
 
-                                                                for(ServerPlayerEntity player : players)
-                                                                    LifeManager.setLives(player, newLives);
-
-                                                                return 1;
-                                                            }))))
-
-                                    // easy increment and decrement commands
-                                    .then(CommandManager.literal("inc")
-                                            .then(CommandManager.argument("target", EntityArgumentType.player())
-                                                    .executes(ctx -> {
-                                                        ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "target");
-
-                                                        LifeManager.addLife(player);
-
-                                                        return 1;
-                                                    })))
-                                    .then(CommandManager.literal("dec")
-                                            .then(CommandManager.argument("target", EntityArgumentType.player())
-                                                    .executes(ctx -> {
-                                                        ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "target");
-
-                                                        LifeManager.removeLife(player);
+                                                        for(ServerPlayerEntity player : players)
+                                                            LifeManager.setLives(player, newLives);
 
                                                         return 1;
                                                     }))))
 
+                                    // easy increment and decrement commands
+                                    .then(CommandManager.literal("inc")
+                                            .then(CommandManager.argument("target", EntityArgumentType.player()).executes(ctx -> {
+                                                ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "target");
+
+                                                LifeManager.addLife(player);
+
+                                                return 1;
+                                            })))
+                                    .then(CommandManager.literal("dec")
+                                            .then(CommandManager.argument("target", EntityArgumentType.player()).executes(ctx -> {
+                                                ServerPlayerEntity player = EntityArgumentType.getPlayer(ctx, "target");
+
+                                                LifeManager.removeLife(player);
+
+                                                return 1;
+                                            }))))
+
                 .then(CommandManager.literal("boogeyman")
-                        .then(CommandManager.literal("roll")
-                                .executes(ctx -> {
+                        .then(CommandManager.literal("roll").executes(ctx -> {
                                     BoogeymanManager.rollBoogeys(Lifed.config.maxBoogeymen);
                                     return 1;
                                 })
-                                .then(CommandManager.argument("max", IntegerArgumentType.integer(1))
-                                        .executes(ctx -> {
-                                            BoogeymanManager.rollBoogeys(IntegerArgumentType.getInteger(ctx, "max"));
-                                            return 1;
-                                        })
-                                )
-                        )
-                        .then(CommandManager.literal("instantroll")
-                                .executes(ctx -> {
-                                    BoogeymanManager.clearBoogeymen();
-
-                                    List<ServerPlayerEntity> players = Lifed.SERVER.getPlayerManager().getPlayerList();
-
-                                    // will be at least one
-                                    int boogeys = 0;
-
-                                    Random random = new Random();
-                                    // did the last roll succeed
-                                    boolean succeeded = true;
-                                    // decimal percent chance that the next boogey will be chosen
-                                    double chance = 1;
-
-                                    while(succeeded && boogeys < players.size()) {
-                                        // add a new boogey
-                                        boogeys++;
-                                        // half the chance
-                                        chance /= 2;
-
-                                        // if it is successful, then the next will be chosen
-                                        succeeded = (random.nextDouble() > chance);
-                                    }
-
-                                    BoogeymanManager.selectBoogeys(boogeys);
-                                    BoogeymanManager.showBoogeyStatus(players);
+                                .then(CommandManager.argument("max", IntegerArgumentType.integer(1)).executes(ctx -> {
+                                    BoogeymanManager.rollBoogeys(IntegerArgumentType.getInteger(ctx, "max"));
                                     return 1;
-                                })
-                        )
+                                })))
+                        .then(CommandManager.literal("instantroll").executes(ctx -> {
+                            BoogeymanManager.clearBoogeymen();
+
+                            List<ServerPlayerEntity> players = Lifed.SERVER.getPlayerManager().getPlayerList();
+
+                            // will be at least one
+                            int boogeys = 0;
+
+                            Random random = new Random();
+                            // did the last roll succeed
+                            boolean succeeded = true;
+                            // decimal percent chance that the next boogey will be chosen
+                            double chance = 1;
+
+                            while(succeeded && boogeys < players.size()) {
+                                // add a new boogey
+                                boogeys++;
+                                // half the chance
+                                chance /= 2;
+
+                                // if it is successful, then the next will be chosen
+                                succeeded = (random.nextDouble() > chance);
+                            }
+
+                            BoogeymanManager.selectBoogeys(boogeys);
+                            BoogeymanManager.showBoogeyStatus(players);
+                            return 1;
+                        }))
                         .then(CommandManager.literal("cure")
-                                .then(CommandManager.argument("target", EntityArgumentType.player())
-                                        .executes(ctx -> {
-                                            BoogeymanManager.cure(EntityArgumentType.getPlayer(ctx, "target"));
-                                            return 1;
-                                        })
-                                ))
-                        .then(CommandManager.literal("fail")
-                                .then(CommandManager.argument("targets", EntityArgumentType.players())
-                                        .executes(ctx -> {
-                                            for(ServerPlayerEntity player : EntityArgumentType.getPlayers(ctx, "targets"))
-                                                BoogeymanManager.fail(player);
-                                            return 1;
-                                        })
-                                ))
-                        .then(CommandManager.literal("reset")
-                                .executes(ctx -> {
-                                    BoogeymanManager.clearBoogeymen();
+                                .then(CommandManager.argument("target", EntityArgumentType.player()).executes(ctx -> {
+                                    BoogeymanManager.cure(EntityArgumentType.getPlayer(ctx, "target"));
                                     return 1;
-                                }))));
+                                })))
+                        .then(CommandManager.literal("fail")
+                                .then(CommandManager.argument("targets", EntityArgumentType.players()).executes(ctx -> {
+                                    for(ServerPlayerEntity player : EntityArgumentType.getPlayers(ctx, "targets"))
+                                        BoogeymanManager.fail(player);
+                                    return 1;
+                                })))
+                        .then(CommandManager.literal("reset").executes(ctx -> {
+                            BoogeymanManager.clearBoogeymen();
+                            return 1;
+                        })))
+
+                .then(CommandManager.literal("session")
+                        .then(CommandManager.literal("start").executes(ctx -> {
+                            SessionManagement.unpause();
+                            return 1;
+                        }))
+
+                        .then(CommandManager.literal("break").executes(ctx -> {
+
+                            return 1;
+                        }))
+
+                        .then(CommandManager.literal("cancelbreak").executes(ctx -> {
+
+                            return 1;
+                        }))
+
+                        .then(CommandManager.literal("stop").executes(ctx -> {
+                            SessionManagement.pause();
+                            return 1;
+                        }))
+                ));
     }
 }

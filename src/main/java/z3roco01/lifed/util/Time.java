@@ -29,4 +29,22 @@ public class Time {
     public static final Time SECONDS = new Time(20);    // 20 ticks = 1 second
     public static final Time MINUTES = new Time(1200);  // 1200 ticks = 1 minute
     public static final Time HOURS   = new Time(72000); // 72000 ticks = 1 hour
+
+    /**
+     * create a string to represent the ticks in a human readable format
+     * @param ticks amount of ticks
+     * @return a pretty string
+     */
+    public static String prettyTicks(int ticks) {
+        // amount of seconds passed, the base unit
+        int seconds = (int)Math.round(((double)ticks) / 20.0);
+
+        int minutes = Math.floorDiv((int)Math.floor(seconds), 60);
+        seconds -= minutes*60;
+
+        int hours = Math.floorDiv(minutes, 60);
+        minutes -= hours*60;
+
+        return hours + ":" + minutes + ":" + seconds;
+    }
 }
