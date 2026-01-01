@@ -6,15 +6,15 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import z3roco01.lifed.Lifed;
-import z3roco01.lifed.util.ChatUtil;
-import z3roco01.lifed.util.PlayerUtil;
+import z3roco01.lifed.util.Time;
+import z3roco01.lifed.util.player.ChatUtil;
+import z3roco01.lifed.util.player.PlayerUtil;
 import z3roco01.lifed.util.TaskScheduling;
-import z3roco01.lifed.util.TitleUtil;
+import z3roco01.lifed.util.player.TitleUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 public class BoogeymanManager {
     private static final ArrayList<ServerPlayerEntity> boogeymen = new ArrayList<>();
@@ -117,11 +117,11 @@ public class BoogeymanManager {
         };
 
         ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen in 5 minutes...", Formatting.RED);
-        TaskScheduling.scheduleTask(4800, () -> {
+        TaskScheduling.scheduleTask(Time.MINUTES.ticks(4), () -> {
             ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen in 1 minute...", Formatting.RED);
-            TaskScheduling.scheduleTask(1100, () -> {
+            TaskScheduling.scheduleTask(Time.SECONDS.ticks(55), () -> {
                 ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen soon.....", Formatting.RED);
-                TaskScheduling.scheduleTask(100, () -> {
+                TaskScheduling.scheduleTask(Time.SECONDS.ticks(5), () -> {
                     // clear them just before selecting
                     clearBoogeymen();
 
@@ -143,7 +143,7 @@ public class BoogeymanManager {
         for(ServerPlayerEntity player : players)
             TitleUtil.sendTitle(player, Lifed.config.youAre, Formatting.YELLOW);
 
-        TaskScheduling.scheduleTask(60, () -> {
+        TaskScheduling.scheduleTask(Time.SECONDS.ticks(5), () -> {
             // loop over every player
             for(ServerPlayerEntity player : players) {
                 if(boogeymen.contains(player)) {

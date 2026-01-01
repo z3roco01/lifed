@@ -1,11 +1,8 @@
-package z3roco01.lifed.util;
+package z3roco01.lifed.util.player;
 
-import net.minecraft.network.message.MessageType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import z3roco01.lifed.Lifed;
-
-import java.util.Optional;
 
 public class ChatUtil {
     /**

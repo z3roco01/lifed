@@ -1,9 +1,8 @@
-package z3roco01.lifed.util;
+package z3roco01.lifed.util.player;
 
 import net.minecraft.entity.EntityStatuses;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 

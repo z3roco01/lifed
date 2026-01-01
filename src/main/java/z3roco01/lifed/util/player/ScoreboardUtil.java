@@ -1,4 +1,4 @@
-package z3roco01.lifed.util;
+package z3roco01.lifed.util.player;
 
 import net.minecraft.scoreboard.*;
 import net.minecraft.server.network.ServerPlayerEntity;

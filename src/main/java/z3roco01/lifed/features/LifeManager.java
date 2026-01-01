@@ -1,17 +1,18 @@
 package z3roco01.lifed.features;
 
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.particle.ParticleUtil;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.math.intprovider.ConstantIntProvider;
 import net.minecraft.world.GameMode;
 import org.jspecify.annotations.Nullable;
 import z3roco01.lifed.Lifed;
 import z3roco01.lifed.util.*;
+import z3roco01.lifed.util.player.PlayerUtil;
+import z3roco01.lifed.util.player.ScoreboardUtil;
+import z3roco01.lifed.util.player.TeamUtil;
+import z3roco01.lifed.util.player.TitleUtil;
 
 import java.util.Collection;
 import java.util.Random;
