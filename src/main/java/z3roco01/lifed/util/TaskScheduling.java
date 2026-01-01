@@ -13,6 +13,11 @@ public class TaskScheduling {
     private static final ArrayList<Task> tasks = new ArrayList<>();
     private static boolean shouldCancel = false;
 
+    /**
+     * Schedules a task in `tick` ticks
+     * @param ticks how many ticks until itll run
+     * @param runnable the thing that will run
+     */
     public static void scheduleTask(int ticks, Runnable runnable) {
         Task task = new Task(ticks, runnable);
         newTasks.add(task);

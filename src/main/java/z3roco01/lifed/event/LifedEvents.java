@@ -57,10 +57,7 @@ public class LifedEvents {
         // update everytime they join, since teams are volatile
         LifeManager.updateTeam(player);
 
-        if(SessionManagement.isPaused())
-            SessionManagement.applyPlayerFreeze(player);
-        else
-            SessionManagement.removePlayerFreeze(player); // just incase theyre still frozen, like the left mid pause
+        SessionManagement.handleFreezing(player);
     }
 
     /**

@@ -45,6 +45,6 @@ public class Time {
         int hours = Math.floorDiv(minutes, 60);
         minutes -= hours*60;
 
-        return hours + ":" + minutes + ":" + seconds;
+        return hours + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
     }
 }

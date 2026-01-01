@@ -126,12 +126,12 @@ public class WatcherCommands implements CommandRegisterer {
                         }))
 
                         .then(CommandManager.literal("break").executes(ctx -> {
-
+                            SessionManagement.goOnBreak();
                             return 1;
                         }))
 
                         .then(CommandManager.literal("cancelbreak").executes(ctx -> {
-
+                            SessionManagement.goOffBreak();
                             return 1;
                         }))
 

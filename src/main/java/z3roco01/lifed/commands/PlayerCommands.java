@@ -52,23 +52,28 @@ public class PlayerCommands implements CommandRegisterer {
 
         dispatcher.register(CommandManager.literal("time")
                 .executes(ctx -> {
-                    int ticksRemaining = SessionManagement.ticksRemaining();
+                    if(SessionManagement.onBreak()) {
+                        ctx.getSource().sendFeedback(() -> Text.of("§7" + Time.prettyTicks(SessionManagement.remainingBreakTicks()) +
+                                " remaining in the break"), false);
+                    }else {
+                        int ticksRemaining = SessionManagement.ticksRemaining();
 
-                    double timePercent = ticksRemaining/(double)Time.MINUTES.ticks(Lifed.config.sessionLength);
-                    Lifed.LOGGER.info(String.valueOf(timePercent));
+                        double timePercent = ticksRemaining/(double)Time.MINUTES.ticks(Lifed.config.sessionLength);
+                        Lifed.LOGGER.info(String.valueOf(timePercent));
 
-                    String timeColour = "§";
-                    // based off colours in limited life
-                    if(timePercent >= 0.67)
-                        timeColour += "a";
-                    else if(timePercent >= 0.34)
-                        timeColour += "e";
-                    else
-                        timeColour += "c";
+                        String timeColour = "§";
+                        // based off colours in limited life
+                        if(timePercent >= 0.67)
+                            timeColour += "a";
+                        else if(timePercent >= 0.34)
+                            timeColour += "e";
+                        else
+                            timeColour += "c";
 
-                    String finalTimeColour = timeColour;
-                    ctx.getSource().sendFeedback(() -> Text.of(finalTimeColour + Time.prettyTicks(ticksRemaining)
-                            + " §7remaining..."), false);
+                        String finalTimeColour = timeColour;
+                        ctx.getSource().sendFeedback(() -> Text.of(finalTimeColour + Time.prettyTicks(ticksRemaining)
+                                + " §7remaining..."), false);
+                    }
                     return 1;
                 }));
     }

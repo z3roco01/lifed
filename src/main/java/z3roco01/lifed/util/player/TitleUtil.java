@@ -4,6 +4,7 @@ import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import z3roco01.lifed.Lifed;
 
 public class TitleUtil {
     /**
@@ -23,5 +24,14 @@ public class TitleUtil {
      */
     public static void sendTitle(ServerPlayerEntity target, Text text) {
         target.networkHandler.sendPacket(new TitleS2CPacket(text));
+    }
+
+    public static void sendTitleAll(String text, Formatting colour) {
+        sendTitleAll(Text.of(text).copy().formatted(colour));
+    }
+
+    public static void sendTitleAll(Text text) {
+        for(ServerPlayerEntity player : Lifed.SERVER.getPlayerManager().getPlayerList())
+            sendTitle(player, text);
     }
 }
