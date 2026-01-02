@@ -1,10 +1,9 @@
 package z3roco01.lifed.features;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.server.ServerTickManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Formatting;
@@ -94,9 +93,16 @@ public class SessionManagement {
      * Sets a players attributes to effectively freeze them, also give saturation
      */
     public static void applyPlayerFreeze(ServerPlayerEntity player) {
-        player.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED).addPersistentModifier(MODIFIER_FREEZE);
-        player.getAttributeInstance(EntityAttributes.JUMP_STRENGTH).addPersistentModifier(MODIFIER_FREEZE);
-        player.getAttributeInstance(EntityAttributes.BLOCK_INTERACTION_RANGE).addPersistentModifier(MODIFIER_FREEZE);
+        EntityAttributeInstance movementInst = player.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED);
+        EntityAttributeInstance jumpInst = player.getAttributeInstance(EntityAttributes.JUMP_STRENGTH);
+        EntityAttributeInstance reachInst = player.getAttributeInstance(EntityAttributes.BLOCK_INTERACTION_RANGE);
+
+        if(!movementInst.hasModifier(MODIFIER_FREEZE.id()))
+            movementInst.addPersistentModifier(MODIFIER_FREEZE);
+        if(!jumpInst.hasModifier(MODIFIER_FREEZE.id()))
+            jumpInst.addPersistentModifier(MODIFIER_FREEZE);
+        if(!reachInst.hasModifier(MODIFIER_FREEZE.id()))
+            reachInst.addPersistentModifier(MODIFIER_FREEZE);
     }
 
     /**
