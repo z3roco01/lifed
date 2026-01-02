@@ -104,4 +104,10 @@ public class LifedConfig {
      */
     @ConfigProperty
     public Boolean totemsConvertable = true;
+
+    /**
+     * Limit to how many wolves one player can have
+     */
+    @ConfigProperty
+    public Integer wolfLimit = 5;
 }

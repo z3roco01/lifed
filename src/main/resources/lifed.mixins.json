@@ -6,7 +6,9 @@
     "EnchantmentHelperMixin",
     "ItemMixin",
     "PlayerInventoryMixin",
-    "ServerPlayerEntityMixin"
+    "ServerPlayerEntityMixin",
+    "TameableEntityMixin",
+    "WolfEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

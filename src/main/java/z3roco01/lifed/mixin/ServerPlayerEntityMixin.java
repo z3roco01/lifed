@@ -9,11 +9,12 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -21,9 +22,30 @@ import z3roco01.lifed.Lifed;
 import z3roco01.lifed.features.BannedItems;
 import z3roco01.lifed.features.BoogeymanManager;
 import z3roco01.lifed.features.LifeManager;
+import z3roco01.lifed.util.WolfCounter;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerEntityMixin extends PlayerEntity {
+public abstract class ServerPlayerEntityMixin extends PlayerEntity implements WolfCounter {
+    @Unique
+    public int wolfCount = 0;
+
+    @Override
+    public int getWolfCount() {
+        return wolfCount;
+    }
+
+    @Override
+    public void incrementWolfCount() {
+        wolfCount++;
+        Lifed.LOGGER.info(String.valueOf(wolfCount));
+    }
+
+    @Override
+    public void decrementWolfCount() {
+        wolfCount--;
+        Lifed.LOGGER.info(String.valueOf(wolfCount));
+    }
+
     @Shadow
     public abstract ServerWorld getEntityWorld();
 
@@ -63,5 +85,15 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
             ((ServerPlayerEntity)(Object)this).removeStatusEffect(effect.getEffectType());
             ci.cancel();
         }
+    }
+
+    @Inject(method = "readCustomData", at = @At("TAIL"))
+    private void readCustomData(ReadView view, CallbackInfo ci) {
+        this.wolfCount = view.getInt("wolfCount", 0);
+    }
+
+    @Inject(method = "writeCustomData", at = @At("TAIL"))
+    private void writeCustomData(WriteView view, CallbackInfo ci) {
+        view.putInt("wolfCount", this.wolfCount);
     }
 }
