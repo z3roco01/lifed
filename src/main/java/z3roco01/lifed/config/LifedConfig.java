@@ -98,4 +98,10 @@ public class LifedConfig {
      */
     @ConfigProperty
     public Boolean lockoutPlayers = true;
+
+    /**
+     * Can totems be converted into a life
+     */
+    @ConfigProperty
+    public Boolean totemsConvertable = true;
 }

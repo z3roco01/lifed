@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import z3roco01.lifed.Lifed;
 import z3roco01.lifed.features.LifeManager;
 import z3roco01.lifed.util.player.PlayerUtil;
 
@@ -24,6 +25,8 @@ public abstract class ItemMixin implements ToggleableFeature, ItemConvertible, F
     @Inject(method = "use", at = @At("HEAD"), cancellable = true)
     private void use(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
         if(world.isClient()) return;
+
+        if(!Lifed.config.totemsConvertable) return;
 
         ItemStack stack = user.getStackInHand(hand);
         DeathProtectionComponent deathProtection = stack.get(DataComponentTypes.DEATH_PROTECTION);
