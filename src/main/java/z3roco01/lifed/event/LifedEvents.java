@@ -55,7 +55,7 @@ public class LifedEvents {
      * @param server minecraft server reference
      */
     private static void onPlayerJoin(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server) {
-        if(BoogeymanManager.areBoogeysRolled())
+        if(Lifed.config.lockoutPlayers && BoogeymanManager.areBoogeysRolled())
             handler.disconnect(Text.of("The boogeymen have already been rolled, try next time or ask the owner"));
 
         ServerPlayerEntity player = handler.getPlayer();
