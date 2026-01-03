@@ -6,7 +6,7 @@ import net.minecraft.server.MinecraftServer;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import z3roco01.lifed.config.ConfigFile;
+import z3roco01.composed.ConfigFile;
 import z3roco01.lifed.config.LifedConfig;
 import z3roco01.lifed.event.LifedEvents;
 import z3roco01.lifed.features.WolfSpawnExpansion;

@@ -1,113 +1,77 @@
 package z3roco01.lifed.config;
 
-import z3roco01.lifed.config.annotation.ConfigProperty;
+
+import z3roco01.composed.annotation.Comment;
+import z3roco01.composed.annotation.ConfigProperty;
 
 public class LifedConfig {
-    /**
-     * Max possible amount of boogeys
-     */
+    @Comment(comment = "The maximum amount of boogeymen on a normal roll ( can be overriden in the command as well )")
     @ConfigProperty
     public Integer maxBoogeymen = 10;
 
-    /**
-     * Title sent just before boogey status is revealed
-     */
+    @Comment(comment = "The title shown just before the players boogey status is shown")
     @ConfigProperty
     public String youAre = "You are...";
 
-    /**
-     * Title send after a player was not chosen as boogey
-     */
+    @Comment(comment = "The title shown when the player is not chosen as boogey")
     @ConfigProperty
     public String notABoogeyman = "...NOT a boogeyman !!!";
 
-    /**
-     * Title sent afte a boogey was chosen as boogey
-     */
+    @Comment(comment = "The title shown when the player is chosen as boogey")
     @ConfigProperty
     public String aBoogeyman = "...A BOOGEYMAN";
 
-    /**
-     * Chat message sent to a player who just became a boogey
-     */
+    @Comment(comment = "The chat message sent only to boogeys explaining the rules of boogeys")
     @ConfigProperty
     public String boogeyChatMsg ="§7You are a boogeyman ! you must kill a §2dark green§7, §agreen§7 or §eyellow§7 to cure yourself. you lose EVERY alliance as a boogeyman until you are cured. if you do not then you will go to your §clast life§7 at the end of this session.§r";
 
-    /**
-     * How many lightning bolts should be summoned on red life death
-     */
+    @Comment(comment = "how many lightning bolts to be spawned on red deaht ( they all happen at once so more than one is kinda pointless )")
     @ConfigProperty
     public Integer lightningsOnRedDeath = 5;
 
-    /**
-     * Are bookshelves allowed
-     */
+    // TODO: Convert banned things to lists instead of toggles
     @ConfigProperty
     public Boolean bookshelfAllowed = false;
 
-    /**
-     * are enchanters allowed to be crafted
-     */
     @ConfigProperty
     public Boolean canCraftEnchanter = false;
 
-    /**
-     * is strength allowed
-     */
     @ConfigProperty
     public Boolean strengthAllowed = false;
 
-    /**
-     * Are > 1 pvp enchants allowed
-     */
+    @Comment(comment = "Are PVP enchantments ( sharpness, protection, etc ) allowed at levels higher than 1")
     @ConfigProperty
     public Boolean highLevelPvpEnchAllowed = false;
 
-    /**
-     * Are > 1 non pvp enchants allowed
-     */
+    @Comment(comment = "Are non-PVP enchantments ( unbreaking, fortune, etc ) allowed at levels higher than 1")
     @ConfigProperty
     public Boolean highLevelOtherEnchAllowed = true;
 
-    /**
-     * Allows spawning wolves in more biomes
-     */
+    @Comment(comment = "Allow wovles to spawn in more biomes ( only flower forests and birch forests right now )")
     @ConfigProperty
     public Boolean expandedWolfSpawning = true;
 
-    /**
-     * The default length of a session, in minutes
-     */
+    @Comment(comment = "How long a session goes for, players will be frozen when the timer runs out ")
     @ConfigProperty
     public Integer sessionLength = 180;
 
-    /**
-     * The default lenght of a break, in minutes
-     */
+    @Comment(comment = "The length of breaks when the break command is used")
     @ConfigProperty
     public Integer breakLength = 10;
 
-    /**
-     * Should the session timer start on server start
-     */
+    @Comment(comment = "Enables the session time when the server starts, pausing players and the world as well")
     @ConfigProperty
     public Boolean startSessionTimer = false;
 
-    /**
-     * Should players be locked out after boogey has been rolled
-     */
+    @Comment(comment = "When true, does not allow players to join after boogeys have been rolled, since that is kinda cheating")
     @ConfigProperty
     public Boolean lockoutPlayers = true;
 
-    /**
-     * Can totems be converted into a life
-     */
+    @Comment(comment = "Can totems be right clicked to add to the players lives")
     @ConfigProperty
     public Boolean totemsConvertable = true;
 
-    /**
-     * Limit to how many wolves one player can have
-     */
+    @Comment(comment = "Max amount of wolves a player can get ( includes from breading ), set to -1 to disable")
     @ConfigProperty
     public Integer wolfLimit = 5;
 }
