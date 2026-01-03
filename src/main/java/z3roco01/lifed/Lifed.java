@@ -2,7 +2,6 @@ package z3roco01.lifed;
 
 import net.fabricmc.api.ModInitializer;
 
-import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -39,9 +38,5 @@ public class Lifed implements ModInitializer {
         TaskScheduling.registerTickEnd();
         LifedEvents.register();
         BannedItems.init();
-
-        for(Item item: config.bannedItems) {
-            LOGGER.info(item.toString());
-        }
 	}
 }
