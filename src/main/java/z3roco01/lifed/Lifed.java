@@ -2,6 +2,7 @@ package z3roco01.lifed;
 
 import net.fabricmc.api.ModInitializer;
 
+import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import z3roco01.composed.ConfigFile;
 import z3roco01.lifed.config.LifedConfig;
 import z3roco01.lifed.event.LifedEvents;
+import z3roco01.lifed.features.BannedItems;
 import z3roco01.lifed.features.WolfSpawnExpansion;
 import z3roco01.lifed.util.TaskScheduling;
 
@@ -36,5 +38,10 @@ public class Lifed implements ModInitializer {
         WolfSpawnExpansion.registerSpawning();
         TaskScheduling.registerTickEnd();
         LifedEvents.register();
+        BannedItems.init();
+
+        for(Item item: config.bannedItems) {
+            LOGGER.info(item.toString());
+        }
 	}
 }

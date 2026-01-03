@@ -1,13 +1,47 @@
 package z3roco01.lifed.config;
 
 
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
+import z3roco01.composed.ProcessedConfig;
 import z3roco01.composed.annotation.Comment;
 import z3roco01.composed.annotation.ConfigProperty;
+import z3roco01.lifed.Lifed;
 
-public class LifedConfig {
+import java.util.ArrayList;
+
+public class LifedConfig implements ProcessedConfig {
+    public LifedConfig() {
+        bannedItemStrings.add(Registries.ITEM.getId(Items.BOOKSHELF).toString());
+
+        uncraftableItemStrings.add(Registries.ITEM.getId(Items.ENCHANTING_TABLE).toString());
+
+        bannedEffectStrings.add(StatusEffects.STRENGTH.getIdAsString());
+    }
+
+    public final ArrayList<Item> bannedItems = new ArrayList<>();
+    public final ArrayList<Item> uncraftableItems = new ArrayList<>();
+    public final ArrayList<StatusEffect> bannedEffects = new ArrayList<>();
+
+    @Override
+    public void process() {
+        for(String id : bannedItemStrings)
+            bannedItems.add(Registries.ITEM.get(Identifier.of(id)));
+
+        for(String id : uncraftableItemStrings)
+            uncraftableItems.add(Registries.ITEM.get(Identifier.of(id)));
+
+        for(String id : bannedEffectStrings)
+            bannedEffects.add(Registries.STATUS_EFFECT.get(Identifier.of(id)));
+    }
+
     @Comment(comment = "The maximum amount of boogeymen on a normal roll ( can be overriden in the command as well )")
     @ConfigProperty
-    public Integer maxBoogeymen = 10;
+    public int maxBoogeymen = 10;
 
     @Comment(comment = "The title shown just before the players boogey status is shown")
     @ConfigProperty
@@ -27,51 +61,53 @@ public class LifedConfig {
 
     @Comment(comment = "how many lightning bolts to be spawned on red deaht ( they all happen at once so more than one is kinda pointless )")
     @ConfigProperty
-    public Integer lightningsOnRedDeath = 5;
+    public int lightningsOnRedDeath = 5;
 
-    // TODO: Convert banned things to lists instead of toggles
-    @ConfigProperty
-    public Boolean bookshelfAllowed = false;
+    @Comment(comment = "Items which are completely banned, they cannot be crafted or picked up, if they are picked up the item will disappear ( contains their ids )")
+    @ConfigProperty(key = "bannedItems")
+    public ArrayList<String> bannedItemStrings = new ArrayList<>();
 
-    @ConfigProperty
-    public Boolean canCraftEnchanter = false;
+    @Comment(comment = "Items which canont be crafted, but can be obtained ( like the enchanter in last life ), contains their ids")
+    @ConfigProperty(key = "uncraftableItems")
+    public ArrayList<String> uncraftableItemStrings = new ArrayList<>();
 
-    @ConfigProperty
-    public Boolean strengthAllowed = false;
+    @Comment(comment = "Status effects which cannot be applied to players, the potions can be made, but once drank will have no effect ( contains their ids )")
+    @ConfigProperty(key = "bannedEffects")
+    public ArrayList<String> bannedEffectStrings = new ArrayList<>();
 
     @Comment(comment = "Are PVP enchantments ( sharpness, protection, etc ) allowed at levels higher than 1")
     @ConfigProperty
-    public Boolean highLevelPvpEnchAllowed = false;
+    public boolean highLevelPvpEnchAllowed = false;
 
     @Comment(comment = "Are non-PVP enchantments ( unbreaking, fortune, etc ) allowed at levels higher than 1")
     @ConfigProperty
-    public Boolean highLevelOtherEnchAllowed = true;
+    public boolean highLevelOtherEnchAllowed = true;
 
     @Comment(comment = "Allow wovles to spawn in more biomes ( only flower forests and birch forests right now )")
     @ConfigProperty
-    public Boolean expandedWolfSpawning = true;
+    public boolean expandedWolfSpawning = true;
 
     @Comment(comment = "How long a session goes for, players will be frozen when the timer runs out ")
     @ConfigProperty
-    public Integer sessionLength = 180;
+    public int sessionLength = 180;
 
     @Comment(comment = "The length of breaks when the break command is used")
     @ConfigProperty
-    public Integer breakLength = 10;
+    public int breakLength = 10;
 
     @Comment(comment = "Enables the session time when the server starts, pausing players and the world as well")
     @ConfigProperty
-    public Boolean startSessionTimer = false;
+    public boolean startSessionTimer = false;
 
     @Comment(comment = "When true, does not allow players to join after boogeys have been rolled, since that is kinda cheating")
     @ConfigProperty
-    public Boolean lockoutPlayers = true;
+    public boolean lockoutPlayers = true;
 
     @Comment(comment = "Can totems be right clicked to add to the players lives")
     @ConfigProperty
-    public Boolean totemsConvertable = true;
+    public boolean totemsConvertable = true;
 
     @Comment(comment = "Max amount of wolves a player can get ( includes from breading ), set to -1 to disable")
     @ConfigProperty
-    public Integer wolfLimit = 5;
+    public int wolfLimit = 5;
 }

@@ -81,7 +81,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Wo
 
     @Inject(method = "onStatusEffectApplied", at = @At("HEAD"), cancellable = true)
     private void onStatusEffectApllied(StatusEffectInstance effect, Entity source, CallbackInfo ci) {
-        if(BannedItems.BANNED_EFFECTS.contains(effect.getEffectType())) {
+        if(Lifed.config.bannedEffects.contains(effect.getEffectType().value())) {
             ((ServerPlayerEntity)(Object)this).removeStatusEffect(effect.getEffectType());
             ci.cancel();
         }
