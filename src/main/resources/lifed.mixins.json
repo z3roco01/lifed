@@ -7,6 +7,8 @@
     "ItemMixin",
     "PlayerInventoryMixin",
     "ServerPlayerEntityMixin",
+    "ShapedRecipeMixin",
+    "ShapelessRecipeMixin",
     "TameableEntityMixin",
     "WolfEntityMixin"
   ],

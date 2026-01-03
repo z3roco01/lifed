@@ -17,7 +17,7 @@ public class BannedItems {
      * @return true if it is not in either list, otherwise false
      */
     public static boolean canCraft(Item item) {
-        return !Lifed.config.bannedItems.contains(item) || !Lifed.config.uncraftableItems.contains(item);
+        return !Lifed.config.bannedItems.contains(item) && !Lifed.config.uncraftableItems.contains(item);
     }
 
     /**
