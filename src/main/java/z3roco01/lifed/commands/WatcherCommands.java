@@ -76,6 +76,7 @@ public class WatcherCommands implements CommandRegisterer {
                                     return 1;
                                 })))
                         .then(CommandManager.literal("instantroll").executes(ctx -> {
+                            // scuffed bad implementation, quick and dirty for testing mostly
                             BoogeymanManager.clearBoogeymen();
 
                             List<ServerPlayerEntity> players = Lifed.SERVER.getPlayerManager().getPlayerList();
@@ -89,7 +90,7 @@ public class WatcherCommands implements CommandRegisterer {
                             // decimal percent chance that the next boogey will be chosen
                             double chance = 1;
 
-                            while(succeeded && boogeys < players.size()) {
+                            while(succeeded && boogeys < Math.min(players.size(), Lifed.config.maxBoogeymen)) {
                                 // add a new boogey
                                 boogeys++;
                                 // half the chance

@@ -1,7 +1,6 @@
 package z3roco01.lifed.util;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import z3roco01.lifed.Lifed;
 
 import java.util.ArrayList;
 
@@ -23,18 +22,22 @@ public class TaskScheduling {
         newTasks.add(task);
     }
 
+    // cancels all tasks
     public static void cancelTasks() {
         shouldCancel = true;
     }
 
     public static void registerTickEnd() {
+        // runs once each serve tick
         ServerTickEvents.END_SERVER_TICK.register(server -> {
+            // if canceling, clear all tasks
             if(shouldCancel) {
                 tasks.clear();
                 shouldCancel = false;
                 return;
             }
 
+            // for all started tasks, decrement timer, if the timer is done, do whatever it does
             for(Task task : tasks) {
                 task.ticksRemaining--;
 
@@ -42,11 +45,15 @@ public class TaskScheduling {
                     task.task.run();
             }
 
+            // for new tasks, add them all to the main tasks list, needed because if tasks are created in other tasks it causes errors
             tasks.addAll(newTasks);
             newTasks.clear();
         });
     }
 
+    /**
+     * A class that represents one scheduled task
+     */
     public static class Task {
         public int ticksRemaining;
         public final Runnable task;

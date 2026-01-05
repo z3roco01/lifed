@@ -38,7 +38,7 @@ for any command that accepts `<PLAYERS>`, typing `@a` instead of a username will
 ### `/watcher boogeyman`
 - `roll` : rolls up to the maximum amount of boogeys, also waits 5 minutes ( each boogey is half as likely as the last, first is 100%)
 - `roll <MAX>` : rolls boogeys up to the new supplied `<MAX>`
-- `instantroll` : rolls immediately, without waiting 5 minutes, currently broken
+- `instantroll` : rolls immediately, without waiting 5 minutes
 - `cure <PLAYER>` : cures one player, used if they got something like a trap kill
 - `fail <PLAYERS>` : fails players, setting them to red life right away
 - `reset` : removes all boogeys without curing or failing
