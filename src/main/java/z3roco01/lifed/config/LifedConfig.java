@@ -53,7 +53,7 @@ public class LifedConfig implements ProcessedConfig {
 
     @Comment(comment = "The title shown when the player is chosen as boogey")
     @ConfigProperty
-    public String aBoogeyman = "...A BOOGEYMAN";
+    public String aBoogeyman = "...A BOOGEYMAN !!!";
 
     @Comment(comment = "The chat message sent only to boogeys explaining the rules of boogeys")
     @ConfigProperty
