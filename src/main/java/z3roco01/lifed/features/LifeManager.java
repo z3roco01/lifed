@@ -142,6 +142,30 @@ public class LifeManager {
     }
 
     /**
+     * returns a formatting string that will give the colour for their current lives
+     * @param lives current lives
+     * @return a string containing a selection sign and the proper format character
+     */
+    public static String getLifeFormatString(int lives) {
+        String format = "§";
+
+        // ignore less than 0, to be done in another case
+        if(lives > 0) {
+            format += switch(lives) {
+                case 1 -> "c";
+                case 2 -> "e";
+                case 3 -> "a";
+                default -> // anything more than 3 is dark green
+                    "2";
+            };
+        }else { // <= 0 lives
+            format += "7";
+        }
+
+        return format;
+    }
+
+    /**
      * Gets the correct team for the player based on their lives
      * @param player the player
      * @return the Team object for the players current lives
@@ -195,9 +219,9 @@ public class LifeManager {
 
         // show titles informing each person what happened
         TitleUtil.sendTitle(gifter, "You gifted " + recipient.getStringifiedName() + " a life !",
-                LifeManager.getLifeColour(gifter));
+                Formatting.GREEN);
         TitleUtil.sendTitle(recipient, gifter.getStringifiedName() + " gifted you a life !",
-                LifeManager.getLifeColour(recipient));
+                Formatting.GREEN);
 
         recipient.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP);
         PlayerUtil.playTotemAnimation(gifter);
@@ -212,15 +236,7 @@ public class LifeManager {
     public static String getLifeFormatString(ServerPlayerEntity player) {
         int lives = LifeManager.getLives(player);
 
-        if(lives < 1)
-            return "§7";
-
-        return switch(lives) {
-            default -> "§2"; // >= 4
-            case 3  -> "§a";
-            case 2  -> "§e";
-            case 1  -> "§c";
-        };
+        return getLifeFormatString(lives);
     }
 
     /**
@@ -251,7 +267,7 @@ public class LifeManager {
             LifeManager.setLives(player, lives);
 
             // show them how many they got
-            TitleUtil.sendTitle(player, "You get " + lives + " lives !", LifeManager.getLifeColour(lives));
+            TitleUtil.sendTitle(player, "You get " + getLifeFormatString(lives) + lives + "§r lives !", Formatting.GREEN);
         }
     }
 
