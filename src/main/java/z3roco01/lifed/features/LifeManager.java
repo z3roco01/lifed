@@ -49,11 +49,11 @@ public class LifeManager {
      * Create the teams for each life group
      */
     private static void initializeTeams() {
-        FOUR_PLUS_TEAM = TeamUtil.createTeam("four_lives", Formatting.DARK_GREEN);
-        THREE_TEAM = TeamUtil.createTeam("three_lives", Formatting.GREEN);
-        TWO_TEAM = TeamUtil.createTeam("two_lives", Formatting.YELLOW);
-        ONE_TEAM = TeamUtil.createTeam("one_life", Formatting.RED);
-        ZERO_TEAM = TeamUtil.createTeam("zero_lives", Formatting.GRAY);
+        FOUR_PLUS_TEAM = TeamUtil.createTeam("a_four_lives", Formatting.DARK_GREEN);
+        THREE_TEAM = TeamUtil.createTeam("b_three_lives", Formatting.GREEN);
+        TWO_TEAM = TeamUtil.createTeam("c_two_lives", Formatting.YELLOW);
+        ONE_TEAM = TeamUtil.createTeam("d_one_life", Formatting.RED);
+        ZERO_TEAM = TeamUtil.createTeam("e_zero_lives", Formatting.GRAY);
     }
 
     /**

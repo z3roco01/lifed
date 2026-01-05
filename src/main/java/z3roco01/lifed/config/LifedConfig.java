@@ -83,7 +83,7 @@ public class LifedConfig implements ProcessedConfig {
     @ConfigProperty
     public boolean highLevelOtherEnchAllowed = true;
 
-    @Comment(comment = "Allow wovles to spawn in more biomes ( only flower forests and birch forests right now )")
+    @Comment(comment = "Allow wolves to spawn in more biomes ( only flower forests and birch forests right now )")
     @ConfigProperty
     public boolean expandedWolfSpawning = true;
 
