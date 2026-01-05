@@ -22,12 +22,13 @@ import z3roco01.lifed.util.player.PlayerUtil;
 
 @Mixin(Item.class)
 public abstract class ItemMixin implements ToggleableFeature, ItemConvertible, FabricItem {
-    @Inject(method = "use", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "use", at = @At("HEAD"))
     private void use(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
         if(world.isClient()) return;
 
         if(!Lifed.config.totemsConvertable) return;
 
+        // when item is right clicked, if its a totem and its allowed, turn it into a life
         ItemStack stack = user.getStackInHand(hand);
         DeathProtectionComponent deathProtection = stack.get(DataComponentTypes.DEATH_PROTECTION);
 

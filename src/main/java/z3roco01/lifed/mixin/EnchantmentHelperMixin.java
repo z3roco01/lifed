@@ -8,13 +8,10 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.math.random.Random;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import z3roco01.lifed.Lifed;
@@ -128,9 +125,6 @@ public abstract class EnchantmentHelperMixin {
         // array list that will be full of the appropriate enchants
         List<EnchantmentLevelEntry> newList = new ArrayList<>();
 
-        for(EnchantmentLevelEntry entry : cir.getReturnValue())
-            Lifed.LOGGER.info(entry.enchantment().getIdAsString() + " " + entry.level());
-
         for(EnchantmentLevelEntry entry : cir.getReturnValue()) {
             // dont need to even consider this entry if its not high level
             RegistryEntry<Enchantment> enchant = entry.enchantment();
@@ -141,12 +135,6 @@ public abstract class EnchantmentHelperMixin {
 
             newList.add(entry);
         }
-
-        Lifed.LOGGER.info("---------");
-        for(EnchantmentLevelEntry entry : newList)
-            Lifed.LOGGER.info(entry.enchantment().getIdAsString() + " " + entry.level());
-        Lifed.LOGGER.info("---------");
-        Lifed.LOGGER.info("---------");
 
         cir.setReturnValue(newList);
     }

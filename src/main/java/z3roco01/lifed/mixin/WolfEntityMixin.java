@@ -26,6 +26,7 @@ public abstract class WolfEntityMixin extends TameableEntity implements Angerabl
     private void tryTame(PlayerEntity player, CallbackInfo ci) {
         if(player.getEntityWorld().isClient()) return;
 
+        // if someone is trying to tame a wolf but has the max amount of wolfs, cancel it
         if(((WolfCounter)(Object)player).getWolfCount() == Lifed.config.wolfLimit)
             ci.cancel();
     }
@@ -34,12 +35,15 @@ public abstract class WolfEntityMixin extends TameableEntity implements Angerabl
     private void onDeath(DamageSource damageSource, CallbackInfo ci) {
         if(getEntityWorld().isClient()) return;
 
+        // when a wolf has died, if its tamed, decrement the owners count
+        if(getOwner() == null) return;
         ServerPlayerEntity owner = (ServerPlayerEntity)getOwner();
         ((WolfCounter)(Object)owner).decrementWolfCount();
     }
 
     @Redirect(method = "createChild(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/passive/PassiveEntity;)Lnet/minecraft/entity/passive/WolfEntity;", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/passive/WolfEntity;isTamed()Z"))
     private boolean makeChildTamedRedirect(WolfEntity instance) {
+        // redirect from is tamed, when making a child, if the owner has the limit, make the puppy not owned
         WolfCounter owner = (WolfCounter)(Object)getOwner();
         if(owner.getWolfCount() == Lifed.config.wolfLimit)
             return false;

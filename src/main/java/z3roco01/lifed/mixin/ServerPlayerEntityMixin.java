@@ -19,13 +19,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import z3roco01.lifed.Lifed;
-import z3roco01.lifed.features.BannedItems;
 import z3roco01.lifed.features.BoogeymanManager;
 import z3roco01.lifed.features.LifeManager;
 import z3roco01.lifed.util.WolfCounter;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity implements WolfCounter {
+    // support for counting wolves, needed in an interface, since its a mixin
     @Unique
     public int wolfCount = 0;
 
@@ -81,6 +81,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Wo
 
     @Inject(method = "onStatusEffectApplied", at = @At("HEAD"), cancellable = true)
     private void onStatusEffectApllied(StatusEffectInstance effect, Entity source, CallbackInfo ci) {
+        // if they are trying to apply a banned effect, cancel it
         if(Lifed.config.bannedEffects.contains(effect.getEffectType().value())) {
             ((ServerPlayerEntity)(Object)this).removeStatusEffect(effect.getEffectType());
             ci.cancel();
@@ -89,11 +90,13 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Wo
 
     @Inject(method = "readCustomData", at = @At("TAIL"))
     private void readCustomData(ReadView view, CallbackInfo ci) {
+        // load in the wolf count from file/network
         this.wolfCount = view.getInt("wolfCount", 0);
     }
 
     @Inject(method = "writeCustomData", at = @At("TAIL"))
     private void writeCustomData(WriteView view, CallbackInfo ci) {
+        // save the wolf count to file/network
         view.putInt("wolfCount", this.wolfCount);
     }
 }

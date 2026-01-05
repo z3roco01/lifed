@@ -14,6 +14,7 @@ import z3roco01.lifed.features.BannedItems;
 public abstract class ShapedRecipeMixin {
     @Inject(method = "craft(Lnet/minecraft/recipe/input/CraftingRecipeInput;Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;)Lnet/minecraft/item/ItemStack;", at = @At("RETURN"), cancellable = true)
     private void craft(CraftingRecipeInput craftingRecipeInput, RegistryWrapper.WrapperLookup wrapperLookup, CallbackInfoReturnable<ItemStack> cir) {
+        // if they are trying to craft a banned item, cancel it
         if(!BannedItems.canCraft(cir.getReturnValue().getItem()))
             cir.setReturnValue(ItemStack.EMPTY);
     }
