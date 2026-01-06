@@ -121,6 +121,14 @@ public class WatcherCommands implements CommandRegisterer {
                             BoogeymanManager.clearBoogeymen();
                             return 1;
                         })))
+                        .then(CommandManager.literal("remaining").executes(ctx -> {
+                            if(BoogeymanManager.getBoogeymen().isEmpty())
+                                ctx.getSource().sendFeedback(() -> Text.of("There are no boogeys remaining"), true);
+                            else
+                                ctx.getSource().sendFeedback(() -> Text.of("There is at leats one boogey remaining"), true);
+
+                            return 1;
+                        }))
                 .then(CommandManager.literal("session")
                         .then(CommandManager.literal("start").executes(ctx -> {
                             SessionManagement.unpause();
@@ -150,9 +158,7 @@ public class WatcherCommands implements CommandRegisterer {
                     .then(CommandManager.literal("debug")
                             .then(CommandManager.literal("boogeychance")
                                     .then(CommandManager.argument("chance", FloatArgumentType.floatArg(0f, 1f)).executes(ctx -> {
-                                        float newChance = FloatArgumentType.getFloat(ctx, "chance");
-
-                                        Lifed.config.sequentialBoogeyChange = newChance;
+                                        Lifed.config.sequentialBoogeyChange = FloatArgumentType.getFloat(ctx, "chance");
                                         ctx.getSource().sendFeedback(() -> Text.of("new chance: " + Lifed.config.sequentialBoogeyChange), false);
 
                                         return 1;
