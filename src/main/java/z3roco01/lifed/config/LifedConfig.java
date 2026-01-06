@@ -10,7 +10,6 @@ import net.minecraft.util.Identifier;
 import z3roco01.composed.ProcessedConfig;
 import z3roco01.composed.annotation.Comment;
 import z3roco01.composed.annotation.ConfigProperty;
-import z3roco01.lifed.Lifed;
 
 import java.util.ArrayList;
 
@@ -110,4 +109,8 @@ public class LifedConfig implements ProcessedConfig {
     @Comment(comment = "Max amount of wolves a player can get ( includes from breading ), set to -1 to disable")
     @ConfigProperty
     public int wolfLimit = 5;
+
+    @Comment(comment = "How likely is it for the next sequential boogey to be chosen, first is 100%\n# for example, on 75% ( 0.75 ) 1st boogey 100%, 2nd 75%, 3rd 56.25%, 4th 42.19%")
+    @ConfigProperty
+    public float sequentialBoogeyChange = 0.5f;
 }

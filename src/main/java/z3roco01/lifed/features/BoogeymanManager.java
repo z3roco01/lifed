@@ -103,10 +103,10 @@ public class BoogeymanManager {
             // add a new boogey
             boogeys++;
             // half the chance
-            chance /= 2;
+            chance *= Lifed.config.sequentialBoogeyChange;
 
             // if it is successful, then the next will be chosen
-            succeeded = (random.nextDouble() > chance);
+            succeeded = (random.nextDouble() < chance);
         }
 
         startBoogeymanChosing(boogeys);
