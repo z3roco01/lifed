@@ -24,6 +24,10 @@ public class BoogeymanManager {
      */
     private static boolean boogeysRolled = false;
 
+    /**
+     * Creates a new list of all the boogey players, does not allow modification
+     * @return
+     */
     public static List<ServerPlayerEntity> getBoogeymen() {
         // creates an immutable list of the boogeymen
         return List.of(boogeymen.toArray(new ServerPlayerEntity[] {}));
@@ -33,6 +37,9 @@ public class BoogeymanManager {
      * Removes all boogeys
      */
     public static void clearBoogeymen() {
+        // allow new players back in
+        boogeysRolled = false;
+
         boogeymen.clear();
     }
 

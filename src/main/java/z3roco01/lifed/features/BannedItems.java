@@ -21,12 +21,6 @@ public class BannedItems {
     }
 
     /**
-     * Called after the config is loaded, loads the ids as actual items
-     */
-    public static void init() {
-    }
-
-    /**
      * Check if an item can be crafted, if not, cancel the method
      * @param cir the callback info from a mixin inject
      */

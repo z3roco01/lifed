@@ -97,6 +97,7 @@ public class SessionManagement {
         EntityAttributeInstance jumpInst = player.getAttributeInstance(EntityAttributes.JUMP_STRENGTH);
         EntityAttributeInstance reachInst = player.getAttributeInstance(EntityAttributes.BLOCK_INTERACTION_RANGE);
 
+        // only apply the freeze modifier if its not already applied, avoids error
         if(!movementInst.hasModifier(MODIFIER_FREEZE.id()))
             movementInst.addPersistentModifier(MODIFIER_FREEZE);
         if(!jumpInst.hasModifier(MODIFIER_FREEZE.id()))

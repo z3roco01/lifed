@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import z3roco01.composed.ConfigFile;
 import z3roco01.lifed.config.LifedConfig;
 import z3roco01.lifed.event.LifedEvents;
-import z3roco01.lifed.features.BannedItems;
 import z3roco01.lifed.features.WolfSpawnExpansion;
 import z3roco01.lifed.util.TaskScheduling;
 
@@ -37,6 +36,5 @@ public class Lifed implements ModInitializer {
         WolfSpawnExpansion.registerSpawning();
         TaskScheduling.registerTickEnd();
         LifedEvents.register();
-        BannedItems.init();
 	}
 }

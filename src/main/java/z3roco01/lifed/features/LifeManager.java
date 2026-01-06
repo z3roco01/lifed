@@ -49,6 +49,7 @@ public class LifeManager {
      * Create the teams for each life group
      */
     private static void initializeTeams() {
+        // letters at the start of team names so they appear in the correct order based on number of lives
         FOUR_PLUS_TEAM = TeamUtil.createTeam("a_four_lives", Formatting.DARK_GREEN);
         THREE_TEAM = TeamUtil.createTeam("b_three_lives", Formatting.GREEN);
         TWO_TEAM = TeamUtil.createTeam("c_two_lives", Formatting.YELLOW);

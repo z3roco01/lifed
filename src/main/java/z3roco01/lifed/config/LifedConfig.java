@@ -13,8 +13,12 @@ import z3roco01.composed.annotation.ConfigProperty;
 
 import java.util.ArrayList;
 
+/**
+ * Handles config properties, loaded with the Composed library
+ */
 public class LifedConfig implements ProcessedConfig {
     public LifedConfig() {
+        // add default values, everything needs one
         bannedItemStrings.add(Registries.ITEM.getId(Items.BOOKSHELF).toString());
 
         uncraftableItemStrings.add(Registries.ITEM.getId(Items.ENCHANTING_TABLE).toString());
@@ -22,12 +26,14 @@ public class LifedConfig implements ProcessedConfig {
         bannedEffectStrings.add(StatusEffects.STRENGTH.getIdAsString());
     }
 
+    // actual arrays holding ites
     public final ArrayList<Item> bannedItems = new ArrayList<>();
     public final ArrayList<Item> uncraftableItems = new ArrayList<>();
     public final ArrayList<StatusEffect> bannedEffects = new ArrayList<>();
 
     @Override
     public void process() {
+        // convert the arraylists holding string ids into items
         for(String id : bannedItemStrings)
             bannedItems.add(Registries.ITEM.get(Identifier.of(id)));
 
