@@ -113,4 +113,8 @@ public class LifedConfig implements ProcessedConfig {
     @Comment(comment = "How likely is it for the next sequential boogey to be chosen, first is 100%\n# for example, on 75% ( 0.75 ) 1st boogey 100%, 2nd 75%, 3rd 56.25%, 4th 42.19%")
     @ConfigProperty
     public float sequentialBoogeyChange = 0.5f;
+
+    @Comment(comment = "Should debug watcher commands be enabled")
+    @ConfigProperty
+    public boolean watcherDebug = false;
 }

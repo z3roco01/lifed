@@ -1,12 +1,14 @@
 package z3roco01.lifed.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import z3roco01.lifed.Lifed;
 import z3roco01.lifed.features.BoogeymanManager;
 import z3roco01.lifed.features.LifeManager;
@@ -119,7 +121,6 @@ public class WatcherCommands implements CommandRegisterer {
                             BoogeymanManager.clearBoogeymen();
                             return 1;
                         })))
-
                 .then(CommandManager.literal("session")
                         .then(CommandManager.literal("start").executes(ctx -> {
                             SessionManagement.unpause();
@@ -140,6 +141,24 @@ public class WatcherCommands implements CommandRegisterer {
                             SessionManagement.pause();
                             return 1;
                         }))
-                ));
+                )
+        );
+
+        // only register the debug commands when theyre enabled, since they can be kinda cheaty
+        if(Lifed.config.watcherDebug) {
+            dispatcher.register(CommandManager.literal("watcher")
+                    .then(CommandManager.literal("debug")
+                            .then(CommandManager.literal("boogeychance")
+                                    .then(CommandManager.argument("chance", FloatArgumentType.floatArg(0f, 1f)).executes(ctx -> {
+                                        float newChance = FloatArgumentType.getFloat(ctx, "chance");
+
+                                        Lifed.config.sequentialBoogeyChange = newChance;
+                                        ctx.getSource().sendFeedback(() -> Text.of("new chance: " + Lifed.config.sequentialBoogeyChange), false);
+
+                                        return 1;
+                                    })))
+                    )
+            );
+        }
     }
 }

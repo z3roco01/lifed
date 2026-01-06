@@ -33,6 +33,8 @@ you can use [minecraft formatting codes](https://minecraft.wiki/w/Formatting_cod
 - `lockoutPlayers` (default: true) : Should players be locked out of joining after boogeys have been rolled
 - `totemsConvertable` (default: true) : When true, players can right click with a totem in their hand to turn it into another life
 - `wolfLimit` (default: 5) : The maximum amount of wolves one player can have, set to -1 to disable
+- `sequentialBoogeyChance` (default: 0.5) : The chance for another boogey to be chosen after the first. The first boogey is always guaranteed, and each boogey has this chance of happening. Ex: 1st 100%, 2nd 50%, 3rd 25%, 4th 12.5%
+- `watcherDebug` (default: false) : Enables watcher debug commands when true, they may be undocumented or cheaty, so not recommended
 ## Commands
 for any command that accepts `<PLAYERS>`, typing `@a` instead of a username will pick every current player
 ### `/watcher boogeyman`
@@ -53,3 +55,6 @@ controls things about the current session
 - `stop` : will pause the current session ( not a break )
 - `break` : starts a break for the set amount of time
 - `cancelbreak` : stop a break that is currently happening
+### `/watcher debug`
+debugging and maybe cheaty commands, some may be undocumented
+- `boogeychance <CHANCE>` : sets `sequentialBoogeyChance` to `<CHANCE>` ( does not save it )
