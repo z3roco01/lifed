@@ -1,5 +1,6 @@
 package z3roco01.lifed.mixin;
 
+import net.minecraft.component.ComponentType;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -9,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -22,14 +24,21 @@ import java.util.stream.Stream;
 
 @Mixin(EnchantmentHelper.class)
 public abstract class EnchantmentHelperMixin {
+    @Shadow
+    public static ComponentType<ItemEnchantmentsComponent> getEnchantmentsComponentType(ItemStack stack) {
+        return null;
+    }
+
     /**
      * List of pvp enchantments, for limiting their level
      */
     @Unique
     private static final RegistryKey<Enchantment>[] PVP_ENCHANTS = new RegistryKey[]{
+            Enchantments.BLAST_PROTECTION,
             Enchantments.BREACH,
             Enchantments.DENSITY,
             Enchantments.FIRE_ASPECT,
+            Enchantments.FIRE_PROTECTION,
             Enchantments.FLAME,
             Enchantments.IMPALING,
             Enchantments.INFINITY,
@@ -38,6 +47,8 @@ public abstract class EnchantmentHelperMixin {
             Enchantments.LUNGE,
             Enchantments.MULTISHOT,
             Enchantments.PIERCING,
+            Enchantments.PROJECTILE_PROTECTION,
+            Enchantments.PROTECTION,
             Enchantments.POWER,
             Enchantments.PUNCH,
             Enchantments.QUICK_CHARGE,
@@ -56,7 +67,6 @@ public abstract class EnchantmentHelperMixin {
             Enchantments.AQUA_AFFINITY,
             Enchantments.BANE_OF_ARTHROPODS,
             Enchantments.BINDING_CURSE,
-            Enchantments.BLAST_PROTECTION,
             Enchantments.DEPTH_STRIDER,
             Enchantments.EFFICIENCY,
             Enchantments.FEATHER_FALLING,
@@ -66,8 +76,6 @@ public abstract class EnchantmentHelperMixin {
             Enchantments.LUCK_OF_THE_SEA,
             Enchantments.LURE,
             Enchantments.MENDING,
-            Enchantments.PROJECTILE_PROTECTION,
-            Enchantments.PROTECTION,
             Enchantments.RESPIRATION,
             Enchantments.SILK_TOUCH,
             Enchantments.SMITE,
@@ -78,9 +86,9 @@ public abstract class EnchantmentHelperMixin {
     };
 
     /**
-     * Returns if the entry's key is in the pvp enchants list
+     * Returns if the entry's key is in the pvp oldEnchants list
      * @param entry the entry to check
-     * @return true if it is in the array, also always returns false when pvp enchants are allowed
+     * @return true if it is in the array, also always returns false when pvp oldEnchants are allowed
      */
     @Unique
     private static boolean isPvpEnchant(RegistryEntry<Enchantment> entry) {
@@ -93,7 +101,7 @@ public abstract class EnchantmentHelperMixin {
     }
 
     /**
-     * Returns if the entry's key is in the non pvp enchants list
+     * Returns if the entry's key is in the non pvp oldEnchants list
      * @param entry the entry to check
      * @return true if it is in the array, also returns false always when non pvp enchantsa re allowed
      */
@@ -122,33 +130,40 @@ public abstract class EnchantmentHelperMixin {
         // if nothing is disallowed, then get out of here
         if(Lifed.config.highLevelOtherEnchAllowed && Lifed.config.highLevelPvpEnchAllowed) return;
 
-        // array list that will be full of the appropriate enchants
+        // array list that will be full of the appropriate oldEnchants
         List<EnchantmentLevelEntry> newList = new ArrayList<>();
 
+        for(EnchantmentLevelEntry entry : cir.getReturnValue())
+            Lifed.LOGGER.info(entry.enchantment().getIdAsString() + " " + entry.level() + " " + (isEnchantHighLevel(entry) && (isPvpEnchant(entry.enchantment()) || isNonPvpEnchant(entry.enchantment()))));
+
+        Lifed.LOGGER.info("-------------------------");
         for(EnchantmentLevelEntry entry : cir.getReturnValue()) {
             // dont need to even consider this entry if its not high level
             RegistryEntry<Enchantment> enchant = entry.enchantment();
 
-            // if it is disallowed, do not add it to the lsit
+            // if it is disallowed, add it as level 1 to the list
             if(isEnchantHighLevel(entry) && (isPvpEnchant(enchant) || isNonPvpEnchant(enchant)))
-                continue;
-
-            newList.add(entry);
+                newList.add(new EnchantmentLevelEntry(enchant, 1));
+            else
+                newList.add(entry);
         }
-
         cir.setReturnValue(newList);
     }
 
     @Inject(method = "set", at = @At("HEAD"), cancellable = true)
     private static void set(ItemStack stack, ItemEnchantmentsComponent enchantments, CallbackInfo ci) {
+        // creates a new enchant component, and fill it with capped enchants
+        ItemEnchantmentsComponent.Builder newEnchants = new ItemEnchantmentsComponent.Builder(enchantments);
+
         for(RegistryEntry<Enchantment> enchant : enchantments.getEnchantments()) {
             int level = enchantments.getLevel(enchant);
 
-            // ignore level one enchants since theyre always allowed
-            if(level == 1) return;
-
-            if(isPvpEnchant(enchant) || isNonPvpEnchant(enchant))
-                ci.cancel();
+            // set this levels enchant to become 1
+            if(level > 1 && (isPvpEnchant(enchant) || isNonPvpEnchant(enchant))) {
+                newEnchants.set(enchant, 1);
+            }
         }
+
+        stack.set(getEnchantmentsComponentType(stack), newEnchants.build());
     }
 }
