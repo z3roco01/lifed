@@ -175,6 +175,11 @@ public class BoogeymanManager {
      */
     public static void selectBoogeys(int max) {
         List<ServerPlayerEntity> players = Lifed.SERVER.getPlayerManager().getPlayerList();
+        // weed out red players so people will only actually be boogeys
+        for(ServerPlayerEntity player : players) {
+            if(LifeManager.getLives(player) == 1)
+                players.remove(player);
+        }
 
         // if there is somehow not enough players, just pull everyone
         int realMax = max;

@@ -16,7 +16,6 @@ import z3roco01.lifed.features.SessionManagement;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Random;
 
 public class WatcherCommands implements CommandRegisterer {
     @Override
@@ -78,31 +77,11 @@ public class WatcherCommands implements CommandRegisterer {
                                     return 1;
                                 })))
                         .then(CommandManager.literal("instantroll").executes(ctx -> {
-                            // scuffed bad implementation, quick and dirty for testing mostly
                             BoogeymanManager.clearBoogeymen();
 
+                            BoogeymanManager.selectBoogeys(Lifed.config.maxBoogeymen);
+
                             List<ServerPlayerEntity> players = Lifed.SERVER.getPlayerManager().getPlayerList();
-
-                            // will be at least one
-                            int boogeys = 0;
-
-                            Random random = new Random();
-                            // did the last roll succeed
-                            boolean succeeded = true;
-                            // decimal percent chance that the next boogey will be chosen
-                            double chance = 1;
-
-                            while(succeeded && boogeys < Math.min(players.size(), Lifed.config.maxBoogeymen)) {
-                                // add a new boogey
-                                boogeys++;
-                                // half the chance
-                                chance /= 2;
-
-                                // if it is successful, then the next will be chosen
-                                succeeded = (random.nextDouble() > chance);
-                            }
-
-                            BoogeymanManager.selectBoogeys(boogeys);
                             BoogeymanManager.showBoogeyStatus(players);
                             return 1;
                         }))
