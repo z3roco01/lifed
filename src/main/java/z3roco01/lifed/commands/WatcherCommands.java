@@ -80,6 +80,7 @@ public class WatcherCommands implements CommandRegisterer {
                             BoogeymanManager.clearBoogeymen();
 
                             BoogeymanManager.selectBoogeys(Lifed.config.maxBoogeymen);
+                            Lifed.LOGGER.info("asd");
 
                             List<ServerPlayerEntity> players = Lifed.SERVER.getPlayerManager().getPlayerList();
                             BoogeymanManager.showBoogeyStatus(players);
@@ -100,14 +101,6 @@ public class WatcherCommands implements CommandRegisterer {
                             BoogeymanManager.clearBoogeymen();
                             return 1;
                         })))
-                        .then(CommandManager.literal("remaining").executes(ctx -> {
-                            if(BoogeymanManager.getBoogeymen().isEmpty())
-                                ctx.getSource().sendFeedback(() -> Text.of("There are no boogeys remaining"), false);
-                            else
-                                ctx.getSource().sendFeedback(() -> Text.of("There is at leats one boogey remaining"), false);
-
-                            return 1;
-                        }))
                 .then(CommandManager.literal("session")
                         .then(CommandManager.literal("start").executes(ctx -> {
                             SessionManagement.unpause();
@@ -142,6 +135,14 @@ public class WatcherCommands implements CommandRegisterer {
 
                                         return 1;
                                     })))
+                            .then(CommandManager.literal("remaining").executes(ctx -> {
+                                if(BoogeymanManager.getBoogeymen().isEmpty())
+                                    ctx.getSource().sendFeedback(() -> Text.of("There are no boogeys remaining"), false);
+                                else
+                                    ctx.getSource().sendFeedback(() -> Text.of("There is at leats one boogey remaining"), false);
+
+                                return 1;
+                            }))
                     )
             );
         }

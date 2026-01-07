@@ -149,7 +149,6 @@ public class BoogeymanManager {
 
     /**
      * Shows players their boogey status as a title
-     * ONLY TO BE CALLED IN A SEPERATE THREAD
      */
     public static void showBoogeyStatus(List<ServerPlayerEntity> players) {
         // show anticipation title
@@ -174,17 +173,17 @@ public class BoogeymanManager {
      * @param max max amount of boogeys, each one is half as likely as the last ( 1st 100% )
      */
     public static void selectBoogeys(int max) {
-        List<ServerPlayerEntity> players = Lifed.SERVER.getPlayerManager().getPlayerList();
+        // copy over the list
+        ArrayList<ServerPlayerEntity> players = new ArrayList<>(Lifed.SERVER.getPlayerManager().getPlayerList());
         // weed out red players so people will only actually be boogeys
-        for(ServerPlayerEntity player : players) {
-            if(LifeManager.getLives(player) == 1)
-                players.remove(player);
-        }
+        players.removeIf(player -> LifeManager.getLives(player) == 1);
+
+        // cant roll when theres no one
+        if(players.isEmpty())
+            return;
 
         // if there is somehow not enough players, just pull everyone
-        int realMax = max;
-        if(players.size() < max)
-            realMax = players.size();
+        int realMax = Math.min(players.size(), max);
 
         // do count number of selections
         for(int i = 0; i < realMax; ++i) {
