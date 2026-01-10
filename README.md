@@ -44,7 +44,6 @@ for any command that accepts `<PLAYERS>`, typing `@a` instead of a username will
 - `cure <PLAYER>` : cures one player, used if they got something like a trap kill
 - `fail <PLAYERS>` : fails players, setting them to red life right away
 - `reset` : removes all boogeys without curing or failing
-- `remaining` : informs an admin if there are any boogeys remaining ( not how many )
 ### `/watcher lives`
 - `roll <PLAYERS>` : rolls `<PLAYERS>` lives between 2 and 6
 - `set <PLAYERS> <LIVES>` : sets `<PLAYERS>` lives to `<LIVES>`
@@ -59,3 +58,4 @@ controls things about the current session
 ### `/watcher debug`
 debugging and maybe cheaty commands, some may be undocumented
 - `boogeychance <CHANCE>` : sets `sequentialBoogeyChance` to `<CHANCE>` ( does not save it )
+- `remaining` : informs an admin if there are any boogeys remaining ( not how many )
