@@ -208,8 +208,8 @@ public class LifeManager {
 
         int curLives = LifeManager.getLives(gifter);
 
-        // if the gifter has 1 or less lives, dont let them gift
-        if(curLives <= 1)
+        // if the gifter has 2 or less lives, dont let them gift
+        if(curLives <= 2)
             return false;
         // cannot resurect
         if(LifeManager.getLives(recipient) < 1)
