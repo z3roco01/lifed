@@ -176,7 +176,7 @@ public class BoogeymanManager {
         // copy over the list
         ArrayList<ServerPlayerEntity> players = new ArrayList<>(Lifed.SERVER.getPlayerManager().getPlayerList());
         // weed out red players so people will only actually be boogeys
-        players.removeIf(player -> LifeManager.getLives(player) == 1);
+        players.removeIf(player -> LifeManager.getLives(player) <= 1);
 
         // cant roll when theres no one
         if(players.isEmpty())
