@@ -263,8 +263,8 @@ public class LifeManager {
 
         // for each player, give them a random amount of lives
         for (ServerPlayerEntity player : players) {
-            int lives = random.nextInt(min, max+1);
             // +2 since the nextInt function is 0 to arg inclusive
+            int lives = random.nextInt(min, max+1);
             LifeManager.setLives(player, lives);
 
             // show them how many they got
