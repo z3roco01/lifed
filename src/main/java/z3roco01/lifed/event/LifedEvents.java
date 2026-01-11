@@ -35,6 +35,10 @@ public class LifedEvents {
     public static void register() {
         ServerLifecycleEvents.SERVER_STARTED.register(LifedEvents::onServerStarted);
         ServerLifecycleEvents.SERVER_STOPPING.register(LifedEvents::onServerStopping);
+        ServerPlayConnectionEvents.INIT.register((handler, server) -> {
+            if(Lifed.config.lockoutPlayers && BoogeymanManager.areBoogeysRolled())
+                handler.disconnect(Text.of("The boogeymen have already been rolled, try next time or ask the owner"));
+        });
         ServerPlayConnectionEvents.JOIN.register(LifedEvents::onPlayerJoin);
         CommandRegistrationCallback.EVENT.register(LifedEvents::onCommandsRegister);
     }
@@ -56,8 +60,6 @@ public class LifedEvents {
      * @param server minecraft server reference
      */
     private static void onPlayerJoin(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server) {
-        if(Lifed.config.lockoutPlayers && BoogeymanManager.areBoogeysRolled())
-            handler.disconnect(Text.of("The boogeymen have already been rolled, try next time or ask the owner"));
 
         ServerPlayerEntity player = handler.getPlayer();
         // update everytime they join, since teams are volatile
