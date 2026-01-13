@@ -76,16 +76,6 @@ public class WatcherCommands implements CommandRegisterer {
                                     BoogeymanManager.rollBoogeys(IntegerArgumentType.getInteger(ctx, "max"));
                                     return 1;
                                 })))
-                        .then(CommandManager.literal("instantroll").executes(ctx -> {
-                            BoogeymanManager.clearBoogeymen();
-
-                            BoogeymanManager.selectBoogeys(Lifed.config.maxBoogeymen);
-                            Lifed.LOGGER.info("asd");
-
-                            List<ServerPlayerEntity> players = Lifed.SERVER.getPlayerManager().getPlayerList();
-                            BoogeymanManager.showBoogeyStatus(players);
-                            return 1;
-                        }))
                         .then(CommandManager.literal("cure")
                                 .then(CommandManager.argument("target", EntityArgumentType.player()).executes(ctx -> {
                                     BoogeymanManager.cure(EntityArgumentType.getPlayer(ctx, "target"));
@@ -141,6 +131,15 @@ public class WatcherCommands implements CommandRegisterer {
                                 else
                                     ctx.getSource().sendFeedback(() -> Text.of("There is at leats one boogey remaining"), false);
 
+                                return 1;
+                            }))
+                            .then(CommandManager.literal("instantboogey").executes(ctx -> {
+                                BoogeymanManager.clearBoogeymen();
+
+                                BoogeymanManager.selectBoogeys(Lifed.config.maxBoogeymen);
+
+                                List<ServerPlayerEntity> players = Lifed.SERVER.getPlayerManager().getPlayerList();
+                                BoogeymanManager.showBoogeyStatus(players);
                                 return 1;
                             }))
                     )

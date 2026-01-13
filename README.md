@@ -6,7 +6,7 @@ If you cannot move, that is not a problem, it is because the session has not sta
 ## Commands
 - `/lives` : tells you how many lives you have
 - `/givelife <PLAYER>` : will give one of your lives ( as long as you have more than 1 ) to `<PLAYER>`
-- `/time` : will tell you how much time is left in the session, or how much is left in the break
+- `/remaining` : will tell you how much time is left in the session, or how much is left in the break
 
 # For Server Admins
 This mod replicates Last Life with customisability. It has session timing, item banning and more.
@@ -40,7 +40,6 @@ for any command that accepts `<PLAYERS>`, typing `@a` instead of a username will
 ### `/watcher boogeyman`
 - `roll` : rolls up to the maximum amount of boogeys, also waits 5 minutes ( each boogey is half as likely as the last, first is 100%)
 - `roll <MAX>` : rolls boogeys up to the new supplied `<MAX>`
-- `instantroll` : rolls immediately, without waiting 5 minutes
 - `cure <PLAYER>` : cures one player, used if they got something like a trap kill
 - `fail <PLAYERS>` : fails players, setting them to red life right away
 - `reset` : removes all boogeys without curing or failing
@@ -59,3 +58,4 @@ controls things about the current session
 debugging and maybe cheaty commands, some may be undocumented
 - `boogeychance <CHANCE>` : sets `sequentialBoogeyChance` to `<CHANCE>` ( does not save it )
 - `remaining` : informs an admin if there are any boogeys remaining ( not how many )
+- `instantboogey` : rolls immediately, without waiting 5 minutes

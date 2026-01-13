@@ -14,8 +14,6 @@ import z3roco01.lifed.features.LifeManager;
 import z3roco01.lifed.features.SessionManagement;
 import z3roco01.lifed.util.Time;
 
-import java.time.Duration;
-
 /**
  * Commands that normal players can interact with
  */
@@ -50,7 +48,7 @@ public class PlayerCommands implements CommandRegisterer {
                     return 1;
                 }));
 
-        dispatcher.register(CommandManager.literal("time")
+        dispatcher.register(CommandManager.literal("remaining")
                 .executes(ctx -> {
                     if(SessionManagement.onBreak()) {
                         ctx.getSource().sendFeedback(() -> Text.of("§7" + Time.prettyTicks(SessionManagement.remainingBreakTicks()) +
@@ -59,7 +57,6 @@ public class PlayerCommands implements CommandRegisterer {
                         int ticksRemaining = SessionManagement.ticksRemaining();
 
                         double timePercent = ticksRemaining/(double)Time.MINUTES.ticks(Lifed.config.sessionLength);
-                        Lifed.LOGGER.info(String.valueOf(timePercent));
 
                         String timeColour = "§";
                         // based off colours in limited life
