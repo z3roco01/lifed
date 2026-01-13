@@ -75,7 +75,16 @@ public class SessionManagement {
                 // failing boogeymen causes concurency error
                 //BoogeymanManager.failAll();
                 pause();
-            }
+            }else if(ticksRemaining == Time.HOURS.ticks(1))
+                TitleUtil.sendTitleAndChat("1 Hour remain...", Formatting.GREEN);
+            else if(ticksRemaining() == Time.MINUTES.ticks(30))
+                TitleUtil.sendTitleAndChat("30 Minutes remain...", Formatting.YELLOW);
+            else if(ticksRemaining() == Time.MINUTES.ticks(15))
+                TitleUtil.sendTitleAndChat("15 Minutes remain...", Formatting.YELLOW);
+            else if(ticksRemaining() == Time.MINUTES.ticks(5))
+                TitleUtil.sendTitleAndChat("5 Minutes remain...", Formatting.RED);
+            else if(ticksRemaining() == Time.MINUTES.ticks(1))
+                TitleUtil.sendTitleAndChat("1 Minute remains...", Formatting.RED);
         });
     }
 

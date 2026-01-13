@@ -34,4 +34,22 @@ public class TitleUtil {
         for(ServerPlayerEntity player : Lifed.SERVER.getPlayerManager().getPlayerList())
             sendTitle(player, text);
     }
+
+    /**
+     * Sends a title and chat message to every player
+     * @param text text to send
+     * @param colour the formatting of the text when sent
+     */
+    public static void sendTitleAndChat(String text, Formatting colour) {
+        sendTitleAndChat(Text.of(text).copy().formatted(colour));
+    }
+
+    /**
+     * Sends a title and chat message to every player
+     * @param text text to send
+     */
+    public static void sendTitleAndChat(Text text) {
+        sendTitleAll(text);
+        ChatUtil.sendChatMessage(text);
+    }
 }
