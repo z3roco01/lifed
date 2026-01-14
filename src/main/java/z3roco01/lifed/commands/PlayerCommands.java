@@ -60,9 +60,9 @@ public class PlayerCommands implements CommandRegisterer {
 
                         String timeColour = "§";
                         // based off colours in limited life
-                        if(timePercent >= 0.67)
+                        if(timePercent >= 2f/3f)
                             timeColour += "a";
-                        else if(timePercent >= 0.34)
+                        else if(timePercent >= 1f/3f)
                             timeColour += "e";
                         else
                             timeColour += "c";

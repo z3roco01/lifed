@@ -105,6 +105,7 @@ public class SessionManagement {
         EntityAttributeInstance movementInst = player.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED);
         EntityAttributeInstance jumpInst = player.getAttributeInstance(EntityAttributes.JUMP_STRENGTH);
         EntityAttributeInstance reachInst = player.getAttributeInstance(EntityAttributes.BLOCK_INTERACTION_RANGE);
+        EntityAttributeInstance damageInst = player.getAttributeInstance(EntityAttributes.ATTACK_DAMAGE);
 
         // only apply the freeze modifier if its not already applied, avoids error
         if(!movementInst.hasModifier(MODIFIER_FREEZE.id()))
@@ -113,6 +114,8 @@ public class SessionManagement {
             jumpInst.addPersistentModifier(MODIFIER_FREEZE);
         if(!reachInst.hasModifier(MODIFIER_FREEZE.id()))
             reachInst.addPersistentModifier(MODIFIER_FREEZE);
+        if(!damageInst.hasModifier(MODIFIER_FREEZE.id()))
+            damageInst.addPersistentModifier(MODIFIER_FREEZE);
     }
 
     /**
@@ -122,6 +125,7 @@ public class SessionManagement {
         player.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED).removeModifier(MODIFIER_FREEZE);
         player.getAttributeInstance(EntityAttributes.JUMP_STRENGTH).removeModifier(MODIFIER_FREEZE);
         player.getAttributeInstance(EntityAttributes.BLOCK_INTERACTION_RANGE).removeModifier(MODIFIER_FREEZE);
+        player.getAttributeInstance(EntityAttributes.ATTACK_DAMAGE).removeModifier(MODIFIER_FREEZE);
     }
 
     /**
