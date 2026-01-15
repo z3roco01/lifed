@@ -24,7 +24,7 @@ you can use [minecraft formatting codes](https://minecraft.wiki/w/Formatting_cod
 - `lightningOnRedDeath` (default: 5) : How many lightning bolts will be spawned on a red death
 - `bannedItems` (default: ["minecraft:bookshelf"]) : A list containing item ids that will be banned, meaning they cannot be crafted or picked up, will be destroyed on pickup
 - `uncraftableItems` (default: ["minecraft:enchanting_table"]) : A list of item ids which are just uncraftable, can still be picked up
-- `bannedEffects` (default: ["minecraft:strenght"]) : A list of effect ids that cannot be applied to players, they can still make potions, but if the effect is applied itll disappear immediately
+- `bannedEffects` (default: ["minecraft:strength"]) : A list of effect ids that cannot be applied to players, they can still make potions, but if the effect is applied itll disappear immediately
 - `highLevelPvpEnchAllowed` (default: false) : If false, all PVP enchantments cannot be applied at levels higher than 1
 - `highLevelOtherEnchAllowed` (default: false) : If false, all non-PVP enchantments cannot be applied at levels higher than 1
 - `expandedWolfSpawning` (default: true) : If true, lets wolves spawn in more biomes ( for now just flower and birch forests )
@@ -42,7 +42,8 @@ for any command that accepts `<PLAYERS>`, typing `@a` instead of a username will
 - `roll` : rolls up to the maximum amount of boogeys, also waits 5 minutes ( each boogey is half as likely as the last, first is 100%)
 - `roll <MAX>` : rolls boogeys up to the new supplied `<MAX>`
 - `cure <PLAYER>` : cures one player, used if they got something like a trap kill
-- `fail <PLAYERS>` : fails players, setting them to red life right away
+- `fail <PLAYER>` : fails a player, setting them to red life right away only if they are a boogey
+- `failall` : fails all remaining boogeys
 - `reset` : removes all boogeys without curing or failing
 ### `/watcher lives`
 - `roll <PLAYERS>` : rolls `<PLAYERS>` lives between 2 and 6
