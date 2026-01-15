@@ -142,6 +142,12 @@ public class WatcherCommands implements CommandRegisterer {
                                 BoogeymanManager.showBoogeyStatus(players);
                                 return 1;
                             }))
+                            .then(CommandManager.literal("printboogeys").executes(ctx -> {
+                                for(ServerPlayerEntity boogey : BoogeymanManager.getBoogeymen())
+                                    Lifed.LOGGER.info(boogey.getStringifiedName());
+
+                                return 1;
+                            }))
                     )
             );
         }
