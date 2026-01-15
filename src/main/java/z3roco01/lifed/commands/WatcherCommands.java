@@ -125,14 +125,6 @@ public class WatcherCommands implements CommandRegisterer {
 
                                         return 1;
                                     })))
-                            .then(CommandManager.literal("remaining").executes(ctx -> {
-                                if(BoogeymanManager.getBoogeymen().isEmpty())
-                                    ctx.getSource().sendFeedback(() -> Text.of("There are no boogeys remaining"), false);
-                                else
-                                    ctx.getSource().sendFeedback(() -> Text.of("There is at leats one boogey remaining"), false);
-
-                                return 1;
-                            }))
                             .then(CommandManager.literal("instantboogey").executes(ctx -> {
                                 BoogeymanManager.clearBoogeymen();
 

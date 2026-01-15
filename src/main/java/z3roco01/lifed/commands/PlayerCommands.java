@@ -10,6 +10,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import z3roco01.lifed.Lifed;
+import z3roco01.lifed.features.BoogeymanManager;
 import z3roco01.lifed.features.LifeManager;
 import z3roco01.lifed.features.SessionManagement;
 import z3roco01.lifed.util.Time;
@@ -73,5 +74,14 @@ public class PlayerCommands implements CommandRegisterer {
                     }
                     return 1;
                 }));
+
+        dispatcher.register(CommandManager.literal("boogeys").executes(ctx -> {
+            if(BoogeymanManager.getBoogeymen().isEmpty())
+                ctx.getSource().sendFeedback(() -> Text.of("There are no boogeymen remaining").copy().formatted(Formatting.GRAY), false);
+            else
+                ctx.getSource().sendFeedback(() -> Text.of("There is at least one boogeyman remaining").copy().formatted(Formatting.GRAY), false);
+
+            return 1;
+        }));
     }
 }

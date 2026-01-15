@@ -7,6 +7,7 @@ If you cannot move, that is not a problem, it is because the session has not sta
 - `/lives` : tells you how many lives you have
 - `/givelife <PLAYER>` : will give one of your lives ( as long as you have more than 1 ) to `<PLAYER>`
 - `/remaining` : will tell you how much time is left in the session, or how much is left in the break
+- `/boogeys` : Will tell the you if there are any boogeymen at all remaining, not the count.
 
 # For Server Admins
 This mod replicates Last Life with customisability. It has session timing, item banning and more.
@@ -57,5 +58,4 @@ controls things about the current session
 ### `/watcher debug`
 debugging and maybe cheaty commands, some may be undocumented
 - `boogeychance <CHANCE>` : sets `sequentialBoogeyChance` to `<CHANCE>` ( does not save it )
-- `remaining` : informs an admin if there are any boogeys remaining ( not how many )
 - `instantboogey` : rolls immediately, without waiting 5 minutes

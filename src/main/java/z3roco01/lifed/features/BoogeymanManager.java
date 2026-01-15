@@ -13,6 +13,7 @@ import z3roco01.lifed.util.TaskScheduling;
 import z3roco01.lifed.util.player.TitleUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -26,11 +27,10 @@ public class BoogeymanManager {
 
     /**
      * Creates a new list of all the boogey players, does not allow modification
-     * @return
      */
     public static List<ServerPlayerEntity> getBoogeymen() {
         // creates an immutable list of the boogeymen
-        return List.of(boogeymen.toArray(new ServerPlayerEntity[] {}));
+        return Collections.unmodifiableList(boogeymen);
     }
 
     /**
