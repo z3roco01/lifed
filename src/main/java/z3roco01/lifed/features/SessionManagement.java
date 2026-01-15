@@ -218,17 +218,6 @@ public class SessionManagement {
         onBreak = true;
 
         TitleUtil.sendTitleAll(Lifed.config.breakLength + " minute break started", Formatting.RED);
-
-        // schedule warnings
-
-        if(breakTicksRemaining > Time.MINUTES.ticks(1)) {
-            int ticksMinus1min = breakTicksRemaining - Time.MINUTES.ticks(1);
-            TaskScheduling.scheduleTask(ticksMinus1min, () -> {
-                ChatUtil.sendChatMessage("1 minute until the break ends", Formatting.RED);
-
-                TitleUtil.sendTitleAll("1 minute remaining", Formatting.RED);
-            });
-        }
     }
 
     /**
