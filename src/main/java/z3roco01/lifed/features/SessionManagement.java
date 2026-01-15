@@ -8,12 +8,15 @@ import net.minecraft.server.ServerTickManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import org.jspecify.annotations.Nullable;
 import z3roco01.lifed.Lifed;
 import z3roco01.lifed.util.LoggingUtil;
 import z3roco01.lifed.util.TaskScheduling;
 import z3roco01.lifed.util.Time;
 import z3roco01.lifed.util.player.ChatUtil;
 import z3roco01.lifed.util.player.TitleUtil;
+
+import java.util.ArrayList;
 
 /**
  * Handles pre session and post session events, such as stopping players an failing boogeys
@@ -41,9 +44,18 @@ public class SessionManagement {
 
     private static int breakTicksRemaining = 0;
 
+    private static final ArrayList<SessionTickEvent> tickEvents = new ArrayList<>();
+
     // modifiers for freezing players
     private static final EntityAttributeModifier MODIFIER_FREEZE = new EntityAttributeModifier(
             Identifier.of(Lifed.MOD_ID, "freeze"), -1, EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+
+    /**
+     * Registers the passed tick event
+     */
+    public static void registerTickEvent(SessionTickEvent tickEvent) {
+        tickEvents.add(tickEvent);
+    }
 
     /**
      * Sets up the timer, registers the ticker, and pawses everything
@@ -56,6 +68,25 @@ public class SessionManagement {
             ticksRemaining = -1;
 
         breakTicksTotal = Time.MINUTES.ticks(Lifed.config.breakLength);
+        // register break end warnings
+        registerTickEvent(new SessionTickOneshot(Time.MINUTES.ticks(5),
+                () -> ChatUtil.sendChatMessage("5 Minutes remain", Formatting.RED), true));
+        registerTickEvent(new SessionTickOneshot(Time.MINUTES.ticks(1),
+                () -> TitleUtil.sendTitleAndChat("1 Minute remains", Formatting.RED), true));
+        registerTickEvent(new SessionTickOneshot(Time.SECONDS.ticks(30),
+                () -> TitleUtil.sendTitleAndChat("30 Seconds remain...", Formatting.RED), true));
+
+        // register session end warnings
+        registerTickEvent(new SessionTickOneshot(Time.HOURS.ticks(1),
+                () -> TitleUtil.sendTitleAndChat("1 Hour remains...", Formatting.GREEN), false));
+        registerTickEvent(new SessionTickOneshot(Time.MINUTES.ticks(30),
+                () -> TitleUtil.sendTitleAndChat("30 Minutes remain...", Formatting.YELLOW), false));
+        registerTickEvent(new SessionTickOneshot(Time.MINUTES.ticks(15),
+                () -> TitleUtil.sendTitleAndChat("15 Minutes remain...", Formatting.YELLOW), false));
+        registerTickEvent(new SessionTickOneshot(Time.MINUTES.ticks(5),
+                () -> TitleUtil.sendTitleAndChat("5 Minutes remain...", Formatting.RED), false));
+        registerTickEvent(new SessionTickOneshot(Time.MINUTES.ticks(1),
+                () -> TitleUtil.sendTitleAndChat("1 Minute remains...", Formatting.RED), false));
 
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             if(onBreak) {
@@ -75,16 +106,10 @@ public class SessionManagement {
                 // failing boogeymen causes concurency error
                 //BoogeymanManager.failAll();
                 pause();
-            }else if(ticksRemaining == Time.HOURS.ticks(1))
-                TitleUtil.sendTitleAndChat("1 Hour remain...", Formatting.GREEN);
-            else if(ticksRemaining() == Time.MINUTES.ticks(30))
-                TitleUtil.sendTitleAndChat("30 Minutes remain...", Formatting.YELLOW);
-            else if(ticksRemaining() == Time.MINUTES.ticks(15))
-                TitleUtil.sendTitleAndChat("15 Minutes remain...", Formatting.YELLOW);
-            else if(ticksRemaining() == Time.MINUTES.ticks(5))
-                TitleUtil.sendTitleAndChat("5 Minutes remain...", Formatting.RED);
-            else if(ticksRemaining() == Time.MINUTES.ticks(1))
-                TitleUtil.sendTitleAndChat("1 Minute remains...", Formatting.RED);
+            }else {
+                for(SessionTickEvent tickEvent : tickEvents)
+                    tickEvent.tick(ticksRemaining, onBreak);
+            }
         });
     }
 
@@ -195,12 +220,6 @@ public class SessionManagement {
         TitleUtil.sendTitleAll(Lifed.config.breakLength + " minute break started", Formatting.RED);
 
         // schedule warnings
-        if(breakTicksRemaining >= Time.MINUTES.ticks(10)) {
-            int ticksMinus5min = breakTicksRemaining - Time.MINUTES.ticks(5);
-            TaskScheduling.scheduleTask(ticksMinus5min, () -> {
-                ChatUtil.sendChatMessage("5 minutes remaining", Formatting.RED);
-            });
-        }
 
         if(breakTicksRemaining > Time.MINUTES.ticks(1)) {
             int ticksMinus1min = breakTicksRemaining - Time.MINUTES.ticks(1);
@@ -231,5 +250,55 @@ public class SessionManagement {
 
     public static int remainingBreakTicks() {
         return breakTicksRemaining;
+    }
+
+    /**
+     * Used to register an event to run on every unpaused tick of a session, including breaks
+     */
+    @FunctionalInterface
+    public interface SessionTickEvent {
+        /**
+         * Called once an active ( non pause ) session tick
+         * @param remainingTicks the remaining ticks in the session or break ( ex: at 1 minute it will be 120 ticks )
+         * @param isBreak true when this is being run in a break
+         */
+        void tick(int remainingTicks, boolean isBreak);
+    }
+
+    /**
+     * Registers a tick event to run one time, once a certain time has been reached
+     */
+    public static class SessionTickOneshot implements SessionTickEvent {
+        private final int triggerTicks;
+        @Nullable
+        private final Runnable runnable;
+        private final boolean runOnBreak;
+
+        /**
+         * @param triggerTicks at how many ticks REMAINING ! should this run
+         * @param runnable the thing to run
+         * @param runOnBreak if true this timer should run on the break instead of the normal session
+         */
+        public SessionTickOneshot(int triggerTicks, @Nullable Runnable runnable, boolean runOnBreak) {
+            this.runnable = runnable;
+            this.triggerTicks = triggerTicks;
+            this.runOnBreak = runOnBreak;
+        }
+        /**
+         * Called once the specified time has been reached, here so it can be overriden i guess
+         */
+        void run() {
+            if(runnable != null)
+                runnable.run();
+        }
+
+        @Override
+        public void tick(int remainingTicks, boolean isBreak) {
+            // only run if it has reached the proper tick, and the break state is the same
+            if(remainingTicks == triggerTicks) {
+                if(isBreak == runOnBreak)
+                    run();
+            }
+        }
     }
 }
