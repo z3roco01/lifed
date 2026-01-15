@@ -33,7 +33,7 @@
 		"minecraft": "~1.21.11",
 		"java": ">=21",
 		"fabric-api": "*",
-        "composed": ">=1.4.1"
+        "composed": "~1.4.1"
 	},
 	"suggests": {
 		"simple-voice-chat": "*"
