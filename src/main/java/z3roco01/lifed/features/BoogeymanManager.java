@@ -129,17 +129,17 @@ public class BoogeymanManager {
             default -> "boogeymen";
         };
 
+        // clear them just before selecting
+        failAll();
+
+        selectBoogeys(max);
+
         ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen in 5 minutes...", Formatting.RED);
         TaskScheduling.scheduleTask(Time.MINUTES.ticks(4), () -> {
             ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen in 1 minute...", Formatting.RED);
             TaskScheduling.scheduleTask(Time.SECONDS.ticks(55), () -> {
                 ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen soon.....", Formatting.RED);
                 TaskScheduling.scheduleTask(Time.SECONDS.ticks(5), () -> {
-                    // clear them just before selecting
-                    clearBoogeymen();
-
-                    selectBoogeys(max);
-
                     List<ServerPlayerEntity> players = Lifed.SERVER.getPlayerManager().getPlayerList();
                     showBoogeyStatus(players);
                 });
