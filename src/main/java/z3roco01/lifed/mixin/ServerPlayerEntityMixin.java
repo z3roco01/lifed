@@ -76,6 +76,9 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Wo
         if(livesBeforeDeath > 1) {
             ServerPlayerEntity killer = (ServerPlayerEntity)maybeKiller;
             BoogeymanManager.cure(killer);
+
+            if(Lifed.config.logEvents)
+                Lifed.LOGGER.info(killer.getStringifiedName() + " boogey killed " + player.getStringifiedName());
         }
     }
 

@@ -61,6 +61,9 @@ public class BoogeymanManager {
         // give them 10 seconds of regen and resistance
         PlayerUtil.addStatusEffect(player, StatusEffects.REGENERATION, 10);
         PlayerUtil.addStatusEffect(player, StatusEffects.RESISTANCE, 10);
+
+        if(Lifed.config.logEvents)
+            Lifed.LOGGER.info(player.getStringifiedName() + " has been cured");
     }
 
     /**

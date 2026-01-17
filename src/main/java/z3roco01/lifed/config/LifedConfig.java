@@ -123,4 +123,8 @@ public class LifedConfig implements ProcessedConfig {
     @Comment(comment = "Should debug watcher commands be enabled")
     @ConfigProperty
     public boolean watcherDebug = false;
+
+    @Comment(comment = "Should events like life gives and boogey deaths be sent to the server console")
+    @ConfigProperty
+    public boolean logEvents = false;
 }

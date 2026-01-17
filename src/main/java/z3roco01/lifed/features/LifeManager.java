@@ -116,7 +116,9 @@ public class LifeManager {
      * @param lives the new life count for the player
      */
     public static void setLives(ServerPlayerEntity player, int lives) {
-        LoggingUtil.log(player.getStringifiedName() + " is now at " + lives + " lives !");
+        if(Lifed.config.logEvents)
+            LoggingUtil.log(player.getStringifiedName() + " is now at " + lives + " lives !");
+
         ScoreboardUtil.setScore(LIVES_OBJECTIVE, player, lives);
         updateTeam(player);
     }
@@ -202,7 +204,6 @@ public class LifeManager {
      * @return true if the life was successfully given, false otherwise
      */
     public static boolean giftLife(ServerPlayerEntity gifter, ServerPlayerEntity recipient) {
-
         if(gifter == recipient)
             return false;
 
@@ -214,6 +215,9 @@ public class LifeManager {
         // cannot resurect
         if(LifeManager.getLives(recipient) < 1)
             return false;
+
+        if(Lifed.config.logEvents)
+            Lifed.LOGGER.info(gifter.getStringifiedName() + " gave a life to " + recipient.getStringifiedName());
 
         LifeManager.removeLife(gifter);
         LifeManager.addLife(recipient);
