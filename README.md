@@ -36,6 +36,7 @@ you can use [minecraft formatting codes](https://minecraft.wiki/w/Formatting_cod
 - `wolfLimit` (default: 5) : The maximum amount of wolves one player can have, set to -1 to disable
 - `sequentialBoogeyChance` (default: 0.5) : The chance for another boogey to be chosen after the first. The first boogey is always guaranteed, and each boogey has this chance of happening. Ex: 1st 100%, 2nd 50%, 3rd 25%, 4th 12.5%
 - `watcherDebug` (default: false) : Enables watcher debug commands when true, they may be undocumented or cheaty, so not recommended
+- `logEvents` (default: false) : When true, events like boogey kills, cures, life changes, and life gifts are logged to the **server console**
 ## Commands
 for any command that accepts `<PLAYERS>`, typing `@a` instead of a username will pick every current player
 ### `/watcher boogeyman`
