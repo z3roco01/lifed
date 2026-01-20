@@ -67,6 +67,13 @@ public class BoogeymanManager {
     }
 
     /**
+     * Returns true if the player is a boogey
+     */
+    public static boolean isPlayerBoogey(ServerPlayerEntity player) {
+        return boogeymen.contains(player);
+    }
+
+    /**
      * Fails all remaining boogeys, called at the end of a session
      */
     public static void failAll() {
