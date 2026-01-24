@@ -36,7 +36,7 @@ public class LifedEvents {
         ServerLifecycleEvents.SERVER_STARTED.register(LifedEvents::onServerStarted);
         ServerLifecycleEvents.SERVER_STOPPING.register(LifedEvents::onServerStopping);
         ServerPlayConnectionEvents.INIT.register((handler, server) -> {
-            if(Lifed.config.lockoutPlayers && BoogeymanManager.areBoogeysRolled())
+            if((Lifed.config.lockoutPlayers && BoogeymanManager.areBoogeysRolled()) || SessionManagement.sessionLocked)
                 handler.disconnect(Text.of("The boogeymen have already been rolled, try next time or ask the owner"));
         });
         ServerPlayConnectionEvents.JOIN.register(LifedEvents::onPlayerJoin);

@@ -58,6 +58,7 @@ controls things about the current session
 - `stop` : will pause the current session ( not a break )
 - `break` : starts a break for the set amount of time
 - `cancelbreak` : stop a break that is currently happening
+- `togglelock` : will toggle if the session is locked, when it is no one can rejoin
 ### `/watcher debug`
 debugging and maybe cheaty commands, some may be undocumented
 - `boogeychance <CHANCE>` : sets `sequentialBoogeyChance` to `<CHANCE>` ( does not save it )

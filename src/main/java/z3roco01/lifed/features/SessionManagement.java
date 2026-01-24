@@ -44,6 +44,8 @@ public class SessionManagement {
 
     private static int breakTicksRemaining = 0;
 
+    public static boolean sessionLocked = false;
+
     private static final ArrayList<SessionTickEvent> tickEvents = new ArrayList<>();
 
     // modifiers for freezing players

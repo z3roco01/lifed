@@ -114,6 +114,20 @@ public class WatcherCommands implements CommandRegisterer {
                             SessionManagement.pause();
                             return 1;
                         }))
+
+                        .then(CommandManager.literal("togglelock").executes(ctx -> {
+                            SessionManagement.sessionLocked = !SessionManagement.sessionLocked;
+
+                            String message = "";
+                            if(SessionManagement.sessionLocked)
+                                message = "§7session is now locked§r";
+                            else
+                                message = "§7session is no longer locked§r";
+
+                            String finalMessage = message;
+                            ctx.getSource().sendFeedback(() -> Text.of(finalMessage), true);
+                            return 1;
+                        }))
                 )
         );
 
