@@ -11,7 +11,6 @@ import net.minecraft.util.Identifier;
 import org.jspecify.annotations.Nullable;
 import z3roco01.lifed.Lifed;
 import z3roco01.lifed.util.LoggingUtil;
-import z3roco01.lifed.util.TaskScheduling;
 import z3roco01.lifed.util.Time;
 import z3roco01.lifed.util.player.ChatUtil;
 import z3roco01.lifed.util.player.TitleUtil;
@@ -43,8 +42,6 @@ public class SessionManagement {
     private static int breakTicksTotal = 0;
 
     private static int breakTicksRemaining = 0;
-
-    public static boolean sessionLocked = false;
 
     private static final ArrayList<SessionTickEvent> tickEvents = new ArrayList<>();
 

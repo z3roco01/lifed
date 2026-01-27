@@ -12,6 +12,7 @@ import net.minecraft.text.Text;
 import z3roco01.lifed.Lifed;
 import z3roco01.lifed.features.BoogeymanManager;
 import z3roco01.lifed.features.LifeManager;
+import z3roco01.lifed.features.SessionLock;
 import z3roco01.lifed.features.SessionManagement;
 
 import java.util.Collection;
@@ -114,20 +115,47 @@ public class WatcherCommands implements CommandRegisterer {
                             SessionManagement.pause();
                             return 1;
                         }))
-
-                        .then(CommandManager.literal("togglelock").executes(ctx -> {
-                            SessionManagement.sessionLocked = !SessionManagement.sessionLocked;
-
-                            String message = "";
-                            if(SessionManagement.sessionLocked)
-                                message = "§7session is now locked§r";
+                )
+                .then(CommandManager.literal("lock")
+                        .then(CommandManager.literal("status").executes(ctx -> {
+                            String feedback = "";
+                            if(SessionLock.isLocked())
+                                feedback = "The session is currently locked !";
                             else
-                                message = "§7session is no longer locked§r";
+                                feedback = "The session is currently not locked!";
 
-                            String finalMessage = message;
-                            ctx.getSource().sendFeedback(() -> Text.of(finalMessage), true);
+                            String finalFeedback = feedback;
+                            ctx.getSource().sendFeedback(() -> Text.of(finalFeedback), false);
+
                             return 1;
                         }))
+                        .then(CommandManager.literal("toggle").executes(ctx -> {
+                            boolean toggledOn = false;
+                            if(SessionLock.isLocked()) {
+                                SessionLock.unlock();
+                                toggledOn = true;
+                            }else
+                                SessionLock.lock();
+
+                            String feedback = "";
+                            if(toggledOn)
+                                feedback = "Session is now locked, only players currently online can rejoin";
+                            else
+                                feedback = "Session is now unlocked, anyone can join !";
+
+                            String finalFeedback = feedback;
+                            ctx.getSource().sendFeedback(() -> Text.of(finalFeedback), false);
+
+                            return 1;
+                        }))
+                        .then(CommandManager.literal("add").then(CommandManager.argument("targets", EntityArgumentType.players()).executes(ctx -> {
+                            Collection<ServerPlayerEntity> targets = EntityArgumentType.getPlayers(ctx, "targets");
+                            SessionLock.addPlayers(targets);
+
+                            ctx.getSource().sendFeedback(() -> Text.of("Added " + targets.size() + " players to the allowed players !"), false);
+
+                            return 1;
+                        })))
                 )
         );
 

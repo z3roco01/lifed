@@ -6,20 +6,17 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.registry.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 import z3roco01.lifed.Lifed;
 import z3roco01.lifed.commands.CommandRegisterer;
 import z3roco01.lifed.commands.PlayerCommands;
 import z3roco01.lifed.commands.WatcherCommands;
-import z3roco01.lifed.features.BoogeymanManager;
 import z3roco01.lifed.features.LifeManager;
+import z3roco01.lifed.features.SessionLock;
 import z3roco01.lifed.features.SessionManagement;
 import z3roco01.lifed.util.TaskScheduling;
 
@@ -35,10 +32,7 @@ public class LifedEvents {
     public static void register() {
         ServerLifecycleEvents.SERVER_STARTED.register(LifedEvents::onServerStarted);
         ServerLifecycleEvents.SERVER_STOPPING.register(LifedEvents::onServerStopping);
-        ServerPlayConnectionEvents.INIT.register((handler, server) -> {
-            if((Lifed.config.lockoutPlayers && BoogeymanManager.areBoogeysRolled()) || SessionManagement.sessionLocked)
-                handler.disconnect(Text.of("The boogeymen have already been rolled, try next time or ask the owner"));
-        });
+        ServerPlayConnectionEvents.INIT.register(SessionLock::handlePlayerJoin);
         ServerPlayConnectionEvents.JOIN.register(LifedEvents::onPlayerJoin);
         CommandRegistrationCallback.EVENT.register(LifedEvents::onCommandsRegister);
     }

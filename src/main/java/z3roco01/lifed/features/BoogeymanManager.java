@@ -21,11 +21,6 @@ public class BoogeymanManager {
     private static final ArrayList<ServerPlayerEntity> boogeymen = new ArrayList<>();
 
     /**
-     * Keeps track if boogeys have been rolled to lock people out
-     */
-    private static boolean boogeysRolled = false;
-
-    /**
      * Creates a new list of all the boogey players, does not allow modification
      */
     public static List<ServerPlayerEntity> getBoogeymen() {
@@ -37,8 +32,7 @@ public class BoogeymanManager {
      * Removes all boogeys
      */
     public static void clearBoogeymen() {
-        // allow new players back in
-        boogeysRolled = false;
+        SessionLock.unlock();
 
         boogeymen.clear();
     }
@@ -79,7 +73,7 @@ public class BoogeymanManager {
     public static void failAll() {
         for(ServerPlayerEntity boogey : boogeymen)
             fail(boogey);
-        boogeysRolled = false;
+        SessionLock.unlock();
     }
 
     /**
@@ -204,7 +198,7 @@ public class BoogeymanManager {
             selectOneBoogey(players);
         }
 
-        boogeysRolled = true;
+        SessionLock.lock("Boogeys have been chosen, new players are now allowed in. Wait till next time or contact an admin.");
     }
 
     /**
@@ -243,9 +237,5 @@ public class BoogeymanManager {
         }
 
         return players.get(boogeyIdx);
-    }
-
-    public static boolean areBoogeysRolled() {
-        return boogeysRolled;
     }
 }
