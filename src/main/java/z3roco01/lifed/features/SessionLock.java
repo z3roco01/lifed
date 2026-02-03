@@ -98,7 +98,7 @@ public class SessionLock {
      * Adds another player to the allowed list
      */
     public static void addPlayer(ServerPlayerEntity player) {
-        allowedPlayers.add(player.getUuid());
+        addUUID(player.getUuid());
     }
 
     /**
@@ -106,6 +106,13 @@ public class SessionLock {
      */
     public static void addPlayers(Collection<ServerPlayerEntity> players) {
         for(ServerPlayerEntity player : players)
-            allowedPlayers.add(player.getUuid());
+            addUUID(player.getUuid());
+    }
+
+    /**
+     * Adds a player by their uuid
+     */
+    public static void addUUID(UUID uuid) {
+        allowedPlayers.add(uuid);
     }
 }

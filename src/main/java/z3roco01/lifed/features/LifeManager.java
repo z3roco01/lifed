@@ -96,9 +96,6 @@ public class LifeManager {
         int curLives = getLives(player);
         setLives(player, curLives-1);
 
-        // if the player is too low on lives, put them in spectator
-        if(getLives(player) <= 0)
-            player.changeGameMode(GameMode.SPECTATOR);
     }
 
     /**
@@ -121,6 +118,12 @@ public class LifeManager {
 
         ScoreboardUtil.setScore(LIVES_OBJECTIVE, player, lives);
         updateTeam(player);
+
+        // if the player is too low on lives, put them in spectator
+        if(getLives(player) <= 0)
+            player.changeGameMode(GameMode.SPECTATOR);
+        else if(player.getGameMode() == GameMode.SPECTATOR) // if a player went from 0 lives, to a higher value, give them survival
+            player.changeGameMode(GameMode.SURVIVAL);
     }
 
     /**

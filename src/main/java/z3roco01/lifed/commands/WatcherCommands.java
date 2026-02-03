@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.command.argument.UuidArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -17,6 +18,7 @@ import z3roco01.lifed.features.SessionManagement;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 public class WatcherCommands implements CommandRegisterer {
     @Override
@@ -120,9 +122,9 @@ public class WatcherCommands implements CommandRegisterer {
                         .then(CommandManager.literal("status").executes(ctx -> {
                             String feedback = "";
                             if(SessionLock.isLocked())
-                                feedback = "The session is currently locked !";
+                                feedback = "§7The session is currently locked !§r";
                             else
-                                feedback = "The session is currently not locked!";
+                                feedback = "§7The session is currently not locked!§r";
 
                             String finalFeedback = feedback;
                             ctx.getSource().sendFeedback(() -> Text.of(finalFeedback), false);
@@ -136,12 +138,13 @@ public class WatcherCommands implements CommandRegisterer {
                                 toggledOn = true;
                             }else
                                 SessionLock.lock();
+                            SessionLock.lockedMessage = "Session has been locked, new players cannot join, please wait or contact an admin.";
 
                             String feedback = "";
-                            if(toggledOn)
-                                feedback = "Session is now locked, only players currently online can rejoin";
+                            if(!toggledOn)
+                                feedback = "§7Session is now locked, only players currently online can rejoin§r";
                             else
-                                feedback = "Session is now unlocked, anyone can join !";
+                                feedback = "§7Session is now unlocked, anyone can join !§r";
 
                             String finalFeedback = feedback;
                             ctx.getSource().sendFeedback(() -> Text.of(finalFeedback), false);
@@ -152,7 +155,15 @@ public class WatcherCommands implements CommandRegisterer {
                             Collection<ServerPlayerEntity> targets = EntityArgumentType.getPlayers(ctx, "targets");
                             SessionLock.addPlayers(targets);
 
-                            ctx.getSource().sendFeedback(() -> Text.of("Added " + targets.size() + " players to the allowed players !"), false);
+                            ctx.getSource().sendFeedback(() -> Text.of("§7Added " + targets.size() + " players to the allowed players !§r"), false);
+
+                            return 1;
+                        })))
+                        .then(CommandManager.literal("adduuid").then(CommandManager.argument("uuid", UuidArgumentType.uuid()).executes(ctx -> {
+                            UUID uuid = UuidArgumentType.getUuid(ctx, "uuid");
+                            SessionLock.addUUID(uuid);
+
+                            ctx.getSource().sendFeedback(() -> Text.of("§7Added player with uuid of " + uuid + " !§r"), false);
 
                             return 1;
                         })))

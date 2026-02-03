@@ -198,7 +198,8 @@ public class BoogeymanManager {
             selectOneBoogey(players);
         }
 
-        SessionLock.lock("Boogeys have been chosen, new players are now allowed in. Wait till next time or contact an admin.");
+        if(Lifed.config.lockoutPlayers)
+            SessionLock.lock("Boogeys have been chosen, new players are not allowed in. Wait till next time or contact an admin.");
     }
 
     /**

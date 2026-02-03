@@ -67,3 +67,4 @@ Handles the session lock, which is also enabled by the boogey roll ( if enabled 
 - `status` : will tell you if the lock is currently on or off
 - `toggle` : toggles the lock on and off, when toggled on, sets the list to the currently online players
 - `add <PLAYERS>` : adds the passed players to the allowed players list
+- `adduuid <UUID>` : adds a player from the passed uuid
