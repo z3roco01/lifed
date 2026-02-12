@@ -5,11 +5,10 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
 import z3roco01.composed.ProcessedConfig;
 import z3roco01.composed.annotation.Comment;
 import z3roco01.composed.annotation.ConfigProperty;
+import z3roco01.lifed.Lifed;
 
 import java.util.ArrayList;
 
@@ -18,30 +17,19 @@ import java.util.ArrayList;
  */
 public class LifedConfig implements ProcessedConfig {
     public LifedConfig() {
-        // add default values, everything needs one
-        bannedItemStrings.add(Registries.ITEM.getId(Items.BOOKSHELF).toString());
+        // add default values, not required but niced
+        bannedItems.add(Items.BOOKSHELF);
 
-        uncraftableItemStrings.add(Registries.ITEM.getId(Items.ENCHANTING_TABLE).toString());
+        uncraftableItems.add(Items.ENCHANTING_TABLE);
 
-        bannedEffectStrings.add(StatusEffects.STRENGTH.getIdAsString());
+        bannedEffects.add(StatusEffects.STRENGTH.value());
     }
-
-    // actual arrays holding ites
-    public final ArrayList<Item> bannedItems = new ArrayList<>();
-    public final ArrayList<Item> uncraftableItems = new ArrayList<>();
-    public final ArrayList<StatusEffect> bannedEffects = new ArrayList<>();
 
     @Override
     public void process() {
-        // convert the arraylists holding string ids into items
-        for(String id : bannedItemStrings)
-            bannedItems.add(Registries.ITEM.get(Identifier.of(id)));
-
-        for(String id : uncraftableItemStrings)
-            uncraftableItems.add(Registries.ITEM.get(Identifier.of(id)));
-
-        for(String id : bannedEffectStrings)
-            bannedEffects.add(Registries.STATUS_EFFECT.get(Identifier.of(id)));
+        Lifed.LOGGER.info(bannedItems.toString());
+        Lifed.LOGGER.info(uncraftableItems.toString());
+        Lifed.LOGGER.info(bannedEffects.toString());
     }
 
     @Comment(comment = "The maximum amount of boogeymen on a normal roll ( can be overriden in the command as well )")
@@ -69,16 +57,16 @@ public class LifedConfig implements ProcessedConfig {
     public int lightningsOnRedDeath = 5;
 
     @Comment(comment = "Items which are completely banned, they cannot be crafted or picked up, if they are picked up the item will disappear ( contains their ids )")
-    @ConfigProperty(key = "bannedItems")
-    public ArrayList<String> bannedItemStrings = new ArrayList<>();
+    @ConfigProperty
+    public ArrayList<Item> bannedItems = new ArrayList<>();
 
     @Comment(comment = "Items which canont be crafted, but can be obtained ( like the enchanter in last life ), contains their ids")
-    @ConfigProperty(key = "uncraftableItems")
-    public ArrayList<String> uncraftableItemStrings = new ArrayList<>();
+    @ConfigProperty
+    public ArrayList<Item> uncraftableItems = new ArrayList<>();
 
     @Comment(comment = "Status effects which cannot be applied to players, the potions can be made, but once drank will have no effect ( contains their ids )")
-    @ConfigProperty(key = "bannedEffects")
-    public ArrayList<String> bannedEffectStrings = new ArrayList<>();
+    @ConfigProperty
+    public ArrayList<StatusEffect> bannedEffects = new ArrayList<>();
 
     @Comment(comment = "Are PVP enchantments ( sharpness, protection, etc ) allowed at levels higher than 1")
     @ConfigProperty
