@@ -115,4 +115,8 @@ public class LifedConfig implements ProcessedConfig {
     @Comment(comment = "Should events like life gives and boogey deaths be sent to the server console")
     @ConfigProperty
     public boolean logEvents = false;
+
+    @Comment(comment = "Is mending banned for applying or rolling")
+    @ConfigProperty
+    public boolean mendingBanned = true;
 }

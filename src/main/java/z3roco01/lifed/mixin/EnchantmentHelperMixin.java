@@ -141,6 +141,9 @@ public abstract class EnchantmentHelperMixin {
             // dont need to even consider this entry if its not high level
             RegistryEntry<Enchantment> enchant = entry.enchantment();
 
+            if(Lifed.config.mendingBanned && enchant == Enchantments.MENDING)
+                continue;
+
             // if it is disallowed, add it as level 1 to the list
             if(isEnchantHighLevel(entry) && (isPvpEnchant(enchant) || isNonPvpEnchant(enchant)))
                 newList.add(new EnchantmentLevelEntry(enchant, 1));
@@ -156,6 +159,9 @@ public abstract class EnchantmentHelperMixin {
         ItemEnchantmentsComponent.Builder newEnchants = new ItemEnchantmentsComponent.Builder(enchantments);
 
         for(RegistryEntry<Enchantment> enchant : enchantments.getEnchantments()) {
+            if(Lifed.config.mendingBanned && enchant == Enchantments.MENDING)
+                continue;
+
             int level = enchantments.getLevel(enchant);
 
             // set this levels enchant to become 1
