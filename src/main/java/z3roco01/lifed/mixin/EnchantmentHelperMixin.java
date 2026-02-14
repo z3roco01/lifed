@@ -133,10 +133,6 @@ public abstract class EnchantmentHelperMixin {
         // array list that will be full of the appropriate oldEnchants
         List<EnchantmentLevelEntry> newList = new ArrayList<>();
 
-        for(EnchantmentLevelEntry entry : cir.getReturnValue())
-            Lifed.LOGGER.info(entry.enchantment().getIdAsString() + " " + entry.level() + " " + (isEnchantHighLevel(entry) && (isPvpEnchant(entry.enchantment()) || isNonPvpEnchant(entry.enchantment()))));
-
-        Lifed.LOGGER.info("-------------------------");
         for(EnchantmentLevelEntry entry : cir.getReturnValue()) {
             // dont need to even consider this entry if its not high level
             RegistryEntry<Enchantment> enchant = entry.enchantment();
@@ -159,8 +155,6 @@ public abstract class EnchantmentHelperMixin {
         ItemEnchantmentsComponent.Builder newEnchants = new ItemEnchantmentsComponent.Builder(enchantments);
 
         for(RegistryEntry<Enchantment> enchant : enchantments.getEnchantments()) {
-            if(Lifed.config.mendingBanned && enchant == Enchantments.MENDING)
-                continue;
 
             int level = enchantments.getLevel(enchant);
 
@@ -168,6 +162,9 @@ public abstract class EnchantmentHelperMixin {
             if(level > 1 && (isPvpEnchant(enchant) || isNonPvpEnchant(enchant))) {
                 newEnchants.set(enchant, 1);
             }
+
+            if(Lifed.config.mendingBanned && enchant == Enchantments.MENDING)
+                newEnchants.remove(enchantmentRegistryEntry -> enchant.hasKeyAndValue());
         }
 
         stack.set(getEnchantmentsComponentType(stack), newEnchants.build());
