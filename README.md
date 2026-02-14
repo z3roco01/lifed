@@ -1,5 +1,7 @@
 # lifed
-Replicates life series functionality
+Replicates life series functionality.<br>
+**Please download at [Modrinth](https://modrinth.com/mod/lifed/versions)**
+
 
 # For Players
 If you cannot move, that is not a problem, it is because the session has not started, tell the server owner if you think it is a problem.
@@ -16,7 +18,7 @@ This mod replicates Last Life with customisability. It has session timing, item 
 If your config file is missing any of these properties, then stop your server, delete/rename it, then restart it. You should have the file full of defaults with every property.
 The config file is in `config/lifed.conf`
 ### Properties
-you can use [minecraft formatting codes](https://minecraft.wiki/w/Formatting_codes) in any text 
+you can use [Minecraft formatting codes](https://minecraft.wiki/w/Formatting_codes) in any text 
 - `maxBoogeymen` (default: 10) : The maximum number of boogeymen that will be rolled by default ( can still be overriden when running the command )
 - `youAre` (default: "You are...") : The text shown in the title shown just before your boogey status is shown
 - `notABoogey` (default: "...NOT a boogeyman !!!") : Title shown after you are revealed to not be a boogey
