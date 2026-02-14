@@ -87,9 +87,9 @@ public class PlayerCommands implements CommandRegisterer {
         dispatcher.register(CommandManager.literal("amiboogey").executes(ctx -> {
             ServerPlayerEntity player  = ctx.getSource().getPlayer();
             if(BoogeymanManager.isPlayerBoogey(player))
-                ctx.getSource().sendFeedback(() -> Text.of("you ARE a boogeyman").copy().formatted(Formatting.RED), false);
+                ctx.getSource().sendFeedback(() -> Text.of("You ARE a boogeyman").copy().formatted(Formatting.RED), false);
             else
-                ctx.getSource().sendFeedback(() -> Text.of("you ARE NOT a boogeyman").copy().formatted(Formatting.GREEN), false);
+                ctx.getSource().sendFeedback(() -> Text.of("You ARE NOT a boogeyman").copy().formatted(Formatting.GREEN), false);
 
             return 1;
         }));
