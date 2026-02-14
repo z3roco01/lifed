@@ -171,5 +171,6 @@ public abstract class EnchantmentHelperMixin {
         }
 
         stack.set(getEnchantmentsComponentType(stack), newEnchants.build());
+        ci.cancel();
     }
 }
