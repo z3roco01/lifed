@@ -137,7 +137,7 @@ public abstract class EnchantmentHelperMixin {
             // dont need to even consider this entry if its not high level
             RegistryEntry<Enchantment> enchant = entry.enchantment();
 
-            if(Lifed.config.mendingBanned && enchant == Enchantments.MENDING)
+            if(Lifed.config.mendingBanned && enchant.matchesKey(Enchantments.MENDING))
                 continue;
 
             // if it is disallowed, add it as level 1 to the list
@@ -163,7 +163,7 @@ public abstract class EnchantmentHelperMixin {
                 newEnchants.set(enchant, 1);
             }
 
-            if(Lifed.config.mendingBanned && enchant == Enchantments.MENDING) {
+            if(Lifed.config.mendingBanned && enchant.matchesKey(Enchantments.MENDING)) {
                 newEnchants.remove(enchantmentRegistryEntry -> enchant.hasKeyAndValue());
                 Lifed.LOGGER.info("heyyyy");
             }
