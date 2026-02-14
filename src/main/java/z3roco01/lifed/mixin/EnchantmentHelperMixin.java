@@ -163,8 +163,10 @@ public abstract class EnchantmentHelperMixin {
                 newEnchants.set(enchant, 1);
             }
 
-            if(Lifed.config.mendingBanned && enchant == Enchantments.MENDING)
+            if(Lifed.config.mendingBanned && enchant == Enchantments.MENDING) {
                 newEnchants.remove(enchantmentRegistryEntry -> enchant.hasKeyAndValue());
+                Lifed.LOGGER.info("heyyyy");
+            }
         }
 
         stack.set(getEnchantmentsComponentType(stack), newEnchants.build());

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 /**
  * Handles config properties, loaded with the Composed library
  */
-public class LifedConfig implements ProcessedConfig {
+public class LifedConfig {
     public LifedConfig() {
         // add default values, not required but niced
         bannedItems.add(Items.BOOKSHELF);
@@ -23,13 +23,6 @@ public class LifedConfig implements ProcessedConfig {
         uncraftableItems.add(Items.ENCHANTING_TABLE);
 
         bannedEffects.add(StatusEffects.STRENGTH.value());
-    }
-
-    @Override
-    public void process() {
-        Lifed.LOGGER.info(bannedItems.toString());
-        Lifed.LOGGER.info(uncraftableItems.toString());
-        Lifed.LOGGER.info(bannedEffects.toString());
     }
 
     @Comment(comment = "The maximum amount of boogeymen on a normal roll ( can be overriden in the command as well )")
