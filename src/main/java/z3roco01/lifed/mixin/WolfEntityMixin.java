@@ -1,13 +1,13 @@
 package z3roco01.lifed.mixin;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.mob.Angerable;
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.entity.passive.WolfEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.NeutralMob;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.animal.wolf.Wolf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -16,40 +16,40 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import z3roco01.lifed.Lifed;
 import z3roco01.lifed.util.WolfCounter;
 
-@Mixin(WolfEntity.class)
-public abstract class WolfEntityMixin extends TameableEntity implements Angerable {
-    protected WolfEntityMixin(EntityType<? extends TameableEntity> entityType, World world) {
+@Mixin(Wolf.class)
+public abstract class WolfEntityMixin extends TamableAnimal implements NeutralMob {
+    protected WolfEntityMixin(EntityType<? extends TamableAnimal> entityType, Level world) {
         super(entityType, world);
     }
 
-    @Inject(method = "tryTame", at = @At("HEAD"), cancellable = true)
-    private void tryTame(PlayerEntity player, CallbackInfo ci) {
-        if(player.getEntityWorld().isClient()) return;
+    @Inject(method = "tryToTame", at = @At("HEAD"), cancellable = true)
+    private void tryToTame(Player player, CallbackInfo ci) {
+        if(player.level().isClientSide()) return;
 
         // if someone is trying to tame a wolf but has the max amount of wolfs, cancel it
-        if(((WolfCounter)(Object)player).getWolfCount() == Lifed.config.wolfLimit)
+        if(((WolfCounter) player).getWolfCount() == Lifed.config.wolfLimit)
             ci.cancel();
     }
 
-    @Inject(method = "onDeath", at = @At("HEAD"))
+    @Inject(method = "die", at = @At("HEAD"))
     private void onDeath(DamageSource damageSource, CallbackInfo ci) {
-        if(getEntityWorld().isClient()) return;
+        if(level().isClientSide()) return;
 
         // when a wolf has died, if its tamed, decrement the owners count
         if(getOwner() == null) return;
-        ServerPlayerEntity owner = (ServerPlayerEntity)getOwner();
-        ((WolfCounter)(Object)owner).decrementWolfCount();
+        ServerPlayer owner = (ServerPlayer) getOwner();
+        ((WolfCounter) owner).decrementWolfCount();
     }
 
-    @Redirect(method = "createChild(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/passive/PassiveEntity;)Lnet/minecraft/entity/passive/WolfEntity;", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/passive/WolfEntity;isTamed()Z"))
-    private boolean makeChildTamedRedirect(WolfEntity instance) {
+    @Redirect(method = "getBreedOffspring(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/AgeableMob;)Lnet/minecraft/world/entity/animal/wolf/Wolf;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/wolf/Wolf;isTame()Z"))
+    private boolean makeChildTamedRedirect(Wolf instance) {
         // redirect from is tamed, when making a child, if the owner has the limit, make the puppy not owned
-        WolfCounter owner = (WolfCounter)(Object)getOwner();
+        WolfCounter owner = (WolfCounter) getOwner();
         if(owner.getWolfCount() == Lifed.config.wolfLimit)
             return false;
         else {
             owner.incrementWolfCount();
-            return isTamed();
+            return isTame();
         }
     }
 }

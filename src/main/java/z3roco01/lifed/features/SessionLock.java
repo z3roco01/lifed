@@ -1,9 +1,9 @@
 package z3roco01.lifed.features;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import z3roco01.lifed.Lifed;
 
 import java.util.ArrayList;
@@ -32,11 +32,11 @@ public class SessionLock {
     /**
      * Called when a player starts joining the server, will disconnect them when locked
      */
-    public static void handlePlayerJoin(ServerPlayNetworkHandler handler, MinecraftServer server) {
+    public static void handlePlayerJoin(ServerGamePacketListenerImpl handler, MinecraftServer server) {
         //if((Lifed.config.lockoutPlayers && BoogeymanManager.areBoogeysRolled()) || SessionManagement.sessionLocked)
         //handler.disconnect(Text.of("The boogeymen have already been rolled, try next time or ask the owner"));
-        if(SessionLock.isLocked() && !allowedPlayers.contains(handler.player.getUuid()))
-            handler.disconnect(Text.of(SessionLock.lockedMessage));
+        if(SessionLock.isLocked() && !allowedPlayers.contains(handler.player.getUUID()))
+            handler.disconnect(Component.literal(SessionLock.lockedMessage));
     }
 
     /**
@@ -72,8 +72,8 @@ public class SessionLock {
      */
     public static void lock() {
         ArrayList<UUID> newList = new ArrayList<>();
-        for(ServerPlayerEntity player : Lifed.SERVER.getPlayerManager().getPlayerList())
-            newList.add(player.getUuid());
+        for(ServerPlayer player : Lifed.SERVER.getPlayerList().getPlayers())
+            newList.add(player.getUUID());
 
         lock(newList);
     }
@@ -97,16 +97,16 @@ public class SessionLock {
     /**
      * Adds another player to the allowed list
      */
-    public static void addPlayer(ServerPlayerEntity player) {
-        addUUID(player.getUuid());
+    public static void addPlayer(ServerPlayer player) {
+        addUUID(player.getUUID());
     }
 
     /**
      * Adds a collection of players to the allowed list
      */
-    public static void addPlayers(Collection<ServerPlayerEntity> players) {
-        for(ServerPlayerEntity player : players)
-            addUUID(player.getUuid());
+    public static void addPlayers(Collection<ServerPlayer> players) {
+        for(ServerPlayer player : players)
+            addUUID(player.getUUID());
     }
 
     /**

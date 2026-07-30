@@ -5,12 +5,12 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import z3roco01.lifed.Lifed;
 import z3roco01.lifed.commands.CommandRegisterer;
 import z3roco01.lifed.commands.PlayerCommands;
@@ -53,9 +53,9 @@ public class LifedEvents {
      * @param sender packet source
      * @param server minecraft server reference
      */
-    private static void onPlayerJoin(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server) {
+    private static void onPlayerJoin(ServerGamePacketListenerImpl handler, PacketSender sender, MinecraftServer server) {
 
-        ServerPlayerEntity player = handler.getPlayer();
+        ServerPlayer player = handler.getPlayer();
         // update everytime they join, since teams are volatile
         LifeManager.updateTeam(player);
 
@@ -66,9 +66,9 @@ public class LifedEvents {
      * Calls all command registers to register their commands
      */
     private static void onCommandsRegister(
-            CommandDispatcher<ServerCommandSource> dispatcher,
-            CommandRegistryAccess registryAccess,
-            CommandManager.RegistrationEnvironment environment
+            CommandDispatcher<CommandSourceStack> dispatcher,
+            CommandBuildContext registryAccess,
+            Commands.CommandSelection environment
     ) {
         for(CommandRegisterer registerer : COMMANDS)
             registerer.register(dispatcher, registryAccess, environment);
@@ -83,7 +83,7 @@ public class LifedEvents {
         LifeManager.fini();
 
         // clear all freeze effects so an error doesnt happen upon rejoining
-        for(ServerPlayerEntity player : server.getPlayerManager().getPlayerList())
+        for(ServerPlayer player : server.getPlayerList().getPlayers())
             SessionManagement.removePlayerFreeze(player);
 
         Lifed.SERVER = null;

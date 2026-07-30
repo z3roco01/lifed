@@ -1,9 +1,10 @@
 package z3roco01.lifed.util.player;
 
-import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
+import net.minecraft.server.level.ServerPlayer;
 import z3roco01.lifed.Lifed;
 
 public class TitleUtil {
@@ -13,8 +14,8 @@ public class TitleUtil {
      * @param text the text contents of the title
      * @param colour the colour of the title
      */
-    public static void sendTitle(ServerPlayerEntity target, String text, Formatting colour) {
-        sendTitle(target, Text.of(text).copy().formatted(colour));
+    public static void sendTitle(ServerPlayer target, String text, ChatFormatting colour) {
+        sendTitle(target, Component.literal(text).copy().withStyle(colour));
     }
 
     /**
@@ -22,16 +23,16 @@ public class TitleUtil {
      * @param target player to send the title to
      * @param text the text of the title
      */
-    public static void sendTitle(ServerPlayerEntity target, Text text) {
-        target.networkHandler.sendPacket(new TitleS2CPacket(text));
+    public static void sendTitle(ServerPlayer target, Component text) {
+        target.connection.send(new ClientboundSetTitleTextPacket(text));
     }
 
-    public static void sendTitleAll(String text, Formatting colour) {
-        sendTitleAll(Text.of(text).copy().formatted(colour));
+    public static void sendTitleAll(String text, ChatFormatting colour) {
+        sendTitleAll(Component.literal(text).copy().withStyle(colour));
     }
 
-    public static void sendTitleAll(Text text) {
-        for(ServerPlayerEntity player : Lifed.SERVER.getPlayerManager().getPlayerList())
+    public static void sendTitleAll(Component text) {
+        for(ServerPlayer player : Lifed.SERVER.getPlayerList().getPlayers())
             sendTitle(player, text);
     }
 
@@ -40,15 +41,15 @@ public class TitleUtil {
      * @param text text to send
      * @param colour the formatting of the text when sent
      */
-    public static void sendTitleAndChat(String text, Formatting colour) {
-        sendTitleAndChat(Text.of(text).copy().formatted(colour));
+    public static void sendTitleAndChat(String text, ChatFormatting colour) {
+        sendTitleAndChat(Component.literal(text).copy().withStyle(colour));
     }
 
     /**
      * Sends a title and chat message to every player
      * @param text text to send
      */
-    public static void sendTitleAndChat(Text text) {
+    public static void sendTitleAndChat(Component text) {
         sendTitleAll(text);
         ChatUtil.sendChatMessage(text);
     }

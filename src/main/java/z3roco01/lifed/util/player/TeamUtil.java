@@ -1,9 +1,9 @@
 package z3roco01.lifed.util.player;
 
-import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.scoreboard.Team;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.scores.PlayerTeam;
+import net.minecraft.world.scores.Scoreboard;
 
 public class TeamUtil {
     /**
@@ -12,17 +12,17 @@ public class TeamUtil {
      * @param colour the colour of the team
      * @return the new or already existing Team object
      */
-    public static Team createTeam(String name, Formatting colour) {
+    public static PlayerTeam createTeam(String name, ChatFormatting colour) {
         Scoreboard scoreboard = ScoreboardUtil.getScoreboard();
 
         // check if it already exists
-        Team exists = scoreboard.getTeam(name);
+        PlayerTeam exists = scoreboard.getPlayersTeam(name);
         // if it does, return it
         if(exists != null)
             return exists;
 
         // Create the Team Object
-        Team team = scoreboard.addTeam(name);
+        PlayerTeam team = scoreboard.addPlayerTeam(name);
         team.setColor(colour);
 
         return team;
@@ -33,9 +33,9 @@ public class TeamUtil {
      * @param player the player
      * @param team the team
      */
-    public static void addPlayerToTeam(ServerPlayerEntity player, Team team) {
+    public static void addPlayerToTeam(ServerPlayer player, PlayerTeam team) {
         Scoreboard scoreboard = ScoreboardUtil.getScoreboard();
-        scoreboard.addScoreHolderToTeam(player.getNameForScoreboard(), team);
+        scoreboard.addPlayerToTeam(player.getScoreboardName(), team);
     }
 
     /**
@@ -43,18 +43,18 @@ public class TeamUtil {
      * @param player the player
      * @param team the team
      */
-    public static void removePlayerFromTeam(ServerPlayerEntity player, Team team) {
+    public static void removePlayerFromTeam(ServerPlayer player, PlayerTeam team) {
         Scoreboard scoreboard = ScoreboardUtil.getScoreboard();
-        scoreboard.removeScoreHolderFromTeam(player.getNameForScoreboard(), team);
+        scoreboard.removePlayerFromTeam(player.getScoreboardName(), team);
     }
 
     /**
      * Removes a team from the server when it is done
      * @param team the team to remove
      */
-    public static void removeTeam(Team team) {
+    public static void removeTeam(PlayerTeam team) {
         Scoreboard scoreboard = ScoreboardUtil.getScoreboard();
 
-        scoreboard.removeTeam(team);
+        scoreboard.removePlayerTeam(team);
     }
 }

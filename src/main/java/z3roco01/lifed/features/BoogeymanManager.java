@@ -1,10 +1,10 @@
 package z3roco01.lifed.features;
 
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.effect.MobEffects;
 import z3roco01.lifed.Lifed;
 import z3roco01.lifed.util.Time;
 import z3roco01.lifed.util.player.ChatUtil;
@@ -18,12 +18,12 @@ import java.util.List;
 import java.util.Random;
 
 public class BoogeymanManager {
-    private static final ArrayList<ServerPlayerEntity> boogeymen = new ArrayList<>();
+    private static final ArrayList<ServerPlayer> boogeymen = new ArrayList<>();
 
     /**
      * Creates a new list of all the boogey players, does not allow modification
      */
-    public static List<ServerPlayerEntity> getBoogeymen() {
+    public static List<ServerPlayer> getBoogeymen() {
         // creates an immutable list of the boogeymen
         return Collections.unmodifiableList(boogeymen);
     }
@@ -41,7 +41,7 @@ public class BoogeymanManager {
      * Cures a player who is a boogey, removing them from the list, and giving them a few status effects
      * @param player the player to cure
      */
-    public static void cure(ServerPlayerEntity player) {
+    public static void cure(ServerPlayer player) {
         // only cure if they are actually a boogey
         if(!boogeymen.contains(player)) return;
 
@@ -49,21 +49,21 @@ public class BoogeymanManager {
         boogeymen.remove(player);
 
         // show them the title, and a sound
-        TitleUtil.sendTitle(player, "You are cured !", Formatting.GREEN);
-        player.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, 1, 1);
+        TitleUtil.sendTitle(player, "You are cured !", ChatFormatting.GREEN);
+        player.playSound(SoundEvents.PLAYER_LEVELUP, 1, 1);
 
         // give them 10 seconds of regen and resistance
-        PlayerUtil.addStatusEffect(player, StatusEffects.REGENERATION, 10);
-        PlayerUtil.addStatusEffect(player, StatusEffects.RESISTANCE, 10);
+        PlayerUtil.addStatusEffect(player, MobEffects.REGENERATION.value(), 10);
+        PlayerUtil.addStatusEffect(player, MobEffects.RESISTANCE.value(), 10);
 
         if(Lifed.config.logEvents)
-            Lifed.LOGGER.info(player.getStringifiedName() + " has been cured");
+            Lifed.LOGGER.info(player.getPlainTextName() + " has been cured");
     }
 
     /**
      * Returns true if the player is a boogey
      */
-    public static boolean isPlayerBoogey(ServerPlayerEntity player) {
+    public static boolean isPlayerBoogey(ServerPlayer player) {
         return boogeymen.contains(player);
     }
 
@@ -71,7 +71,7 @@ public class BoogeymanManager {
      * Fails all remaining boogeys, called at the end of a session
      */
     public static void failAll() {
-        for(ServerPlayerEntity boogey : boogeymen)
+        for(ServerPlayer boogey : boogeymen)
             fail(boogey);
         SessionLock.unlock();
     }
@@ -80,7 +80,7 @@ public class BoogeymanManager {
      * fails one player, setting them to red life
      * @param player the player to fail
      */
-    public static void fail(ServerPlayerEntity player) {
+    public static void fail(ServerPlayer player) {
         // dont fail a non boogey
         if(!boogeymen.contains(player)) return;
 
@@ -91,7 +91,7 @@ public class BoogeymanManager {
         LifeManager.setLives(player, 1);
 
         // send them a fail message
-        TitleUtil.sendTitle(player, "You failed...", Formatting.RED);
+        TitleUtil.sendTitle(player, "You failed...", ChatFormatting.RED);
     }
 
 
@@ -138,13 +138,13 @@ public class BoogeymanManager {
 
         selectBoogeys(max);
 
-        ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen in 5 minutes...", Formatting.RED);
+        ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen in 5 minutes...", ChatFormatting.RED);
         TaskScheduling.scheduleTask(Time.MINUTES.ticks(4), () -> {
-            ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen in 1 minute...", Formatting.RED);
+            ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen in 1 minute...", ChatFormatting.RED);
             TaskScheduling.scheduleTask(Time.SECONDS.ticks(55), () -> {
-                ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen soon.....", Formatting.RED);
+                ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen soon.....", ChatFormatting.RED);
                 TaskScheduling.scheduleTask(Time.SECONDS.ticks(5), () -> {
-                    List<ServerPlayerEntity> players = Lifed.SERVER.getPlayerManager().getPlayerList();
+                    List<ServerPlayer> players = Lifed.SERVER.getPlayerList().getPlayers();
                     showBoogeyStatus(players);
                 });
             });
@@ -154,19 +154,19 @@ public class BoogeymanManager {
     /**
      * Shows players their boogey status as a title
      */
-    public static void showBoogeyStatus(List<ServerPlayerEntity> players) {
+    public static void showBoogeyStatus(List<ServerPlayer> players) {
         // show anticipation title
-        for(ServerPlayerEntity player : players)
-            TitleUtil.sendTitle(player, Lifed.config.youAre, Formatting.YELLOW);
+        for(ServerPlayer player : players)
+            TitleUtil.sendTitle(player, Lifed.config.youAre, ChatFormatting.YELLOW);
 
         TaskScheduling.scheduleTask(Time.SECONDS.ticks(5), () -> {
             // loop over every player
-            for(ServerPlayerEntity player : players) {
+            for(ServerPlayer player : players) {
                 if(boogeymen.contains(player)) {
-                    TitleUtil.sendTitle(player, Lifed.config.aBoogeyman, Formatting.RED);
-                    player.sendMessage(Text.of(Lifed.config.boogeyChatMsg));
+                    TitleUtil.sendTitle(player, Lifed.config.aBoogeyman, ChatFormatting.RED);
+                    player.sendSystemMessage(Component.literal(Lifed.config.boogeyChatMsg));
                 }else {
-                    TitleUtil.sendTitle(player, Lifed.config.notABoogeyman, Formatting.GREEN);
+                    TitleUtil.sendTitle(player, Lifed.config.notABoogeyman, ChatFormatting.GREEN);
                 }
             }
         });
@@ -178,7 +178,7 @@ public class BoogeymanManager {
      */
     public static void selectBoogeys(int max) {
         // copy over the list
-        ArrayList<ServerPlayerEntity> players = new ArrayList<>(Lifed.SERVER.getPlayerManager().getPlayerList());
+        ArrayList<ServerPlayer> players = new ArrayList<>(Lifed.SERVER.getPlayerList().getPlayers());
         // weed out red players so people will only actually be boogeys
         players.removeIf(player -> LifeManager.getLives(player) <= 1);
 
@@ -206,10 +206,10 @@ public class BoogeymanManager {
      * Selects one boogey, and adds them to the list
      * @param players list of all players
      */
-    private static void selectOneBoogey(List<ServerPlayerEntity> players) {
+    private static void selectOneBoogey(List<ServerPlayer> players) {
         Random random = new Random();
 
-        ServerPlayerEntity boogey = getBoogeyCandidate(random, players);
+        ServerPlayer boogey = getBoogeyCandidate(random, players);
 
         if(boogeymen.size() >= players.size())
             return;
@@ -229,7 +229,7 @@ public class BoogeymanManager {
      * @param players the players to choose from
      * @return the chosen player
      */
-    private static ServerPlayerEntity getBoogeyCandidate(Random random, List<ServerPlayerEntity> players) {
+    private static ServerPlayer getBoogeyCandidate(Random random, List<ServerPlayer> players) {
         int boogeyIdx = 0;
 
         // error happened without this i dont remember

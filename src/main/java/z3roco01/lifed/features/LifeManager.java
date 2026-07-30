@@ -1,11 +1,11 @@
 package z3roco01.lifed.features;
 
-import net.minecraft.scoreboard.ScoreboardObjective;
-import net.minecraft.scoreboard.Team;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Formatting;
-import net.minecraft.world.GameMode;
+import net.minecraft.ChatFormatting;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.scores.Objective;
+import net.minecraft.world.scores.PlayerTeam;
 import org.jspecify.annotations.Nullable;
 import z3roco01.lifed.Lifed;
 import z3roco01.lifed.util.*;
@@ -22,12 +22,12 @@ import java.util.Random;
  */
 public class LifeManager {
     @Nullable
-    public static ScoreboardObjective LIVES_OBJECTIVE = null;
-    public static Team FOUR_PLUS_TEAM = null;
-    public static Team THREE_TEAM = null;
-    public static Team TWO_TEAM = null;
-    public static Team ONE_TEAM = null;
-    public static Team ZERO_TEAM = null;
+    public static Objective LIVES_OBJECTIVE = null;
+    public static PlayerTeam FOUR_PLUS_TEAM = null;
+    public static PlayerTeam THREE_TEAM = null;
+    public static PlayerTeam TWO_TEAM = null;
+    public static PlayerTeam ONE_TEAM = null;
+    public static PlayerTeam ZERO_TEAM = null;
 
     public static void init() {
         initializeScoreboard();
@@ -50,11 +50,11 @@ public class LifeManager {
      */
     private static void initializeTeams() {
         // letters at the start of team names so they appear in the correct order based on number of lives
-        FOUR_PLUS_TEAM = TeamUtil.createTeam("a_four_lives", Formatting.DARK_GREEN);
-        THREE_TEAM = TeamUtil.createTeam("b_three_lives", Formatting.GREEN);
-        TWO_TEAM = TeamUtil.createTeam("c_two_lives", Formatting.YELLOW);
-        ONE_TEAM = TeamUtil.createTeam("d_one_life", Formatting.RED);
-        ZERO_TEAM = TeamUtil.createTeam("e_zero_lives", Formatting.GRAY);
+        FOUR_PLUS_TEAM = TeamUtil.createTeam("a_four_lives", ChatFormatting.DARK_GREEN);
+        THREE_TEAM = TeamUtil.createTeam("b_three_lives", ChatFormatting.GREEN);
+        TWO_TEAM = TeamUtil.createTeam("c_two_lives", ChatFormatting.YELLOW);
+        ONE_TEAM = TeamUtil.createTeam("d_one_life", ChatFormatting.RED);
+        ZERO_TEAM = TeamUtil.createTeam("e_zero_lives", ChatFormatting.GRAY);
     }
 
     /**
@@ -76,23 +76,23 @@ public class LifeManager {
      * Increments the players lives by one
      * @param player the player to add a life to
      */
-    public static void addLife(ServerPlayerEntity player) {
+    public static void addLife(ServerPlayer player) {
        int curLives = getLives(player);
        setLives(player, curLives+1);
 
        // play level up indicator everytime someone is given a life
-       player.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, 1, 1);
+       player.playSound(SoundEvents.PLAYER_LEVELUP, 1, 1);
 
        // if the player has gone from 0 lives to above 0, set them to survival
        if(curLives <= 0 && getLives(player) > 0)
-           player.changeGameMode(GameMode.SURVIVAL);
+           player.setGameMode(GameType.SURVIVAL);
     }
 
     /**
      * Decrements a players lives by one, and puts a player into spectator if <=0 lives
      * @param player the player to decrement from
      */
-    public static void removeLife(ServerPlayerEntity player) {
+    public static void removeLife(ServerPlayer player) {
         int curLives = getLives(player);
         setLives(player, curLives-1);
 
@@ -103,7 +103,7 @@ public class LifeManager {
      * @param player the player
      * @return the amount of lives
      */
-    public static int getLives(ServerPlayerEntity player) {
+    public static int getLives(ServerPlayer player) {
         return ScoreboardUtil.getScore(LIVES_OBJECTIVE, player);
     }
 
@@ -112,35 +112,35 @@ public class LifeManager {
      * @param player the player
      * @param lives the new life count for the player
      */
-    public static void setLives(ServerPlayerEntity player, int lives) {
+    public static void setLives(ServerPlayer player, int lives) {
         if(Lifed.config.logEvents)
-            LoggingUtil.log(player.getStringifiedName() + " is now at " + lives + " lives !");
+            LoggingUtil.log(player.getPlainTextName() + " is now at " + lives + " lives !");
 
         ScoreboardUtil.setScore(LIVES_OBJECTIVE, player, lives);
         updateTeam(player);
 
         // if the player is too low on lives, put them in spectator
         if(getLives(player) <= 0)
-            player.changeGameMode(GameMode.SPECTATOR);
-        else if(player.getGameMode() == GameMode.SPECTATOR) // if a player went from 0 lives, to a higher value, give them survival
-            player.changeGameMode(GameMode.SURVIVAL);
+            player.setGameMode(GameType.SPECTATOR);
+        else if(player.gameMode() == GameType.SPECTATOR) // if a player went from 0 lives, to a higher value, give them survival
+            player.setGameMode(GameType.SURVIVAL);
     }
 
     /**
      * lookups the colour for the passed amount of lives
      * @param lives the current number of lives
-     * @return the Formatting colour of the lives
+     * @return the ChatFormatting colour of the lives
      */
-    public static Formatting getLifeColour(int lives) {
-        Formatting colour = Formatting.GRAY;
+    public static ChatFormatting getLifeColour(int lives) {
+        ChatFormatting colour = ChatFormatting.GRAY;
 
         if(lives > 0) {
             colour = switch (lives) {
-                case 1 -> Formatting.RED;
-                case 2 -> Formatting.YELLOW;
-                case 3 -> Formatting.GREEN;
+                case 1 -> ChatFormatting.RED;
+                case 2 -> ChatFormatting.YELLOW;
+                case 3 -> ChatFormatting.GREEN;
                 default -> // everything > 3 is dark green ( < 0 is ignored by if statement )
-                        Formatting.DARK_GREEN;
+                        ChatFormatting.DARK_GREEN;
             };
         }
 
@@ -176,7 +176,7 @@ public class LifeManager {
      * @param player the player
      * @return the Team object for the players current lives
      */
-    public static Team getTeam(ServerPlayerEntity player) {
+    public static PlayerTeam getTeam(ServerPlayer player) {
         int lives = LifeManager.getLives(player);
 
         // if it is < 0 return zero lives team, so that the default case of lives will trigger >= 4
@@ -193,9 +193,9 @@ public class LifeManager {
     /**
      * Gets the current life colour of a player
      * @param player the player to look up
-     * @return the colour in Formatting
+     * @return the colour in ChatFormatting
      */
-    public static Formatting getLifeColour(ServerPlayerEntity player) {
+    public static ChatFormatting getLifeColour(ServerPlayer player) {
         int curLives = getLives(player);
         return getLifeColour(curLives);
     }
@@ -206,7 +206,7 @@ public class LifeManager {
      * @param recipient the person who gets the life
      * @return true if the life was successfully given, false otherwise
      */
-    public static boolean giftLife(ServerPlayerEntity gifter, ServerPlayerEntity recipient) {
+    public static boolean giftLife(ServerPlayer gifter, ServerPlayer recipient) {
         if(gifter == recipient)
             return false;
 
@@ -220,18 +220,18 @@ public class LifeManager {
             return false;
 
         if(Lifed.config.logEvents)
-            Lifed.LOGGER.info(gifter.getStringifiedName() + " gave a life to " + recipient.getStringifiedName());
+            Lifed.LOGGER.info(gifter.getPlainTextName() + " gave a life to " + recipient.getPlainTextName());
 
         LifeManager.removeLife(gifter);
         LifeManager.addLife(recipient);
 
         // show titles informing each person what happened
-        TitleUtil.sendTitle(gifter, "You gifted " + recipient.getStringifiedName() + " a life !",
-                Formatting.GREEN);
-        TitleUtil.sendTitle(recipient, gifter.getStringifiedName() + " gifted you a life !",
-                Formatting.GREEN);
+        TitleUtil.sendTitle(gifter, "You gifted " + recipient.getPlainTextName() + " a life !",
+                ChatFormatting.GREEN);
+        TitleUtil.sendTitle(recipient, gifter.getPlainTextName() + " gifted you a life !",
+                ChatFormatting.GREEN);
 
-        recipient.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP);
+        recipient.playSound(SoundEvents.PLAYER_LEVELUP);
         PlayerUtil.playTotemAnimation(gifter);
 
         return true;
@@ -241,7 +241,7 @@ public class LifeManager {
      * Returns the format string for the players life colour ( §7 )
      * @param player
      */
-    public static String getLifeFormatString(ServerPlayerEntity player) {
+    public static String getLifeFormatString(ServerPlayer player) {
         int lives = LifeManager.getLives(player);
 
         return getLifeFormatString(lives);
@@ -251,7 +251,7 @@ public class LifeManager {
      * Randomizes the lives of the players in the list from 2 to 6 lives
      * @param players collection of players being randomized
      */
-    public static void randomizePlayers(Collection<ServerPlayerEntity> players) {
+    public static void randomizePlayers(Collection<ServerPlayer> players) {
         randomizePlayers(players, 2, 6);
     }
 
@@ -261,7 +261,7 @@ public class LifeManager {
      * @param min the minimum amount of lives
      * @param max the maximum amount of lives
      */
-    public static void randomizePlayers(Collection<ServerPlayerEntity> players, int min, int max) {
+    public static void randomizePlayers(Collection<ServerPlayer> players, int min, int max) {
         // cant execute without a server
         if(Lifed.SERVER == null) return;
 
@@ -269,13 +269,13 @@ public class LifeManager {
         Random random = new Random();
 
         // for each player, give them a random amount of lives
-        for (ServerPlayerEntity player : players) {
+        for (ServerPlayer player : players) {
             // +2 since the nextInt function is 0 to arg inclusive
             int lives = random.nextInt(min, max+1);
             LifeManager.setLives(player, lives);
 
             // show them how many they got
-            TitleUtil.sendTitle(player, "You get " + getLifeFormatString(lives) + lives + "§r lives !", Formatting.GREEN);
+            TitleUtil.sendTitle(player, "You get " + getLifeFormatString(lives) + lives + "§r lives !", ChatFormatting.GREEN);
         }
     }
 
@@ -283,7 +283,7 @@ public class LifeManager {
      * Puts the passed player in the correct team for their life count
      * @param player the player to update
      */
-    public static void updateTeam(ServerPlayerEntity player) {
+    public static void updateTeam(ServerPlayer player) {
         TeamUtil.addPlayerToTeam(player, getTeam(player));
     }
 }

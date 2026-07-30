@@ -1,9 +1,8 @@
 package z3roco01.lifed.mixin;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.ShapelessRecipe;
-import net.minecraft.recipe.input.CraftingRecipeInput;
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -12,8 +11,8 @@ import z3roco01.lifed.features.BannedItems;
 
 @Mixin(ShapelessRecipe.class)
 public abstract class ShapelessRecipeMixin {
-    @Inject(method = "craft(Lnet/minecraft/recipe/input/CraftingRecipeInput;Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;)Lnet/minecraft/item/ItemStack;", at = @At("RETURN"), cancellable = true)
-    private void craft(CraftingRecipeInput craftingRecipeInput, RegistryWrapper.WrapperLookup wrapperLookup, CallbackInfoReturnable<ItemStack> cir) {
+    @Inject(method = "assemble(Lnet/minecraft/world/item/crafting/CraftingInput;)Lnet/minecraft/world/item/ItemStack;", at = @At("RETURN"), cancellable = true)
+    private void craft(CraftingInput input, CallbackInfoReturnable<ItemStack> cir) {
         // if a banned item is trying to be crafted, cancel it
         if(!BannedItems.canCraft(cir.getReturnValue().getItem()))
             cir.setReturnValue(ItemStack.EMPTY);

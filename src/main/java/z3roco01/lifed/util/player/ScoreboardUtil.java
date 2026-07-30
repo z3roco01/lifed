@@ -1,8 +1,12 @@
 package z3roco01.lifed.util.player;
 
-import net.minecraft.scoreboard.*;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.scores.Objective;
+import net.minecraft.world.scores.ReadOnlyScoreInfo;
+import net.minecraft.world.scores.ScoreHolder;
+import net.minecraft.world.scores.Scoreboard;
+import net.minecraft.world.scores.criteria.ObjectiveCriteria;
 import z3roco01.lifed.Lifed;
 
 public class ScoreboardUtil {
@@ -11,8 +15,8 @@ public class ScoreboardUtil {
      * @param name the name and display name of the objective
      * @return the newly created objective, or the already existing objective
      */
-    public static ScoreboardObjective createObjective(String name) {
-        return createObjective(name, ScoreboardCriterion.DUMMY);
+    public static Objective createObjective(String name) {
+        return createObjective(name, ObjectiveCriteria.DUMMY);
     }
 
     /**
@@ -29,7 +33,7 @@ public class ScoreboardUtil {
      * @param criterion the criterion of the scoreboard, also used for the render type
      * @return the newly created objective, or null if ti already exists
      */
-    public static ScoreboardObjective createObjective(String name, ScoreboardCriterion criterion) {
+    public static Objective createObjective(String name, ObjectiveCriteria criterion) {
         // if there is no server we cant do anything
         if(Lifed.SERVER == null) return null;
 
@@ -37,12 +41,12 @@ public class ScoreboardUtil {
         Scoreboard scoreboard = getScoreboard();
 
         // get the objective if it already exists
-        ScoreboardObjective existing = scoreboard.getNullableObjective(name);
+        Objective existing = scoreboard.getObjective(name);
         // if it already exists, return the existing objective
         if(existing != null) return existing;
 
         // create the scoreboard
-        return scoreboard.addObjective(name, criterion, Text.of(name), criterion.getDefaultRenderType(),
+        return scoreboard.addObjective(name, criterion, Component.literal(name), criterion.getDefaultRenderType(),
                 false, null);
     }
 
@@ -51,8 +55,8 @@ public class ScoreboardUtil {
      * @param player the player
      * @return the ScoreHolder for the passed player
      */
-    public static ScoreHolder getScoreHolder(ServerPlayerEntity player) {
-        return ScoreHolder.fromProfile(player.getGameProfile());
+    public static ScoreHolder getScoreHolder(ServerPlayer player) {
+        return ScoreHolder.fromGameProfile(player.getGameProfile());
     }
 
     /**
@@ -61,13 +65,13 @@ public class ScoreboardUtil {
      * @param player the player whos score will be changed
      * @param score the new score value
      */
-    public static void setScore(ScoreboardObjective objective, ServerPlayerEntity player, int score) {
+    public static void setScore(Objective objective, ServerPlayer player, int score) {
         // if there is no server we cant do anything
         if(Lifed.SERVER == null) return;
 
         Scoreboard scoreboard = getScoreboard();
         // get the score object, then set the score
-        scoreboard.getOrCreateScore(getScoreHolder(player), objective).setScore(score);
+        scoreboard.getOrCreatePlayerScore(getScoreHolder(player), objective).set(score);
     }
 
     /**
@@ -76,15 +80,16 @@ public class ScoreboardUtil {
      * @param player the player whos score is being returned
      * @return the players score, or -100 if there is an error
      */
-    public static int getScore(ScoreboardObjective objective, ServerPlayerEntity player) {
+    public static int getScore(Objective objective, ServerPlayer player) {
         // if there is no server we cant do anything
         if(Lifed.SERVER == null) return -1;
 
         Scoreboard scoreboard = getScoreboard();
         // get a readable score object
-        ReadableScoreboardScore score = scoreboard.getScore(getScoreHolder(player), objective);
+
+        ReadOnlyScoreInfo score = scoreboard.getPlayerScoreInfo(getScoreHolder(player), objective);
 
         if(score == null) return -1;
-        return score.getScore();
+        return score.value();
     }
 }

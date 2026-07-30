@@ -1,13 +1,13 @@
 package z3roco01.lifed.features;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.server.ServerTickManager;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.ChatFormatting;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.ServerTickRateManager;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.jspecify.annotations.Nullable;
 import z3roco01.lifed.Lifed;
 import z3roco01.lifed.util.LoggingUtil;
@@ -46,8 +46,8 @@ public class SessionManagement {
     private static final ArrayList<SessionTickEvent> tickEvents = new ArrayList<>();
 
     // modifiers for freezing players
-    private static final EntityAttributeModifier MODIFIER_FREEZE = new EntityAttributeModifier(
-            Identifier.of(Lifed.MOD_ID, "freeze"), -1, EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    private static final AttributeModifier MODIFIER_FREEZE = new AttributeModifier(
+            Identifier.fromNamespaceAndPath(Lifed.MOD_ID, "freeze"), -1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
     /**
      * Registers the passed tick event
@@ -69,23 +69,23 @@ public class SessionManagement {
         breakTicksTotal = Time.MINUTES.ticks(Lifed.config.breakLength);
         // register break end warnings
         registerTickEvent(new SessionTickOneshot(Time.MINUTES.ticks(5),
-                () -> ChatUtil.sendChatMessage("5 Minutes remain", Formatting.RED), true));
+                () -> ChatUtil.sendChatMessage("5 Minutes remain", ChatFormatting.RED), true));
         registerTickEvent(new SessionTickOneshot(Time.MINUTES.ticks(1),
-                () -> TitleUtil.sendTitleAndChat("1 Minute remains", Formatting.RED), true));
+                () -> TitleUtil.sendTitleAndChat("1 Minute remains", ChatFormatting.RED), true));
         registerTickEvent(new SessionTickOneshot(Time.SECONDS.ticks(30),
-                () -> TitleUtil.sendTitleAndChat("30 Seconds remain...", Formatting.RED), true));
+                () -> TitleUtil.sendTitleAndChat("30 Seconds remain...", ChatFormatting.RED), true));
 
         // register session end warnings
         registerTickEvent(new SessionTickOneshot(Time.HOURS.ticks(1),
-                () -> TitleUtil.sendTitleAndChat("1 Hour remains...", Formatting.GREEN), false));
+                () -> TitleUtil.sendTitleAndChat("1 Hour remains...", ChatFormatting.GREEN), false));
         registerTickEvent(new SessionTickOneshot(Time.MINUTES.ticks(30),
-                () -> TitleUtil.sendTitleAndChat("30 Minutes remain...", Formatting.YELLOW), false));
+                () -> TitleUtil.sendTitleAndChat("30 Minutes remain...", ChatFormatting.YELLOW), false));
         registerTickEvent(new SessionTickOneshot(Time.MINUTES.ticks(15),
-                () -> TitleUtil.sendTitleAndChat("15 Minutes remain...", Formatting.YELLOW), false));
+                () -> TitleUtil.sendTitleAndChat("15 Minutes remain...", ChatFormatting.YELLOW), false));
         registerTickEvent(new SessionTickOneshot(Time.MINUTES.ticks(5),
-                () -> TitleUtil.sendTitleAndChat("5 Minutes remain...", Formatting.RED), false));
+                () -> TitleUtil.sendTitleAndChat("5 Minutes remain...", ChatFormatting.RED), false));
         registerTickEvent(new SessionTickOneshot(Time.MINUTES.ticks(1),
-                () -> TitleUtil.sendTitleAndChat("1 Minute remains...", Formatting.RED), false));
+                () -> TitleUtil.sendTitleAndChat("1 Minute remains...", ChatFormatting.RED), false));
 
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             if(onBreak) {
@@ -116,7 +116,7 @@ public class SessionManagement {
         freezeTicks();
         paused = true;
 
-        for(ServerPlayerEntity player : Lifed.SERVER.getPlayerManager().getPlayerList())
+        for(ServerPlayer player : Lifed.SERVER.getPlayerList().getPlayers())
             applyPlayerFreeze(player);
 
         LoggingUtil.log("session paused :(");
@@ -125,37 +125,37 @@ public class SessionManagement {
     /**
      * Sets a players attributes to effectively freeze them, also give saturation
      */
-    public static void applyPlayerFreeze(ServerPlayerEntity player) {
-        EntityAttributeInstance movementInst = player.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED);
-        EntityAttributeInstance jumpInst = player.getAttributeInstance(EntityAttributes.JUMP_STRENGTH);
-        EntityAttributeInstance reachInst = player.getAttributeInstance(EntityAttributes.BLOCK_INTERACTION_RANGE);
-        EntityAttributeInstance damageInst = player.getAttributeInstance(EntityAttributes.ATTACK_DAMAGE);
+    public static void applyPlayerFreeze(ServerPlayer player) {
+        AttributeInstance movementInst = player.getAttribute(Attributes.MOVEMENT_SPEED);
+        AttributeInstance jumpInst = player.getAttribute(Attributes.JUMP_STRENGTH);
+        AttributeInstance reachInst = player.getAttribute(Attributes.BLOCK_INTERACTION_RANGE);
+        AttributeInstance damageInst = player.getAttribute(Attributes.ATTACK_DAMAGE);
 
         // only apply the freeze modifier if its not already applied, avoids error
         if(!movementInst.hasModifier(MODIFIER_FREEZE.id()))
-            movementInst.addPersistentModifier(MODIFIER_FREEZE);
+            movementInst.addPermanentModifier(MODIFIER_FREEZE);
         if(!jumpInst.hasModifier(MODIFIER_FREEZE.id()))
-            jumpInst.addPersistentModifier(MODIFIER_FREEZE);
+            jumpInst.addPermanentModifier(MODIFIER_FREEZE);
         if(!reachInst.hasModifier(MODIFIER_FREEZE.id()))
-            reachInst.addPersistentModifier(MODIFIER_FREEZE);
+            reachInst.addPermanentModifier(MODIFIER_FREEZE);
         if(!damageInst.hasModifier(MODIFIER_FREEZE.id()))
-            damageInst.addPersistentModifier(MODIFIER_FREEZE);
+            damageInst.addPermanentModifier(MODIFIER_FREEZE);
     }
 
     /**
      * Undoes everything done in the freeze method
      */
-    public static void removePlayerFreeze(ServerPlayerEntity player) {
-        player.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED).removeModifier(MODIFIER_FREEZE);
-        player.getAttributeInstance(EntityAttributes.JUMP_STRENGTH).removeModifier(MODIFIER_FREEZE);
-        player.getAttributeInstance(EntityAttributes.BLOCK_INTERACTION_RANGE).removeModifier(MODIFIER_FREEZE);
-        player.getAttributeInstance(EntityAttributes.ATTACK_DAMAGE).removeModifier(MODIFIER_FREEZE);
+    public static void removePlayerFreeze(ServerPlayer player) {
+        player.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(MODIFIER_FREEZE);
+        player.getAttribute(Attributes.JUMP_STRENGTH).removeModifier(MODIFIER_FREEZE);
+        player.getAttribute(Attributes.BLOCK_INTERACTION_RANGE).removeModifier(MODIFIER_FREEZE);
+        player.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(MODIFIER_FREEZE);
     }
 
     /**
      * Handles the freezing/unfreezing of a player who has joined mid freeze or after freeze
      */
-    public static void handleFreezing(ServerPlayerEntity player) {
+    public static void handleFreezing(ServerPlayer player) {
         if(paused || onBreak)
             SessionManagement.applyPlayerFreeze(player);
         else
@@ -166,7 +166,7 @@ public class SessionManagement {
         unfreezeTicks();
         paused = false;
 
-        for(ServerPlayerEntity player : Lifed.SERVER.getPlayerManager().getPlayerList())
+        for(ServerPlayer player : Lifed.SERVER.getPlayerList().getPlayers())
             removePlayerFreeze(player);
 
         LoggingUtil.log("session unpaused !");
@@ -187,7 +187,7 @@ public class SessionManagement {
      * does the same stuff as /tick freeze
      */
     private static void freezeTicks() {
-        ServerTickManager serverTickManager = Lifed.SERVER.getTickManager();
+        ServerTickRateManager serverTickManager = Lifed.SERVER.tickRateManager();
 
         if (serverTickManager.isSprinting()) {
             serverTickManager.stopSprinting();
@@ -200,7 +200,7 @@ public class SessionManagement {
      * does the same stuff as /tick unfreeze
      */
     private static void unfreezeTicks() {
-        ServerTickManager serverTickManager = Lifed.SERVER.getTickManager();
+        ServerTickRateManager serverTickManager = Lifed.SERVER.tickRateManager();
 
         serverTickManager.setFrozen(false);
     }
@@ -210,26 +210,26 @@ public class SessionManagement {
      */
     public static void goOnBreak() {
         freezeTicks();
-        for(ServerPlayerEntity player : Lifed.SERVER.getPlayerManager().getPlayerList())
+        for(ServerPlayer player : Lifed.SERVER.getPlayerList().getPlayers())
             applyPlayerFreeze(player);
 
         breakTicksRemaining = breakTicksTotal;
         onBreak = true;
 
-        TitleUtil.sendTitleAll(Lifed.config.breakLength + " minute break started", Formatting.RED);
+        TitleUtil.sendTitleAll(Lifed.config.breakLength + " minute break started", ChatFormatting.RED);
     }
 
     /**
      * Stops a break, either mid break or at the end
      */
     public static void goOffBreak() {
-        for(ServerPlayerEntity player : Lifed.SERVER.getPlayerManager().getPlayerList())
+        for(ServerPlayer player : Lifed.SERVER.getPlayerList().getPlayers())
             removePlayerFreeze(player);
         unfreezeTicks();
 
         breakTicksRemaining = 0;
         onBreak = false;
-        TitleUtil.sendTitleAll("break ended, good luck !", Formatting.RED);
+        TitleUtil.sendTitleAll("break ended, good luck !", ChatFormatting.RED);
     }
 
     public static boolean onBreak() {

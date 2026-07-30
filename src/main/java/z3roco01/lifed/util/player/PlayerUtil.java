@@ -1,18 +1,18 @@
 package z3roco01.lifed.util.player;
 
-import net.minecraft.entity.EntityStatuses;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 
 public class PlayerUtil {
     /**
      * Plays the totem animation for a player ( does not do anything else the totem does )
      * @param player the player
      */
-    public static void playTotemAnimation(ServerPlayerEntity player) {
-        player.getEntityWorld().sendEntityStatus(player, EntityStatuses.USE_TOTEM_OF_UNDYING);
+    public static void playTotemAnimation(ServerPlayer player) {
+        // idk if this actually will work...
+        player.level().broadcastEntityEvent(player, (byte)35);
     }
 
     /**
@@ -20,7 +20,7 @@ public class PlayerUtil {
      * @param effect the effect to add
      * @param duration how many SECONDS it will last
      */
-    public static void addStatusEffect(ServerPlayerEntity player, RegistryEntry<StatusEffect> effect, int duration) {
-        player.addStatusEffect(new StatusEffectInstance(effect, duration*20));
+    public static void addStatusEffect(ServerPlayer player, MobEffect effect, int duration) {
+        player.addEffect(new MobEffectInstance(Holder.direct(effect), duration*20));
     }
 }

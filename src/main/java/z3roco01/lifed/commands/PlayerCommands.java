@@ -2,13 +2,13 @@ package z3roco01.lifed.commands;
 
 
 import com.mojang.brigadier.CommandDispatcher;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import z3roco01.lifed.Lifed;
 import z3roco01.lifed.features.BoogeymanManager;
 import z3roco01.lifed.features.LifeManager;
@@ -20,39 +20,39 @@ import z3roco01.lifed.util.Time;
  */
 public class PlayerCommands implements CommandRegisterer {
     @Override
-    public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment) {
         // lets a player gift one of their lives
-        dispatcher.register(CommandManager.literal("givelife")
-                .then(CommandManager.argument("target", EntityArgumentType.player())
+        dispatcher.register(Commands.literal("givelife")
+                .then(Commands.argument("target", EntityArgument.player())
                         .executes(ctx -> {
-                            ServerPlayerEntity gifter = ctx.getSource().getPlayer();
-                            ServerPlayerEntity recipient = EntityArgumentType.getPlayer(ctx, "target");
+                            ServerPlayer gifter = ctx.getSource().getPlayer();
+                            ServerPlayer recipient = EntityArgument.getPlayer(ctx, "target");
 
                             // if the gift was unsuccessful, give feedback
                             if(!LifeManager.giftLife(gifter, recipient)) {
-                                ctx.getSource().sendFeedback(() -> Text.of("Could not gift a life to " + recipient.getStringifiedName())
-                                        .copy().formatted(Formatting.RED), false);
+                                ctx.getSource().sendSuccess(() -> Component.literal("Could not gift a life to " + recipient.getPlainTextName())
+                                        .copy().withStyle(ChatFormatting.RED), false);
                                 return 0;
                             }
 
                             return 1;
                         })));
 
-        dispatcher.register(CommandManager.literal("lives")
+        dispatcher.register(Commands.literal("lives")
                 .executes(ctx -> {
-                    ServerPlayerEntity executor = ctx.getSource().getPlayer();
+                    ServerPlayer executor = ctx.getSource().getPlayer();
 
                     int lives = LifeManager.getLives(executor);
-                    ctx.getSource().sendFeedback(() -> Text.of("§7You have " + LifeManager.getLifeFormatString(executor) +
+                    ctx.getSource().sendSuccess(() -> Component.literal("§7You have " + LifeManager.getLifeFormatString(executor) +
                             lives + "§7 lives !§r"), false);
 
                     return 1;
                 }));
 
-        dispatcher.register(CommandManager.literal("remaining")
+        dispatcher.register(Commands.literal("remaining")
                 .executes(ctx -> {
                     if(SessionManagement.onBreak()) {
-                        ctx.getSource().sendFeedback(() -> Text.of("§7" + Time.prettyTicks(SessionManagement.remainingBreakTicks()) +
+                        ctx.getSource().sendSuccess(() -> Component.literal("§7" + Time.prettyTicks(SessionManagement.remainingBreakTicks()) +
                                 " remaining in the break"), false);
                     }else {
                         int ticksRemaining = SessionManagement.ticksRemaining();
@@ -69,27 +69,27 @@ public class PlayerCommands implements CommandRegisterer {
                             timeColour += "c";
 
                         String finalTimeColour = timeColour;
-                        ctx.getSource().sendFeedback(() -> Text.of(finalTimeColour + Time.prettyTicks(ticksRemaining)
+                        ctx.getSource().sendSuccess(() -> Component.literal(finalTimeColour + Time.prettyTicks(ticksRemaining)
                                 + " §7remaining..."), false);
                     }
                     return 1;
                 }));
 
-        dispatcher.register(CommandManager.literal("boogeys").executes(ctx -> {
+        dispatcher.register(Commands.literal("boogeys").executes(ctx -> {
             if(BoogeymanManager.getBoogeymen().isEmpty())
-                ctx.getSource().sendFeedback(() -> Text.of("There are no boogeymen remaining").copy().formatted(Formatting.GRAY), false);
+                ctx.getSource().sendSuccess(() -> Component.literal("There are no boogeymen remaining").copy().withStyle(ChatFormatting.GRAY), false);
             else
-                ctx.getSource().sendFeedback(() -> Text.of("There is at least one boogeyman remaining").copy().formatted(Formatting.GRAY), false);
+                ctx.getSource().sendSuccess(() -> Component.literal("There is at least one boogeyman remaining").copy().withStyle(ChatFormatting.GRAY), false);
 
             return 1;
         }));
 
-        dispatcher.register(CommandManager.literal("amiboogey").executes(ctx -> {
-            ServerPlayerEntity player  = ctx.getSource().getPlayer();
+        dispatcher.register(Commands.literal("amiboogey").executes(ctx -> {
+            ServerPlayer player  = ctx.getSource().getPlayer();
             if(BoogeymanManager.isPlayerBoogey(player))
-                ctx.getSource().sendFeedback(() -> Text.of("You ARE a boogeyman").copy().formatted(Formatting.RED), false);
+                ctx.getSource().sendSuccess(() -> Component.literal("You ARE a boogeyman").copy().withStyle(ChatFormatting.RED), false);
             else
-                ctx.getSource().sendFeedback(() -> Text.of("You ARE NOT a boogeyman").copy().formatted(Formatting.GREEN), false);
+                ctx.getSource().sendSuccess(() -> Component.literal("You ARE NOT a boogeyman").copy().withStyle(ChatFormatting.GREEN), false);
 
             return 1;
         }));

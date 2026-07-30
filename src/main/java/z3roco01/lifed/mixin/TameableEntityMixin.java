@@ -1,20 +1,20 @@
 package z3roco01.lifed.mixin;
 
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.entity.passive.WolfEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.animal.wolf.Wolf;
+import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import z3roco01.lifed.util.WolfCounter;
 
-@Mixin(TameableEntity.class)
+@Mixin(TamableAnimal.class)
 public abstract class TameableEntityMixin {
-    @Inject(method = "setTamedBy", at = @At("HEAD"))
-    private void setTamedBy(PlayerEntity player, CallbackInfo ci) {
+    @Inject(method = "tame", at = @At("HEAD"))
+    private void tame(Player player, CallbackInfo ci) {
         // when a wolf is tamed, increment the tamers wolf count
-        if((TameableEntity)(Object)this instanceof WolfEntity)
+        if((TamableAnimal)(Object)this instanceof Wolf)
             ((WolfCounter)(Object)player).incrementWolfCount();
     }
 }

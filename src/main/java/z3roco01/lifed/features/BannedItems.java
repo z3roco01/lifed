@@ -1,8 +1,8 @@
 package z3roco01.lifed.features;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import z3roco01.lifed.Lifed;
 

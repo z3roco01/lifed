@@ -1,14 +1,11 @@
 package z3roco01.lifed.config;
 
-
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import z3roco01.composed.ProcessedConfig;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import z3roco01.composed.annotation.Comment;
 import z3roco01.composed.annotation.ConfigProperty;
-import z3roco01.lifed.Lifed;
 
 import java.util.ArrayList;
 
@@ -18,11 +15,11 @@ import java.util.ArrayList;
 public class LifedConfig {
     public LifedConfig() {
         // add default values, not required but niced
-        bannedItems.add(Items.BOOKSHELF);
+        bannedItems.add(net.minecraft.world.item.Items.BOOKSHELF);
 
         uncraftableItems.add(Items.ENCHANTING_TABLE);
 
-        bannedEffects.add(StatusEffects.STRENGTH.value());
+        bannedEffects.add(MobEffects.STRENGTH.value());
     }
 
     @Comment(comment = "The maximum amount of boogeymen on a normal roll ( can be overriden in the command as well )")
@@ -59,7 +56,7 @@ public class LifedConfig {
 
     @Comment(comment = "Status effects which cannot be applied to players, the potions can be made, but once drank will have no effect ( contains their ids )")
     @ConfigProperty
-    public ArrayList<StatusEffect> bannedEffects = new ArrayList<>();
+    public ArrayList<MobEffect> bannedEffects = new ArrayList<>();
 
     @Comment(comment = "Are PVP enchantments ( sharpness, protection, etc ) allowed at levels higher than 1")
     @ConfigProperty
