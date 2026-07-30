@@ -26,7 +26,7 @@ public class LifedConfig {
     @ConfigProperty
     public int maxBoogeymen = 10;
 
-    @Comment(comment = "The title shown just before the players boogey status is shown")
+    /*@Comment(comment = "The title shown just before the players boogey status is shown")
     @ConfigProperty
     public String youAre = "You are...";
 
@@ -41,6 +41,7 @@ public class LifedConfig {
     @Comment(comment = "The chat message sent only to boogeys explaining the rules of boogeys")
     @ConfigProperty
     public String boogeyChatMsg ="§7You are a boogeyman ! you must kill a §2dark green§7, §agreen§7 or §eyellow§7 to cure yourself. you lose EVERY alliance as a boogeyman until you are cured. if you do not then you will go to your §clast life§7 at the end of this session.§r";
+    */
 
     @Comment(comment = "how many lightning bolts to be spawned on red deaht ( they all happen at once so more than one is kinda pointless )")
     @ConfigProperty

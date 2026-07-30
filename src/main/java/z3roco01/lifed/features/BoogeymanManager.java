@@ -157,16 +157,16 @@ public class BoogeymanManager {
     public static void showBoogeyStatus(List<ServerPlayer> players) {
         // show anticipation title
         for(ServerPlayer player : players)
-            TitleUtil.sendTitle(player, Lifed.config.youAre, ChatFormatting.YELLOW);
+            TitleUtil.sendTitle(player, Component.translatable("lifed.you_are").getString(), ChatFormatting.YELLOW);
 
         TaskScheduling.scheduleTask(Time.SECONDS.ticks(5), () -> {
             // loop over every player
             for(ServerPlayer player : players) {
                 if(boogeymen.contains(player)) {
-                    TitleUtil.sendTitle(player, Lifed.config.aBoogeyman, ChatFormatting.RED);
-                    player.sendSystemMessage(Component.literal(Lifed.config.boogeyChatMsg));
+                    TitleUtil.sendTitle(player, Component.translatable("lifed.yes_boogey").getString(), ChatFormatting.RED);
+                    player.sendSystemMessage(Component.translatable("lifed.explain_boogey"));
                 }else {
-                    TitleUtil.sendTitle(player, Lifed.config.notABoogeyman, ChatFormatting.GREEN);
+                    TitleUtil.sendTitle(player, Component.translatable("lifed.not_boogey").getString(), ChatFormatting.GREEN);
                 }
             }
         });

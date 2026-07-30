@@ -13,17 +13,14 @@ If you cannot move, that is not a problem, it is because the session has not sta
 - `/amiboogey` : Tells a player if they are currently the boogey or not 
 
 # For Server Admins
-This mod replicates Last Life with customisability. It has session timing, item banning and more.
+This mod replicates Last Life with customisability. It has session timing, item banning and more.<br>
+Messages sent to players by the mod (like boogey titles) can be customised with a language file (see [en_us.json](https://github.com/z3roco01/lifed/tree/master/src/main/resources/assets/lifed/lang/en_us.json) for ids).
 ## Config file
 If your config file is missing any of these properties, then stop your server, delete/rename it, then restart it. You should have the file full of defaults with every property.
 The config file is in `config/lifed.conf`
 ### Properties
 you can use [Minecraft formatting codes](https://minecraft.wiki/w/Formatting_codes) in any text 
 - `maxBoogeymen` (default: 10) : The maximum number of boogeymen that will be rolled by default ( can still be overriden when running the command )
-- `youAre` (default: "You are...") : The text shown in the title shown just before your boogey status is shown
-- `notABoogey` (default: "...NOT a boogeyman !!!") : Title shown after you are revealed to not be a boogey
-- `aBoogeyman` (default: "...A BOOGEYMAN !!!") : Title shown when you are a boogeyman
-- `boogeyChatMsg` : Chat message sent to all boogeys explaining the rules
 - `lightningOnRedDeath` (default: 5) : How many lightning bolts will be spawned on a red death
 - `bannedItems` (default: ["minecraft:bookshelf"]) : A list containing item ids that will be banned, meaning they cannot be crafted or picked up, will be destroyed on pickup
 - `uncraftableItems` (default: ["minecraft:enchanting_table"]) : A list of item ids which are just uncraftable, can still be picked up
