@@ -19,7 +19,7 @@ public class Lifed implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     @Nullable
-    public static MinecraftServer SERVER = null;
+    public static MinecraftServer server = null;
 
     public static final LifedConfig config = new LifedConfig();
 

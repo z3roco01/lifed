@@ -13,7 +13,7 @@ public class TaskScheduling {
     private static boolean shouldCancel = false;
 
     /**
-     * Schedules a task in `tick` ticks
+     * Schedules a non blocking task in `tick` ticks
      * @param ticks how many ticks until itll run
      * @param runnable the thing that will run
      */

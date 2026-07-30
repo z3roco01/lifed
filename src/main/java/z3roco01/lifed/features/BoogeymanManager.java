@@ -144,7 +144,7 @@ public class BoogeymanManager {
             TaskScheduling.scheduleTask(Time.SECONDS.ticks(55), () -> {
                 ChatUtil.sendChatMessage("The " + boogeyText + " will be chosen soon.....", ChatFormatting.RED);
                 TaskScheduling.scheduleTask(Time.SECONDS.ticks(5), () -> {
-                    List<ServerPlayer> players = Lifed.SERVER.getPlayerList().getPlayers();
+                    List<ServerPlayer> players = Lifed.server.getPlayerList().getPlayers();
                     showBoogeyStatus(players);
                 });
             });
@@ -178,7 +178,7 @@ public class BoogeymanManager {
      */
     public static void selectBoogeys(int max) {
         // copy over the list
-        ArrayList<ServerPlayer> players = new ArrayList<>(Lifed.SERVER.getPlayerList().getPlayers());
+        ArrayList<ServerPlayer> players = new ArrayList<>(Lifed.server.getPlayerList().getPlayers());
         // weed out red players so people will only actually be boogeys
         players.removeIf(player -> LifeManager.getLives(player) <= 1);
 

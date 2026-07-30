@@ -24,7 +24,7 @@ public class ScoreboardUtil {
      * @return the Scoreboard of the server
      */
     public static Scoreboard getScoreboard() {
-        return Lifed.SERVER.getScoreboard();
+        return Lifed.server.getScoreboard();
     }
 
     /**
@@ -35,7 +35,7 @@ public class ScoreboardUtil {
      */
     public static Objective createObjective(String name, ObjectiveCriteria criterion) {
         // if there is no server we cant do anything
-        if(Lifed.SERVER == null) return null;
+        if(Lifed.server == null) return null;
 
         // get a reference to the scoreboard
         Scoreboard scoreboard = getScoreboard();
@@ -67,7 +67,7 @@ public class ScoreboardUtil {
      */
     public static void setScore(Objective objective, ServerPlayer player, int score) {
         // if there is no server we cant do anything
-        if(Lifed.SERVER == null) return;
+        if(Lifed.server == null) return;
 
         Scoreboard scoreboard = getScoreboard();
         // get the score object, then set the score
@@ -82,7 +82,7 @@ public class ScoreboardUtil {
      */
     public static int getScore(Objective objective, ServerPlayer player) {
         // if there is no server we cant do anything
-        if(Lifed.SERVER == null) return -1;
+        if(Lifed.server == null) return -1;
 
         Scoreboard scoreboard = getScoreboard();
         // get a readable score object

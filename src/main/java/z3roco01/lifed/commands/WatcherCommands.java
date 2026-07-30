@@ -11,10 +11,7 @@ import net.minecraft.commands.arguments.UuidArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import z3roco01.lifed.Lifed;
-import z3roco01.lifed.features.BoogeymanManager;
-import z3roco01.lifed.features.LifeManager;
-import z3roco01.lifed.features.SessionLock;
-import z3roco01.lifed.features.SessionManagement;
+import z3roco01.lifed.features.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -168,6 +165,18 @@ public class WatcherCommands implements CommandRegisterer {
                             return 1;
                         })))
                 )
+                .then(Commands.literal("soulmates")
+                        .then(Commands.literal("roll").executes(ctx -> {
+                            SoulmateManager.rollSoulmates();
+
+                            return 1;
+                        }))
+                        .then(Commands.literal("clear").executes(ctx -> {
+                            SoulmateManager.clearSoulmates();
+
+                            return 1;
+                        }))
+                )
         );
 
         // only register the debug commands when theyre enabled, since they can be kinda cheaty
@@ -186,7 +195,7 @@ public class WatcherCommands implements CommandRegisterer {
 
                                 BoogeymanManager.selectBoogeys(Lifed.config.maxBoogeymen);
 
-                                List<ServerPlayer> players = Lifed.SERVER.getPlayerList().getPlayers();
+                                List<ServerPlayer> players = Lifed.server.getPlayerList().getPlayers();
                                 BoogeymanManager.showBoogeyStatus(players);
                                 return 1;
                             }))

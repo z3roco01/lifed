@@ -38,6 +38,8 @@ you can use [Minecraft formatting codes](https://minecraft.wiki/w/Formatting_cod
 - `watcherDebug` (default: false) : Enables watcher debug commands when true, they may be undocumented or cheaty, so not recommended
 - `logEvents` (default: false) : When true, events like boogey kills, cures, life changes, and life gifts are logged to the **server console**
 - `mendingBanned` (default: true) : When true, mending cannot be rolled or applied to any item
+- `soulmateLives` (default: 4) : How many lives everyone will start with after soulmate rolls
+- `revealSoulmates` (default: false) : Should the pairs have their soulmates reveal to each other after rolling
 ## Commands
 for any command that accepts `<PLAYERS>`, typing `@a` instead of a username will pick every current player
 ### `/watcher boogeyman`
@@ -68,3 +70,7 @@ Handles the session lock, which is also enabled by the boogey roll ( if enabled 
 - `toggle` : toggles the lock on and off, when toggled on, sets the list to the currently online players
 - `add <PLAYERS>` : adds the passed players to the allowed players list
 - `adduuid <UUID>` : adds a player from the passed uuid
+### `/watcher soulmates`
+Handles soulmate pairs
+- `roll`: Rerolls all soulmates
+- `clear`: Cleasr all soulmate pairs

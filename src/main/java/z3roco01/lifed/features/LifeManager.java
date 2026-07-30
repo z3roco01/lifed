@@ -39,7 +39,7 @@ public class LifeManager {
      */
     private static void initializeScoreboard() {
         // if there is no server we cant do anything
-        if(Lifed.SERVER == null) return;
+        if(Lifed.server == null) return;
 
         // create an objective to keep track of lives
         LIVES_OBJECTIVE = ScoreboardUtil.createObjective("lives");
@@ -263,7 +263,7 @@ public class LifeManager {
      */
     public static void randomizePlayers(Collection<ServerPlayer> players, int min, int max) {
         // cant execute without a server
-        if(Lifed.SERVER == null) return;
+        if(Lifed.server == null) return;
 
         // create a random object, to get random life values, should maybe use world random but wtv
         Random random = new Random();

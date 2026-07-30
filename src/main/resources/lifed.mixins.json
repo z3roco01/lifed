@@ -5,6 +5,7 @@
   "mixins": [
     "EnchantmentHelperMixin",
     "ItemMixin",
+    "LivingEntityMixin",
     "PlayerInventoryMixin",
     "ServerPlayerEntityMixin",
     "ShapedRecipeMixin",

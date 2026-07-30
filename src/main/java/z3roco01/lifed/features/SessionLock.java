@@ -72,7 +72,7 @@ public class SessionLock {
      */
     public static void lock() {
         ArrayList<UUID> newList = new ArrayList<>();
-        for(ServerPlayer player : Lifed.SERVER.getPlayerList().getPlayers())
+        for(ServerPlayer player : Lifed.server.getPlayerList().getPlayers())
             newList.add(player.getUUID());
 
         lock(newList);

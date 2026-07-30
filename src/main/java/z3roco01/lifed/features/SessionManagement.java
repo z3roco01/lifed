@@ -116,7 +116,7 @@ public class SessionManagement {
         freezeTicks();
         paused = true;
 
-        for(ServerPlayer player : Lifed.SERVER.getPlayerList().getPlayers())
+        for(ServerPlayer player : Lifed.server.getPlayerList().getPlayers())
             applyPlayerFreeze(player);
 
         LoggingUtil.log("session paused :(");
@@ -166,7 +166,7 @@ public class SessionManagement {
         unfreezeTicks();
         paused = false;
 
-        for(ServerPlayer player : Lifed.SERVER.getPlayerList().getPlayers())
+        for(ServerPlayer player : Lifed.server.getPlayerList().getPlayers())
             removePlayerFreeze(player);
 
         LoggingUtil.log("session unpaused !");
@@ -187,7 +187,7 @@ public class SessionManagement {
      * does the same stuff as /tick freeze
      */
     private static void freezeTicks() {
-        ServerTickRateManager serverTickManager = Lifed.SERVER.tickRateManager();
+        ServerTickRateManager serverTickManager = Lifed.server.tickRateManager();
 
         if (serverTickManager.isSprinting()) {
             serverTickManager.stopSprinting();
@@ -200,7 +200,7 @@ public class SessionManagement {
      * does the same stuff as /tick unfreeze
      */
     private static void unfreezeTicks() {
-        ServerTickRateManager serverTickManager = Lifed.SERVER.tickRateManager();
+        ServerTickRateManager serverTickManager = Lifed.server.tickRateManager();
 
         serverTickManager.setFrozen(false);
     }
@@ -210,7 +210,7 @@ public class SessionManagement {
      */
     public static void goOnBreak() {
         freezeTicks();
-        for(ServerPlayer player : Lifed.SERVER.getPlayerList().getPlayers())
+        for(ServerPlayer player : Lifed.server.getPlayerList().getPlayers())
             applyPlayerFreeze(player);
 
         breakTicksRemaining = breakTicksTotal;
@@ -223,7 +223,7 @@ public class SessionManagement {
      * Stops a break, either mid break or at the end
      */
     public static void goOffBreak() {
-        for(ServerPlayer player : Lifed.SERVER.getPlayerList().getPlayers())
+        for(ServerPlayer player : Lifed.server.getPlayerList().getPlayers())
             removePlayerFreeze(player);
         unfreezeTicks();
 

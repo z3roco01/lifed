@@ -110,4 +110,12 @@ public class LifedConfig {
     @Comment(comment = "Is mending banned for applying or rolling")
     @ConfigProperty
     public boolean mendingBanned = true;
+
+    @Comment(comment = "How many lives everyone will start with when using soulmates")
+    @ConfigProperty
+    public int soulmatesLives = 4;
+
+    @Comment(comment = "Should soulmates be revealed to the pair when rolled")
+    @ConfigProperty
+    public boolean revealSoulmates = false;
 }

@@ -36,6 +36,7 @@
         "composed": ">=1.4.4"
 	},
 	"suggests": {
-		"simple-voice-chat": "*"
+		"simple-voice-chat": "*",
+		"coloured_hearts": "*"
 	}
 }

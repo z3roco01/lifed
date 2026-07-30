@@ -42,7 +42,7 @@ public class LifedEvents {
      * @param server a reference to the server object
      */
     private static void onServerStarted(MinecraftServer server) {
-        Lifed.SERVER = server;
+        Lifed.server = server;
         LifeManager.init();
         SessionManagement.initialize();
     }
@@ -86,6 +86,6 @@ public class LifedEvents {
         for(ServerPlayer player : server.getPlayerList().getPlayers())
             SessionManagement.removePlayerFreeze(player);
 
-        Lifed.SERVER = null;
+        Lifed.server = null;
     }
 }
