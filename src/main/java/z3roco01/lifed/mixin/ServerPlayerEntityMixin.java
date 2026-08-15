@@ -1,6 +1,7 @@
 package z3roco01.lifed.mixin;
 
 import com.mojang.authlib.GameProfile;
+import net.minecraft.core.Holder;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
@@ -10,6 +11,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
@@ -145,6 +147,11 @@ public abstract class ServerPlayerEntityMixin extends Player implements WolfCoun
             ((ServerPlayer)(Object)this).removeEffect(effect.getEffect());
             ci.cancel();
         }
+    }
+
+    @Inject(method = "onAttributeUpdated", at = @At("TAIL"))
+    private void onAttributeUpdated(Holder<Attribute> attribute, CallbackInfo ci) {
+
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))

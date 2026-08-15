@@ -12,18 +12,15 @@ import z3roco01.lifed.util.player.PlayerUtil;
 import z3roco01.lifed.util.TaskScheduling;
 import z3roco01.lifed.util.player.TitleUtil;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class BoogeymanManager {
-    private static final ArrayList<ServerPlayer> boogeymen = new ArrayList<>();
+    private static final ArrayList<UUID> boogeymen = new ArrayList<>();
 
     /**
      * Creates a new list of all the boogey players, does not allow modification
      */
-    public static List<ServerPlayer> getBoogeymen() {
+    public static List<UUID> getBoogeymen() {
         // creates an immutable list of the boogeymen
         return Collections.unmodifiableList(boogeymen);
     }
@@ -37,16 +34,28 @@ public class BoogeymanManager {
         boogeymen.clear();
     }
 
+    private static boolean contains(ServerPlayer player) {
+        return boogeymen.contains(player.getUUID());
+    }
+
+    private static void remove(ServerPlayer player) {
+        boogeymen.remove(player.getUUID());
+    }
+
+    private static void add(ServerPlayer player) {
+        boogeymen.add(player.getUUID());
+    }
+
     /**
      * Cures a player who is a boogey, removing them from the list, and giving them a few status effects
      * @param player the player to cure
      */
     public static void cure(ServerPlayer player) {
         // only cure if they are actually a boogey
-        if(!boogeymen.contains(player)) return;
+        if(!contains(player)) return;
 
         // remove them from the list
-        boogeymen.remove(player);
+        remove(player);
 
         // show them the title, and a sound
         TitleUtil.sendTitle(player, "You are cured !", ChatFormatting.GREEN);
@@ -64,15 +73,17 @@ public class BoogeymanManager {
      * Returns true if the player is a boogey
      */
     public static boolean isPlayerBoogey(ServerPlayer player) {
-        return boogeymen.contains(player);
+        return boogeymen.contains(player.getUUID());
     }
 
     /**
      * Fails all remaining boogeys, called at the end of a session
      */
     public static void failAll() {
-        for(ServerPlayer boogey : boogeymen)
-            fail(boogey);
+        for(ServerPlayer player : Lifed.server.getPlayerList().getPlayers()) {
+            if(contains(player))
+                fail(player);
+        }
         SessionLock.unlock();
     }
 
@@ -82,10 +93,10 @@ public class BoogeymanManager {
      */
     public static void fail(ServerPlayer player) {
         // dont fail a non boogey
-        if(!boogeymen.contains(player)) return;
+        if(!contains(player)) return;
 
         // remove the player from the boogeys
-        boogeymen.remove(player);
+        remove(player);
 
         // set the player down to 1 life
         LifeManager.setLives(player, 1);
@@ -93,7 +104,6 @@ public class BoogeymanManager {
         // send them a fail message
         TitleUtil.sendTitle(player, "You failed...", ChatFormatting.RED);
     }
-
 
     /**
      * Rolls a random amount of boogeys between 1 and max
@@ -162,9 +172,10 @@ public class BoogeymanManager {
         TaskScheduling.scheduleTask(Time.SECONDS.ticks(5), () -> {
             // loop over every player
             for(ServerPlayer player : players) {
-                if(boogeymen.contains(player)) {
+                if(contains(player)) {
                     TitleUtil.sendTitle(player, Component.translatable("lifed.yes_boogey").getString(), ChatFormatting.RED);
-                    player.sendSystemMessage(Component.translatable("lifed.explain_boogey"));
+                    // ensure its translated, because client may not have the mod
+                    player.sendSystemMessage(Component.literal(Component.translatable("lifed.explain_boogey").getString()));
                 }else {
                     TitleUtil.sendTitle(player, Component.translatable("lifed.not_boogey").getString(), ChatFormatting.GREEN);
                 }
@@ -215,12 +226,12 @@ public class BoogeymanManager {
             return;
 
         // if the pulled player is already a boogey, re pull
-        while(boogeymen.contains(boogey)) {
+        while(contains(boogey)) {
             boogey = getBoogeyCandidate(random, players);
         }
 
         // the player will not already be a boogey now, so add them to the list
-        boogeymen.add(boogey);
+        add(boogey);
     }
 
     /**

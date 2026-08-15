@@ -200,8 +200,8 @@ public class WatcherCommands implements CommandRegisterer {
                                 return 1;
                             }))
                             .then(Commands.literal("printboogeys").executes(ctx -> {
-                                for(ServerPlayer boogey : BoogeymanManager.getBoogeymen())
-                                    Lifed.LOGGER.info(boogey.getPlainTextName());
+                                for(UUID boogey : BoogeymanManager.getBoogeymen())
+                                    Lifed.LOGGER.info(boogey.toString());
 
                                 return 1;
                             }))
