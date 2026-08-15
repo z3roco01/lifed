@@ -56,8 +56,10 @@ for any command that accepts `<PLAYERS>`, typing `@a` instead of a username will
 - `dec <PLAYER>` : removes one life from `<PLAYER>`
 ### `/watcher session`
 controls things about the current session
-- `start` : will unpause the current session
-- `stop` : will pause the current session ( not a break )
+- `start` : Starts the session with the time set in the config
+- `start <LENGTH>` : Starts a session lasting `<LENGTH>` minutes
+- `unpause` : will unpause the current session
+- `pause` : will pause the current session ( not a break )
 - `break` : starts a break for the set amount of time
 - `cancelbreak` : stop a break that is currently happening
 ### `/watcher debug`

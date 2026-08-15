@@ -5,11 +5,9 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -20,10 +18,9 @@ import z3roco01.lifed.commands.WatcherCommands;
 import z3roco01.lifed.features.BoogeymanManager;
 import z3roco01.lifed.features.LifeManager;
 import z3roco01.lifed.features.SessionLock;
-import z3roco01.lifed.features.SessionManagement;
+import z3roco01.lifed.features.SessionManager;
 import z3roco01.lifed.util.SessionUUID;
 import z3roco01.lifed.util.TaskScheduling;
-import z3roco01.lifed.util.player.TitleUtil;
 
 public class LifedEvents {
     private static final CommandRegisterer[] COMMANDS = {
@@ -54,7 +51,7 @@ public class LifedEvents {
     private static void onServerStarted(MinecraftServer server) {
         Lifed.server = server;
         LifeManager.init();
-        SessionManagement.initialize();
+        SessionManager.initialize();
     }
 
     /**
@@ -73,11 +70,9 @@ public class LifedEvents {
             // quickly add then fail them, because they need to be in the list to fail
             BoogeymanManager.add(player);
             BoogeymanManager.fail(player);
-            TitleUtil.sendTitle(player, "You FAILED !!!", ChatFormatting.RED);
-            player.sendSystemMessage(Component.literal("§7You failed to kill as the boogeyman last session. You are now on your §cLast §7Life.§r"));
         }
 
-        SessionManagement.handleFreezing(player);
+        SessionManager.handleFreezing(player);
     }
 
     /**
@@ -102,7 +97,7 @@ public class LifedEvents {
 
         // clear all freeze effects so an error doesnt happen upon rejoining
         for(ServerPlayer player : server.getPlayerList().getPlayers())
-            SessionManagement.removePlayerFreeze(player);
+            SessionManager.removePlayerFreeze(player);
 
         Lifed.server = null;
     }

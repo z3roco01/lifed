@@ -12,7 +12,7 @@ import net.minecraft.server.level.ServerPlayer;
 import z3roco01.lifed.Lifed;
 import z3roco01.lifed.features.BoogeymanManager;
 import z3roco01.lifed.features.LifeManager;
-import z3roco01.lifed.features.SessionManagement;
+import z3roco01.lifed.features.SessionManager;
 import z3roco01.lifed.util.Time;
 
 /**
@@ -51,11 +51,16 @@ public class PlayerCommands implements CommandRegisterer {
 
         dispatcher.register(Commands.literal("remaining")
                 .executes(ctx -> {
-                    if(SessionManagement.onBreak()) {
-                        ctx.getSource().sendSuccess(() -> Component.literal("§7" + Time.prettyTicks(SessionManagement.remainingBreakTicks()) +
+                    if(SessionManager.onBreak()) {
+                        ctx.getSource().sendSuccess(() -> Component.literal("§7" + Time.prettyTicks(SessionManager.remainingBreakTicks()) +
                                 " remaining in the break"), false);
                     }else {
-                        int ticksRemaining = SessionManagement.ticksRemaining();
+                        int ticksRemaining = SessionManager.ticksRemaining();
+
+                        if(ticksRemaining < 0) {
+                            ctx.getSource().sendSuccess(() -> Component.literal("The session is over!").withStyle(ChatFormatting.DARK_RED), false);
+                            return 1;
+                        }
 
                         double timePercent = ticksRemaining/(double)Time.MINUTES.ticks(Lifed.config.sessionLength);
 
@@ -70,7 +75,7 @@ public class PlayerCommands implements CommandRegisterer {
 
                         String finalTimeColour = timeColour;
                         ctx.getSource().sendSuccess(() -> Component.literal(finalTimeColour + Time.prettyTicks(ticksRemaining)
-                                + " §7remaining..."), false);
+                                + " §7remaining...§r"), false);
                     }
                     return 1;
                 }));

@@ -96,22 +96,32 @@ public class WatcherCommands implements CommandRegisterer {
                         })))
                 .then(Commands.literal("session")
                         .then(Commands.literal("start").executes(ctx -> {
-                            SessionManagement.unpause();
+                            SessionManager.start();
+                            return 1;
+                        }))
+
+                        .then(Commands.literal("start").then(Commands.argument("minutes", IntegerArgumentType.integer(1)).executes(ctx -> {
+                            SessionManager.start(IntegerArgumentType.getInteger(ctx, "minutes"));
+                            return 1;
+                        })))
+
+                        .then(Commands.literal("unpause").executes(ctx -> {
+                            SessionManager.unpause();
                             return 1;
                         }))
 
                         .then(Commands.literal("break").executes(ctx -> {
-                            SessionManagement.goOnBreak();
+                            SessionManager.goOnBreak();
                             return 1;
                         }))
 
                         .then(Commands.literal("cancelbreak").executes(ctx -> {
-                            SessionManagement.goOffBreak();
+                            SessionManager.goOffBreak();
                             return 1;
                         }))
 
-                        .then(Commands.literal("stop").executes(ctx -> {
-                            SessionManagement.pause();
+                        .then(Commands.literal("pause").executes(ctx -> {
+                            SessionManager.pause();
                             return 1;
                         }))
                 )

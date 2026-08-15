@@ -103,6 +103,7 @@ public class BoogeymanManager {
 
         // send them a fail message
         TitleUtil.sendTitle(player, "You failed...", ChatFormatting.RED);
+        player.sendSystemMessage(Component.literal("§7You failed to kill as the boogeyman during the session. You are now on your §cLast §7Life.§r"));
     }
 
     /**

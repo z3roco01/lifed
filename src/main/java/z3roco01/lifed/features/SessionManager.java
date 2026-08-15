@@ -20,7 +20,7 @@ import java.util.ArrayList;
 /**
  * Handles pre session and post session events, such as stopping players an failing boogeys
  */
-public class SessionManagement {
+public class SessionManager {
     /**
      * How many ticks are left in the session
      */
@@ -96,20 +96,34 @@ public class SessionManagement {
                 return;
             }
 
-            // no timer when paused
-            if(paused) return;
+            // no timer when paused or its over/not started
+            if(paused || ticksRemaining < 0 ) return;
 
             ticksRemaining--;
 
             if(ticksRemaining == 0) {
                 // failing boogeymen causes concurency error
-                //BoogeymanManager.failAll();
+                BoogeymanManager.failAll();
                 pause();
             }else {
                 for(SessionTickEvent tickEvent : tickEvents)
                     tickEvent.tick(ticksRemaining, onBreak);
             }
         });
+    }
+
+    /**
+     * Starts the session with the default ( in config ) time
+     */
+    public static void start() {
+        ticksRemaining = Time.MINUTES.ticks(Lifed.config.sessionLength);
+    }
+
+    /**
+     * Starts the session with the specified amount of minutes
+     */
+    public static void start(int minutes) {
+        ticksRemaining = Time.MINUTES.ticks(minutes);
     }
 
     public static void pause() {
@@ -157,9 +171,9 @@ public class SessionManagement {
      */
     public static void handleFreezing(ServerPlayer player) {
         if(paused || onBreak)
-            SessionManagement.applyPlayerFreeze(player);
+            SessionManager.applyPlayerFreeze(player);
         else
-            SessionManagement.removePlayerFreeze(player); // just incase theyre still frozen, like the left mid pause
+            SessionManager.removePlayerFreeze(player); // just incase theyre still frozen, like the left mid pause
     }
 
     public static void unpause() {
@@ -229,7 +243,7 @@ public class SessionManagement {
 
         breakTicksRemaining = 0;
         onBreak = false;
-        TitleUtil.sendTitleAll("break ended, good luck !", ChatFormatting.RED);
+        TitleUtil.sendTitleAll("Break ended, good luck !", ChatFormatting.RED);
     }
 
     public static boolean onBreak() {
