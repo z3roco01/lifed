@@ -23,17 +23,26 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import z3roco01.lifed.Lifed;
 import z3roco01.lifed.features.BoogeymanManager;
 import z3roco01.lifed.features.LifeManager;
 import z3roco01.lifed.features.SoulmateManager;
+import z3roco01.lifed.util.SessionUUID;
 import z3roco01.lifed.util.WolfCounter;
 
 import java.util.UUID;
 
 @Mixin(ServerPlayer.class)
-public abstract class ServerPlayerEntityMixin extends Player implements WolfCounter, SoulmateManager.SoulmateHaver {
+public abstract class ServerPlayerEntityMixin extends Player implements WolfCounter, SoulmateManager.SoulmateHaver, BoogeymanManager.PotentialBoogey {
+    // Was this player a boogey last session and needs to be failed now
+    @Unique
+    public boolean previousBoogey = false;
+
+    @Override
+    public boolean getPreviousBoogey() {
+        return previousBoogey;
+    }
+
     // support for counting wolves, needed in an interface, since its a mixin
     @Unique
     public int wolfCount = 0;
@@ -154,22 +163,38 @@ public abstract class ServerPlayerEntityMixin extends Player implements WolfCoun
 
     }
 
+    @Unique
+    private static final String WOLF_COUNT_DATA_ID = "lifed.wolfCount";
+    @Unique
+    private static final String SOULMATE_DATA_ID = "lifed.soulmateUUID";
+    @Unique
+    private static final String BOOGEY_DATA_ID = "lifed.boogeySession";
+
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     private void readCustomData(ValueInput input, CallbackInfo ci) {
         // load in the wolf count from file/network
-        this.wolfCount = input.getIntOr("wolfCount", 0);
+        this.wolfCount = input.getIntOr(WOLF_COUNT_DATA_ID, 0);
 
-        String soulmateUUID = input.getStringOr("soulmateUUID", "none");
+        String soulmateUUID = input.getStringOr(SOULMATE_DATA_ID, "none");
         if(soulmateUUID.equals("none")) {
             setSoulmate(null);
         }else {
             setSoulmate(UUID.fromString(soulmateUUID));
-            Lifed.LOGGER.info("hiuiiii " + soulmate.toString());
             if(getSoulmatePlayer() != null) {
-                Lifed.LOGGER.info("woahhhhhh");
                 // encase it didnt set, do it up, when only one of them has joined it will be null
                 ((SoulmateManager.SoulmateHaver)getSoulmatePlayer()).setSoulmate(uuid);
                 SoulmateManager.syncPair((ServerPlayer)(Object)this);
+            }
+        }
+
+        // read stored previous boogey status
+        String boogeySession = input.getStringOr(BOOGEY_DATA_ID, "none");
+        if(!boogeySession.equals("none")) {
+            UUID sessUUID = UUID.fromString(boogeySession);
+            // should be boogey so readd the player if they are not in
+            if(!sessUUID.equals(SessionUUID.getCurrentUuid())) {
+                previousBoogey = true;
+                //BoogeymanManager.fail((ServerPlayer)(Object)this);
             }
         }
     }
@@ -177,10 +202,17 @@ public abstract class ServerPlayerEntityMixin extends Player implements WolfCoun
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
     private void writeCustomData(ValueOutput output, CallbackInfo ci) {
         // save the wolf count to file/network
-        output.putInt("wolfCount", this.wolfCount);
+        output.putInt(WOLF_COUNT_DATA_ID, this.wolfCount);
         if(soulmate != null)
-            output.putString("soulmateUUID", soulmate.toString());
+            output.putString(SOULMATE_DATA_ID, soulmate.toString());
         else
-            output.putString("soulmateUUID", "none");
+            output.putString(SOULMATE_DATA_ID, "none");
+
+        // save boogey active session uuid
+        if(BoogeymanManager.isPlayerBoogey((ServerPlayer)(Object)this))
+            output.putString(BOOGEY_DATA_ID, SessionUUID.getCurrentUuid().toString());
+        else
+            output.putString(BOOGEY_DATA_ID, "none");
+
     }
 }

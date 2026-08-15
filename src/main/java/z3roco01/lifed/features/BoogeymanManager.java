@@ -42,7 +42,7 @@ public class BoogeymanManager {
         boogeymen.remove(player.getUUID());
     }
 
-    private static void add(ServerPlayer player) {
+    public static void add(ServerPlayer player) {
         boogeymen.add(player.getUUID());
     }
 
@@ -249,5 +249,12 @@ public class BoogeymanManager {
         }
 
         return players.get(boogeyIdx);
+    }
+
+    /**
+     * Gets around mixins not being referncable, hold previous boogey status
+     */
+    public interface PotentialBoogey {
+        boolean getPreviousBoogey();
     }
 }
