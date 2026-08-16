@@ -1,7 +1,7 @@
 # lifed
 Replicates life series functionality.<br>
-**Please download at [Modrinth](https://modrinth.com/mod/lifed/versions)**
-
+**Please download at [Modrinth](https://modrinth.com/mod/lifed/versions)**<br>
+**Join the [Discord](https://discord.gg/azxQ9ZBDKv) for support and easy bug reporting**
 
 # For Players
 If you cannot move, that is not a problem, it is because the session has not started, tell the server owner if you think it is a problem.
