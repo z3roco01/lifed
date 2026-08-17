@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import org.jspecify.annotations.Nullable;
 import z3roco01.lifed.Lifed;
+import z3roco01.lifed.config.ConfigFiles;
 import z3roco01.lifed.util.TaskScheduling;
 import z3roco01.lifed.util.Time;
 import z3roco01.lifed.util.player.ChatUtil;
@@ -94,7 +95,7 @@ public class SoulmateManager {
             TitleUtil.sendTitleAll(Component.translatable("lifed.soulmate_wait").getString(), ChatFormatting.GREEN);
             TaskScheduling.scheduleTask(Time.SECONDS.ticks(5), () -> {
                 // send titles to each pair now, and maybe reveal
-                if(Lifed.config.revealSoulmates) {
+                if(ConfigFiles.soulmates.revealSoulmates) {
                     for(SoulmatePair pair : soulmates.pairs) {
                         ServerPlayer player1 = pair.getPlayer1();
                         ServerPlayer player2 = pair.getPlayer2();
@@ -117,7 +118,7 @@ public class SoulmateManager {
      */
     private static void initPair(SoulmatePair pair) {
         for(ServerPlayer player : pair.getPlayers()) {
-            LifeManager.setLives(player, Lifed.config.soulmatesLives);
+            LifeManager.setLives(player, ConfigFiles.soulmates.soulmatesLives);
 
             player.setHealth(player.getMaxHealth());
 

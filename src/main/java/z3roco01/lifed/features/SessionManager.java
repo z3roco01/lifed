@@ -10,6 +10,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.jspecify.annotations.Nullable;
 import z3roco01.lifed.Lifed;
+import z3roco01.lifed.config.ConfigFiles;
 import z3roco01.lifed.util.LoggingUtil;
 import z3roco01.lifed.util.Time;
 import z3roco01.lifed.util.player.ChatUtil;
@@ -60,13 +61,13 @@ public class SessionManager {
      * Sets up the timer, registers the ticker, and pawses everything
      */
     public static void initialize() {
-        if(Lifed.config.startSessionTimer) {
-            ticksRemaining = Time.MINUTES.ticks(Lifed.config.sessionLength);
+        if(ConfigFiles.session.startSessionTimer) {
+            ticksRemaining = Time.MINUTES.ticks(ConfigFiles.session.sessionLength);
             pause();
         }else
             ticksRemaining = -1;
 
-        breakTicksTotal = Time.MINUTES.ticks(Lifed.config.breakLength);
+        breakTicksTotal = Time.MINUTES.ticks(ConfigFiles.session.breakLength);
         // register break end warnings
         registerTickEvent(new SessionTickOneshot(Time.MINUTES.ticks(5),
                 () -> ChatUtil.sendChatMessage("5 Minutes remain", ChatFormatting.RED), true));
@@ -116,7 +117,7 @@ public class SessionManager {
      * Starts the session with the default ( in config ) time
      */
     public static void start() {
-        ticksRemaining = Time.MINUTES.ticks(Lifed.config.sessionLength);
+        ticksRemaining = Time.MINUTES.ticks(ConfigFiles.session.sessionLength);
     }
 
     /**
@@ -230,7 +231,7 @@ public class SessionManager {
         breakTicksRemaining = breakTicksTotal;
         onBreak = true;
 
-        TitleUtil.sendTitleAll(Lifed.config.breakLength + " minute break started", ChatFormatting.RED);
+        TitleUtil.sendTitleAll(ConfigFiles.session.breakLength + " minute break started", ChatFormatting.RED);
     }
 
     /**

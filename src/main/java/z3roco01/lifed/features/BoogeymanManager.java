@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffects;
 import z3roco01.lifed.Lifed;
+import z3roco01.lifed.config.ConfigFiles;
 import z3roco01.lifed.util.Time;
 import z3roco01.lifed.util.player.ChatUtil;
 import z3roco01.lifed.util.player.PlayerUtil;
@@ -65,7 +66,7 @@ public class BoogeymanManager {
         PlayerUtil.addStatusEffect(player, MobEffects.REGENERATION.value(), 10);
         PlayerUtil.addStatusEffect(player, MobEffects.RESISTANCE.value(), 10);
 
-        if(Lifed.config.logEvents)
+        if(ConfigFiles.gameplay.logEvents)
             Lifed.LOGGER.info(player.getPlainTextName() + " has been cured");
     }
 
@@ -125,7 +126,7 @@ public class BoogeymanManager {
             // add a new boogey
             boogeys++;
             // half the chance
-            chance *= Lifed.config.sequentialBoogeyChange;
+            chance *= ConfigFiles.boogey.sequentialBoogeyChange;
 
             // if it is successful, then the next will be chosen
             succeeded = (random.nextDouble() < chance);
@@ -210,7 +211,7 @@ public class BoogeymanManager {
             selectOneBoogey(players);
         }
 
-        if(Lifed.config.lockoutPlayers)
+        if(ConfigFiles.boogey.lockoutPlayers)
             SessionLock.lock("Boogeys have been chosen, new players are not allowed in. Wait till next time or contact an admin.");
     }
 

@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import z3roco01.lifed.Lifed;
+import z3roco01.lifed.config.ConfigFiles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +89,7 @@ public abstract class EnchantmentHelperMixin {
      */
     @Unique
     private static boolean isPvpEnchant(Holder<Enchantment> entry) {
-        if(Lifed.config.highLevelPvpEnchAllowed) return false;
+        if(ConfigFiles.gameplay.highLevelPvpEnchAllowed) return false;
 
         for(ResourceKey<Enchantment> key : PVP_ENCHANTS)
             if(entry.is(key)) return true;
@@ -103,7 +104,7 @@ public abstract class EnchantmentHelperMixin {
      */
     @Unique
     private static boolean isNonPvpEnchant(Holder<Enchantment> entry) {
-        if(Lifed.config.highLevelOtherEnchAllowed) return false;
+        if(ConfigFiles.gameplay.highLevelOtherEnchAllowed) return false;
 
         for(ResourceKey<Enchantment> key : NON_PVP_ENCHANTS)
             if(entry.is(key)) return true;
@@ -125,7 +126,7 @@ public abstract class EnchantmentHelperMixin {
     @Inject(method = "getAvailableEnchantmentResults", at = @At("RETURN"), cancellable = true)
     private static void getPossibleEntries(int level, ItemStack stack, Stream<Holder<Enchantment>> possibleEnchantments, CallbackInfoReturnable<List<EnchantmentInstance>> cir) {
         // if nothing is disallowed, then get out of here
-        if(Lifed.config.highLevelOtherEnchAllowed && Lifed.config.highLevelPvpEnchAllowed) return;
+        if(ConfigFiles.gameplay.highLevelOtherEnchAllowed && ConfigFiles.gameplay.highLevelPvpEnchAllowed) return;
 
         // array list that will be full of the appropriate oldEnchants
         List<EnchantmentInstance> newList = new ArrayList<>();
@@ -134,7 +135,7 @@ public abstract class EnchantmentHelperMixin {
             // dont need to even consider this entry if its not high level
             Holder<Enchantment> enchant = entry.enchantment();
 
-            if(Lifed.config.mendingBanned && enchant.is(Enchantments.MENDING))
+            if(ConfigFiles.gameplay.mendingBanned && enchant.is(Enchantments.MENDING))
                 continue;
 
             // if it is disallowed, add it as level 1 to the list
@@ -160,7 +161,7 @@ public abstract class EnchantmentHelperMixin {
                 newEnchants.set(enchant, 1);
             }
 
-            if(Lifed.config.mendingBanned && enchant.is(Enchantments.MENDING)) {
+            if(ConfigFiles.gameplay.mendingBanned && enchant.is(Enchantments.MENDING)) {
                 // unsure if thisll work
                 newEnchants.removeIf(enchantmentRegistryEntry -> enchant.is(Enchantments.MENDING));
                 Lifed.LOGGER.info("heyyyy");

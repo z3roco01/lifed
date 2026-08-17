@@ -11,6 +11,7 @@ import net.minecraft.commands.arguments.UuidArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import z3roco01.lifed.Lifed;
+import z3roco01.lifed.config.ConfigFiles;
 import z3roco01.lifed.features.*;
 
 import java.util.Collection;
@@ -69,7 +70,7 @@ public class WatcherCommands implements CommandRegisterer {
 
                 .then(Commands.literal("boogeyman")
                         .then(Commands.literal("roll").executes(ctx -> {
-                                    BoogeymanManager.rollBoogeys(Lifed.config.maxBoogeymen);
+                                    BoogeymanManager.rollBoogeys(ConfigFiles.boogey.maxBoogeymen);
                                     return 1;
                                 })
                                 .then(Commands.argument("max", IntegerArgumentType.integer(1)).executes(ctx -> {
@@ -190,20 +191,20 @@ public class WatcherCommands implements CommandRegisterer {
         );
 
         // only register the debug commands when theyre enabled, since they can be kinda cheaty
-        if(Lifed.config.watcherDebug) {
+        if(ConfigFiles.gameplay.watcherDebug) {
             dispatcher.register(Commands.literal("watcher")
                     .then(Commands.literal("debug")
                             .then(Commands.literal("boogeychance")
                                     .then(Commands.argument("chance", FloatArgumentType.floatArg(0f, 1f)).executes(ctx -> {
-                                        Lifed.config.sequentialBoogeyChange = FloatArgumentType.getFloat(ctx, "chance");
-                                        ctx.getSource().sendSuccess(() -> Component.literal("new chance: " + Lifed.config.sequentialBoogeyChange), false);
+                                        ConfigFiles.boogey.sequentialBoogeyChange = FloatArgumentType.getFloat(ctx, "chance");
+                                        ctx.getSource().sendSuccess(() -> Component.literal("new chance: " + ConfigFiles.boogey.sequentialBoogeyChange), false);
 
                                         return 1;
                                     })))
                             .then(Commands.literal("instantboogey").executes(ctx -> {
                                 BoogeymanManager.clearBoogeymen();
 
-                                BoogeymanManager.selectBoogeys(Lifed.config.maxBoogeymen);
+                                BoogeymanManager.selectBoogeys(ConfigFiles.boogey.maxBoogeymen);
 
                                 List<ServerPlayer> players = Lifed.server.getPlayerList().getPlayers();
                                 BoogeymanManager.showBoogeyStatus(players);

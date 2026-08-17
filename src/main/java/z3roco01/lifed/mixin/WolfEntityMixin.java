@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import z3roco01.lifed.Lifed;
+import z3roco01.lifed.config.ConfigFiles;
 import z3roco01.lifed.util.WolfCounter;
 
 @Mixin(Wolf.class)
@@ -27,7 +27,7 @@ public abstract class WolfEntityMixin extends TamableAnimal implements NeutralMo
         if(player.level().isClientSide()) return;
 
         // if someone is trying to tame a wolf but has the max amount of wolfs, cancel it
-        if(((WolfCounter) player).getWolfCount() == Lifed.config.wolfLimit)
+        if(((WolfCounter) player).getWolfCount() == ConfigFiles.gameplay.wolfLimit)
             ci.cancel();
     }
 
@@ -45,7 +45,7 @@ public abstract class WolfEntityMixin extends TamableAnimal implements NeutralMo
     private boolean makeChildTamedRedirect(Wolf instance) {
         // redirect from is tamed, when making a child, if the owner has the limit, make the puppy not owned
         WolfCounter owner = (WolfCounter) getOwner();
-        if(owner.getWolfCount() == Lifed.config.wolfLimit)
+        if(owner.getWolfCount() == ConfigFiles.gameplay.wolfLimit)
             return false;
         else {
             owner.incrementWolfCount();

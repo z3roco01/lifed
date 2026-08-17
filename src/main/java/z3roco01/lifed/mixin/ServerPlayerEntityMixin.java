@@ -24,6 +24,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import z3roco01.lifed.Lifed;
+import z3roco01.lifed.config.ConfigFiles;
 import z3roco01.lifed.features.BoogeymanManager;
 import z3roco01.lifed.features.LifeManager;
 import z3roco01.lifed.features.SoulmateManager;
@@ -105,9 +106,6 @@ public abstract class ServerPlayerEntityMixin extends Player implements WolfCoun
     @Shadow
     public abstract ServerLevel level();
 
-    @Shadow
-    private String language;
-
     // needed constructor
     public ServerPlayerEntityMixin(Level world, GameProfile profile) {
         super(world, profile);
@@ -129,7 +127,7 @@ public abstract class ServerPlayerEntityMixin extends Player implements WolfCoun
         int livesBeforeDeath = LifeManager.getLives(player);
         // if they just lost their life, summon a lightening
         if(livesBeforeDeath == 1) {
-            for(int i = 0; i < Lifed.config.lightningsOnRedDeath; i++)
+            for(int i = 0; i < ConfigFiles.gameplay.lightningsOnRedDeath; i++)
                 EntityType.LIGHTNING_BOLT.spawn(level(), bolt -> {bolt.setVisualOnly(true);}, blockPosition(), EntitySpawnReason.EVENT, false, false);
         }
 
@@ -144,7 +142,7 @@ public abstract class ServerPlayerEntityMixin extends Player implements WolfCoun
             ServerPlayer killer = (ServerPlayer) maybeKiller;
             BoogeymanManager.cure(killer);
 
-            if(Lifed.config.logEvents)
+            if(ConfigFiles.gameplay.logEvents)
                 Lifed.LOGGER.info(killer.getPlainTextName() + " boogey killed " + player.getPlainTextName());
         }
     }
@@ -152,7 +150,7 @@ public abstract class ServerPlayerEntityMixin extends Player implements WolfCoun
     @Inject(method = "onEffectAdded", at = @At("HEAD"), cancellable = true)
     private void onStatusEffectApllied(MobEffectInstance effect, Entity source, CallbackInfo ci) {
         // if they are trying to apply a banned effect, cancel it
-        if(Lifed.config.bannedEffects.contains(effect.getEffect().value())) {
+        if(ConfigFiles.gameplay.bannedEffects.contains(effect.getEffect().value())) {
             ((ServerPlayer)(Object)this).removeEffect(effect.getEffect());
             ci.cancel();
         }
