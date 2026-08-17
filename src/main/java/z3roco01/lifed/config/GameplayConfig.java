@@ -66,4 +66,8 @@ public class GameplayConfig {
     @Comment(comment = "Should events like life gives and boogey deaths be sent to the server console")
     @ConfigProperty
     public boolean logEvents = false;
+
+    @Comment(comment = "Default world border size to set it to (if lower than 1 it won't be set)")
+    @ConfigProperty
+    public int borderSize = 500;
 }
