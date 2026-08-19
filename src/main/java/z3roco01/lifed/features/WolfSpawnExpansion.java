@@ -8,7 +8,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
-import z3roco01.lifed.Lifed;
+import z3roco01.lifed.config.ConfigFiles;
 
 /**
  * expands wolf spawning to more biomes, currently only flower forest because thats all i need
@@ -19,7 +19,7 @@ public class WolfSpawnExpansion {
      * Registers the biome modifications to allow their spawning
      */
     public static void registerSpawning() {
-        if(Lifed.config.expandedWolfSpawning)
+        if(ConfigFiles.gameplay.expandedWolfSpawning)
             registerWoodsLike(EXTENDED_WOODS_TAG);
     }
 

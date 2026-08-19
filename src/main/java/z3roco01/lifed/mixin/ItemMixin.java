@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import z3roco01.lifed.Lifed;
+import z3roco01.lifed.config.ConfigFiles;
 import z3roco01.lifed.features.LifeManager;
 import z3roco01.lifed.util.player.PlayerUtil;
 
@@ -26,7 +26,7 @@ public abstract class ItemMixin implements FeatureElement, ItemLike, FabricItem 
     private void use(Level world, Player user, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         if(world.isClientSide()) return;
 
-        if(!Lifed.config.totemsConvertable) return;
+        if(!ConfigFiles.gameplay.totemsConvertable) return;
 
         // when item is right clicked, if its a totem and its allowed, turn it into a life
         ItemStack stack = user.getItemInHand(hand);

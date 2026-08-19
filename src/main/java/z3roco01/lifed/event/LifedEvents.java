@@ -15,10 +15,7 @@ import z3roco01.lifed.Lifed;
 import z3roco01.lifed.commands.CommandRegisterer;
 import z3roco01.lifed.commands.PlayerCommands;
 import z3roco01.lifed.commands.WatcherCommands;
-import z3roco01.lifed.features.BoogeymanManager;
-import z3roco01.lifed.features.LifeManager;
-import z3roco01.lifed.features.SessionLock;
-import z3roco01.lifed.features.SessionManager;
+import z3roco01.lifed.features.*;
 import z3roco01.lifed.util.SessionUUID;
 import z3roco01.lifed.util.TaskScheduling;
 
@@ -52,6 +49,7 @@ public class LifedEvents {
         Lifed.server = server;
         LifeManager.init();
         SessionManager.initialize();
+        WorldBorder.setSize();
     }
 
     /**

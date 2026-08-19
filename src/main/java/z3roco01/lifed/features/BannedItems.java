@@ -4,7 +4,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import z3roco01.lifed.Lifed;
+import z3roco01.lifed.config.ConfigFiles;
 
 /**
  * Handles banned items, both in crafting and fully
@@ -17,7 +17,7 @@ public class BannedItems {
      * @return true if it is not in either list, otherwise false
      */
     public static boolean canCraft(Item item) {
-        return !Lifed.config.bannedItems.contains(item) && !Lifed.config.uncraftableItems.contains(item);
+        return !ConfigFiles.gameplay.bannedItems.contains(item) && !ConfigFiles.gameplay.uncraftableItems.contains(item);
     }
 
     /**

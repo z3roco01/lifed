@@ -8,6 +8,7 @@ import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.PlayerTeam;
 import org.jspecify.annotations.Nullable;
 import z3roco01.lifed.Lifed;
+import z3roco01.lifed.config.ConfigFiles;
 import z3roco01.lifed.util.*;
 import z3roco01.lifed.util.player.PlayerUtil;
 import z3roco01.lifed.util.player.ScoreboardUtil;
@@ -113,7 +114,7 @@ public class LifeManager {
      * @param lives the new life count for the player
      */
     public static void setLives(ServerPlayer player, int lives) {
-        if(Lifed.config.logEvents)
+        if(ConfigFiles.gameplay.logEvents)
             LoggingUtil.log(player.getPlainTextName() + " is now at " + lives + " lives !");
 
         ScoreboardUtil.setScore(LIVES_OBJECTIVE, player, lives);
@@ -219,7 +220,7 @@ public class LifeManager {
         if(LifeManager.getLives(recipient) < 1)
             return false;
 
-        if(Lifed.config.logEvents)
+        if(ConfigFiles.gameplay.logEvents)
             Lifed.LOGGER.info(gifter.getPlainTextName() + " gave a life to " + recipient.getPlainTextName());
 
         LifeManager.removeLife(gifter);

@@ -9,7 +9,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import z3roco01.lifed.Lifed;
+import z3roco01.lifed.config.ConfigFiles;
 import z3roco01.lifed.features.BoogeymanManager;
 import z3roco01.lifed.features.LifeManager;
 import z3roco01.lifed.features.SessionManager;
@@ -62,7 +62,7 @@ public class PlayerCommands implements CommandRegisterer {
                             return 1;
                         }
 
-                        double timePercent = ticksRemaining/(double)Time.MINUTES.ticks(Lifed.config.sessionLength);
+                        double timePercent = ticksRemaining/(double)Time.MINUTES.ticks(ConfigFiles.session.sessionLength);
 
                         String timeColour = "§";
                         // based off colours in limited life

@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import z3roco01.lifed.Lifed;
+import z3roco01.lifed.config.ConfigFiles;
 
 @Mixin(AbstractContainerMenu.class)
 public abstract class PlayerInventoryMixin {
@@ -18,7 +18,7 @@ public abstract class PlayerInventoryMixin {
         if(!(((AbstractContainerMenu)(Object)this) instanceof InventoryMenu))
             return;
         // if they are trying to add a banned item to their inventory, dont let them
-        if(Lifed.config.bannedItems.contains(stack.getItem()))
+        if(ConfigFiles.gameplay.bannedItems.contains(stack.getItem()))
             ci.cancel();
     }
 }
