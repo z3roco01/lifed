@@ -5,6 +5,7 @@ import z3roco01.composed.file.ConfigFile;
 import java.io.IOException;
 
 public class ConfigFiles {
+    public static final AutoSetupConfig autosetup = new AutoSetupConfig();
     public static final SoulmatesConfig soulmates = new SoulmatesConfig();
     public static final SessionConfig session = new SessionConfig();
     public static final GameplayConfig gameplay = new GameplayConfig();
@@ -12,6 +13,7 @@ public class ConfigFiles {
 
     public static void load() {
         try {
+            ConfigFile.load("./config/lifed/autosetup.conf", autosetup);
             ConfigFile.load("./config/lifed/soulmates.conf", soulmates);
             ConfigFile.load("./config/lifed/session.conf", session);
             ConfigFile.load("./config/lifed/gameplay.conf", gameplay);
