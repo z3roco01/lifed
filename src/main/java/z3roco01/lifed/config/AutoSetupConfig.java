@@ -8,7 +8,6 @@ public class AutoSetupConfig {
     @ConfigProperty
     public boolean rollLives = false;
 
-
     @Comment(comment = "Should autosetup roll boogeys every session like Last Life")
     @ConfigProperty
     public boolean rollBoogeys = false;

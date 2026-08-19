@@ -8,11 +8,11 @@ public class AutoSetup {
      * Registers session callbacks for the first session setup
      */
     public static void firstSession() {
-        if(ConfigFiles.autosetup.rollLives)
-            SessionManager.registerStartEvent(AutoSetup::rollLives);
-
         if(ConfigFiles.autosetup.rollSoulmates)
             SessionManager.registerStartEvent(AutoSetup::rollSoulmates);
+
+        if(ConfigFiles.autosetup.rollLives)
+            SessionManager.registerStartEvent(AutoSetup::rollLives);
     }
 
     /**
