@@ -47,6 +47,14 @@ public class WatcherSessionCommands extends WatcherCommandRegisterer{
                     AutoSetup.firstSession();
                     return 1;
                 }))
+                .then(Commands.literal("add").then(Commands.argument("minutes", IntegerArgumentType.integer(1)).executes(ctx -> {
+                    SessionManager.addMinutes(IntegerArgumentType.getInteger(ctx, "minutes"));
+                    return 1;
+                })))
+                .then(Commands.literal("sub").then(Commands.argument("minutes", IntegerArgumentType.integer(1)).executes(ctx -> {
+                    SessionManager.subMinutes(IntegerArgumentType.getInteger(ctx, "minutes"));
+                    return 1;
+                })))
         ));
     }
 }

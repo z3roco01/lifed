@@ -58,6 +58,14 @@ public class SessionManager {
         tickEvents.add(tickEvent);
     }
 
+    public static void addMinutes(int minutes) {
+        ticksRemaining += Time.MINUTES.ticks(minutes);
+    }
+
+    public static void subMinutes(int minutes) {
+        ticksRemaining -= Time.MINUTES.ticks(minutes);
+    }
+
     /**
      * Sets up the timer, registers the ticker, and pawses everything
      */
