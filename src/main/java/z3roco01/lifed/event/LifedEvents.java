@@ -52,9 +52,11 @@ public class LifedEvents {
      */
     private static void onServerStarted(MinecraftServer server) {
         Lifed.server = server;
+
         LifeManager.init();
         SessionManager.initialize();
         WorldBorder.setSize();
+        AutoSetup.registerNormal();
     }
 
     /**

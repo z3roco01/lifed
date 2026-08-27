@@ -1,5 +1,6 @@
 package z3roco01.lifed.features;
 
+import net.minecraft.server.level.ServerPlayer;
 import z3roco01.lifed.Lifed;
 import z3roco01.lifed.config.ConfigFiles;
 
@@ -13,6 +14,9 @@ public class AutoSetup {
 
         if(ConfigFiles.autosetup.rollLives)
             SessionManager.registerStartEvent(AutoSetup::rollLives);
+
+        if(ConfigFiles.autosetup.startingLives >= 0)
+            SessionManager.registerStartEvent(AutoSetup::setLives);
     }
 
     /**
@@ -27,7 +31,7 @@ public class AutoSetup {
      * Roll all players lives
      */
     private static void rollLives() {
-        LifeManager.randomizePlayers(Lifed.server.getPlayerList().getPlayers());
+        LifeManager.randomizePlayers(Lifed.server.getPlayerList().getPlayers(), ConfigFiles.autosetup.rollMin, ConfigFiles.autosetup.rollMax);
     }
 
     private static void rollBoogeys() {
@@ -36,5 +40,11 @@ public class AutoSetup {
 
     private static void rollSoulmates() {
         SoulmateManager.rollSoulmates();
+    }
+
+    // set everyones lives constant
+    private static void setLives() {
+        for(ServerPlayer player : Lifed.server.getPlayerList().getPlayers())
+            LifeManager.setLives(player, ConfigFiles.autosetup.startingLives);
     }
 }

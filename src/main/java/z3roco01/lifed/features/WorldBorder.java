@@ -6,7 +6,7 @@ import z3roco01.lifed.config.ConfigFiles;
 
 public class WorldBorder {
     public static void setSize() {
-        int wantedSize = ConfigFiles.gameplay.borderSize;
+        int wantedSize = ConfigFiles.autosetup.borderSize;
 
         // dont set when lower than one
         if(wantedSize < 1)
