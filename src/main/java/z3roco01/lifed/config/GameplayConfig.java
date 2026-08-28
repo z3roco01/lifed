@@ -35,6 +35,10 @@ public class GameplayConfig {
     @ConfigProperty
     public ArrayList<MobEffect> bannedEffects = new ArrayList<>();
 
+    @Comment(comment = "Are players allowed to give their lives to other players")
+    @ConfigProperty
+    public boolean canGift = true;
+
     @Comment(comment = "Are PVP enchantments ( sharpness, protection, etc ) allowed at levels higher than 1")
     @ConfigProperty
     public boolean highLevelPvpEnchAllowed = false;
@@ -66,8 +70,4 @@ public class GameplayConfig {
     @Comment(comment = "Should events like life gives and boogey deaths be sent to the server console")
     @ConfigProperty
     public boolean logEvents = false;
-
-    @Comment(comment = "Default world border size to set it to (if lower than 1 it won't be set)")
-    @ConfigProperty
-    public int borderSize = 500;
 }

@@ -21,22 +21,24 @@ import z3roco01.lifed.util.Time;
 public class PlayerCommands implements CommandRegisterer {
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment) {
-        // lets a player gift one of their lives
-        dispatcher.register(Commands.literal("givelife")
-                .then(Commands.argument("target", EntityArgument.player())
-                        .executes(ctx -> {
-                            ServerPlayer gifter = ctx.getSource().getPlayer();
-                            ServerPlayer recipient = EntityArgument.getPlayer(ctx, "target");
+        if(ConfigFiles.gameplay.canGift) {
+            // lets a player gift one of their lives
+            dispatcher.register(Commands.literal("givelife")
+                    .then(Commands.argument("target", EntityArgument.player())
+                            .executes(ctx->{
+                                ServerPlayer gifter = ctx.getSource().getPlayer();
+                                ServerPlayer recipient = EntityArgument.getPlayer(ctx, "target");
 
-                            // if the gift was unsuccessful, give feedback
-                            if(!LifeManager.giftLife(gifter, recipient)) {
-                                ctx.getSource().sendSuccess(() -> Component.literal("Could not gift a life to " + recipient.getPlainTextName())
-                                        .copy().withStyle(ChatFormatting.RED), false);
-                                return 0;
-                            }
+                                // if the gift was unsuccessful, give feedback
+                                if(!LifeManager.giftLife(gifter, recipient)) {
+                                    ctx.getSource().sendSuccess(()->Component.literal("Could not gift a life to "+recipient.getPlainTextName())
+                                            .copy().withStyle(ChatFormatting.RED), false);
+                                    return 0;
+                                }
 
-                            return 1;
-                        })));
+                                return 1;
+                            })));
+        }
 
         dispatcher.register(Commands.literal("lives")
                 .executes(ctx -> {

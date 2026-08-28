@@ -45,6 +45,7 @@ public class SessionManager {
     private static int breakTicksRemaining = 0;
 
     private static final ArrayList<SessionTickEvent> tickEvents = new ArrayList<>();
+    private static final ArrayList<SessionStartEvent> startEvents = new ArrayList<>();
 
     // modifiers for freezing players
     private static final AttributeModifier MODIFIER_FREEZE = new AttributeModifier(
@@ -55,6 +56,14 @@ public class SessionManager {
      */
     public static void registerTickEvent(SessionTickEvent tickEvent) {
         tickEvents.add(tickEvent);
+    }
+
+    public static void addMinutes(int minutes) {
+        ticksRemaining += Time.MINUTES.ticks(minutes);
+    }
+
+    public static void subMinutes(int minutes) {
+        ticksRemaining -= Time.MINUTES.ticks(minutes);
     }
 
     /**
@@ -100,6 +109,13 @@ public class SessionManager {
             // no timer when paused or its over/not started
             if(paused || ticksRemaining < 0 ) return;
 
+            // first tick, trigger start events
+            if(ticksRemaining == Time.MINUTES.ticks(ConfigFiles.session.sessionLength)) {
+                for(SessionStartEvent event : startEvents) {
+                    event.start();
+                }
+            }
+
             ticksRemaining--;
 
             if(ticksRemaining == 0) {
@@ -117,7 +133,7 @@ public class SessionManager {
      * Starts the session with the default ( in config ) time
      */
     public static void start() {
-        ticksRemaining = Time.MINUTES.ticks(ConfigFiles.session.sessionLength);
+        start(ConfigFiles.session.sessionLength);
     }
 
     /**
@@ -125,6 +141,7 @@ public class SessionManager {
      */
     public static void start(int minutes) {
         ticksRemaining = Time.MINUTES.ticks(minutes);
+        unpause();
     }
 
     public static void pause() {
@@ -253,6 +270,21 @@ public class SessionManager {
 
     public static int remainingBreakTicks() {
         return breakTicksRemaining;
+    }
+
+    public static void registerStartEvent(SessionStartEvent event) {
+        startEvents.add(event);
+    }
+
+    /**
+     * Used for registering an event to run at the start of the session
+     */
+    @FunctionalInterface
+    public interface SessionStartEvent {
+        /**
+         * callback that is called once the session starts
+         */
+        void start();
     }
 
     /**
